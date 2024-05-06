@@ -13,7 +13,7 @@ const page = () => {
         image="/assets/images/login/placeholder.svg"
       />
       {/* <BeatsPage /> */}
-      <Card className="border-0 mx-auto">
+      {/* <Card className="border-0 mx-auto">
         <Image
           src="/assets/images/login/placeholder.svg"
           className="max-h-[250px] rounded-lg h-full bg-black"
@@ -22,7 +22,7 @@ const page = () => {
           height={300}
           alt="logo"
         />
-      </Card>
+      </Card> */}
     </section>
   );
 };
