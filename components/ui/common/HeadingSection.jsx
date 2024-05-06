@@ -7,7 +7,7 @@ import React from "react";
 
 const HeadingSection = ({ image, title, description }) => {
   return (
-    <section className="w-full py-10 md:py-10 px-4 lg:py-12">
+    <section className="w-full overflow-hidden py-10 md:py-10 px-4 lg:py-12">
       <div className="container grid gap-6 lg:grid-cols-[1fr_550px] lg:gap-12 xl:grid-cols-[1fr_650px]">
         <AnimationWrapper
           initial={{ opacity: 0, y: 100 }}
