@@ -42,13 +42,17 @@ function Skull() {
     const mouse = new THREE.Vector2();
     const pointOfIntersection = new THREE.Vector3();
     const onMouseMove = (event) => {
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-      raycaster.setFromCamera(mouse, camera);
-      raycaster.ray.intersectPlane(plane, pointOfIntersection);
-      base.lookAt(pointOfIntersection);
+      if (typeof window !== "undefined") {
+        mouse.x = (event.clientX / window?.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window?.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        raycaster.ray.intersectPlane(plane, pointOfIntersection);
+        base.lookAt(pointOfIntersection);
+      }
     };
-    window.addEventListener("mousemove", onMouseMove, false);
+    if (typeof window !== "undefined") {
+      window?.addEventListener("mousemove", onMouseMove, false);
+    }
 
     // Render loop
     const animate = () => {
@@ -63,7 +67,9 @@ function Skull() {
 
     // Cleanup
     return () => {
-      window.removeEventListener("mousemove", onMouseMove);
+      if (typeof window !== "undefined") {
+        window?.removeEventListener("mousemove", onMouseMove);
+      }
       renderer.dispose();
     };
   }, []);

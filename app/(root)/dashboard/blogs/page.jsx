@@ -5,10 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import DashboardLayout from "@/components/ui/common/DashboardLayout";
 import BeatsPage from "@/components/view/BeatsPage";
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
 
 const page = () => {
   return (
