@@ -12,13 +12,15 @@ function Skull() {
     const camera = new THREE.PerspectiveCamera(60, 1, 1, 1000);
     camera.position.set(0, 0, 5);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setClearColor(0x404040);
+    // Set clear color to transparent
+    renderer.setClearColor(0x000000, 0.8); // 0x000000 represents black, 0 represents transparency
 
     // Lights
-    const light = new THREE.DirectionalLight(0xffffff, 0.5);
+    const light = new THREE.DirectionalLight(0xffffff, 0.9);
     light.position.setScalar(10);
+    light.castShadow = true;
     scene.add(light);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
 
     // Mount renderer to canvas
     const canvas = canvasRef.current;
@@ -85,7 +87,18 @@ function Skull() {
     return needResize;
   };
 
-  return <div ref={canvasRef} style={{ width: "100%", height: "100vh" }} />;
+  return (
+    <div
+      ref={canvasRef}
+      style={{
+        width: "100%",
+        height: "100vh",
+        backgroundImage: "url('/assets/images/background.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    />
+  );
 }
 
 export default Skull;
