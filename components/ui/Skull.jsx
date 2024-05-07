@@ -34,7 +34,7 @@ function Skull() {
 
     const loader = new GLTFLoader();
     loader.load("/assets/3d/scene.gltf", (gltf) => {
-      gltf.scene.scale.setScalar(0.4);
+      gltf.scene.scale.setScalar(0.7);
       base.add(gltf.scene);
     });
 

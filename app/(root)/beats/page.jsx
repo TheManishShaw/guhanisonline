@@ -1,3 +1,4 @@
+import SingleBeat from "@/components/ui/SingleBeat";
 import { Card } from "@/components/ui/card";
 import HeadingSection from "@/components/ui/common/HeadingSection";
 import BeatsPage from "@/components/view/BeatsPage";
@@ -13,7 +14,7 @@ const page = () => {
         image="/assets/images/login/placeholder.svg"
       />
       {/* <BeatsPage /> */}
-      <Card className=" mx-auto my-8 flex max-w-5xl flex-col items-center gap-3 rounded-xl shadow-lg  pt-8">
+      {/* <Card className=" mx-auto my-8 flex max-w-5xl flex-col items-center gap-3 rounded-xl shadow-lg  pt-8">
         <Image
           className="block h-12 w-12 max-w-full rounded-full align-middle"
           src="/assets/images/login/placeholder.svg"
@@ -102,11 +103,12 @@ const page = () => {
           </button>
         </div>
         <div className="h-96 w-full bg-gray-100 px-2">
-          <div className="mt-3 flex h-20 w-full flex-col rounded-lg bg-white px-2 shadow">
-            <div className="mt-2 h-4 w-1/4 rounded-lg bg-gray-200"></div>
-            <div className="mt-2 h-4 w-full rounded-lg bg-gray-200"></div>
-            <div className="mt-2 h-4 w-full rounded-lg bg-gray-200"></div>
-          </div>
+          <SingleBeat
+            audioUrl="/assets/audio/Yimmy.mp3"
+            name="yimmy yimmy"
+            singer=" Manish Shaw"
+            price="$23.34"
+          />
           <div className="mt-3 flex h-20 w-full flex-col rounded-lg bg-white px-2 shadow">
             <div className="mt-2 h-4 w-1/4 rounded-lg bg-gray-200"></div>
             <div className="mt-2 h-4 w-full rounded-lg bg-gray-200"></div>
@@ -118,7 +120,7 @@ const page = () => {
             <div className="mt-2 h-4 w-full rounded-lg bg-gray-200"></div>
           </div>
         </div>
-      </Card>
+      </Card> */}
     </section>
   );
 };

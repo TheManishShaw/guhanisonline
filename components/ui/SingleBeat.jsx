@@ -81,23 +81,31 @@ const SingleBeat = ({ audioUrl, name, singer, price }) => {
     <>
       <div className="flex items-center p-4 bg-muted hover:shadow-white/25 hover:shadow-md hover:scale-[1.002] rounded-lg">
         <Button
-          className="p-2 mr-4 rounded-full bg-black  ring-gray-900 border border-spacing-3"
+          className="p-2 mr-4 rounded-full relative   border border-spacing-3"
           variant="ghost"
           onClick={togglePlayPause}
         >
+          <Image
+            src="/assets/images/login/placeholder.svg"
+            alt="user"
+            className="z-0 relative rounded-full"
+            width={50}
+            height={50}
+          />
           {isPlaying ? (
-            <PauseIcon className="h-6 w-6" />
+            <PauseIcon className="  h-6 w-6" />
           ) : (
             <PlayIcon className="h-6 w-6" />
           )}
         </Button>
+
         <div className="flex-grow">
           <div className="flex justify-between">
             <div>
               <h3 className="text-lg font-semibold">{name ?? "--"}</h3>
               <p className="text-sm text-gray-500">By {singer ?? "--"}</p>
             </div>
-            <div ref={waveformRef} className=" max-w-2xl w-full h-[50px]"></div>
+            <div ref={waveformRef} className=" max-w-lg w-full h-[50px]"></div>
 
             <div className="text-right">
               <span className="block text-sm">

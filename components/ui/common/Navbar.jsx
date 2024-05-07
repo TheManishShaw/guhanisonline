@@ -18,6 +18,7 @@ import { menuList } from "@/constants/menuitems/menuList";
 const Navbar = () => {
   const path = usePathname();
   const user = false;
+  console.log("path", path);
   return (
     <>
       {
@@ -32,7 +33,11 @@ const Navbar = () => {
                       key={index}
                       href={menu.path}
                       target={menu.target}
-                      className="text-muted-foreground transition-colors hover:text-foreground"
+                      className={` ${
+                        path === menu.path
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                      }  transition-colors hover:text-foreground`}
                     >
                       {menu.name}
                     </Link>
