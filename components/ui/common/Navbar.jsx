@@ -40,7 +40,7 @@ const Navbar = () => {
                 </nav>
               </div>
             </form>
-            <Sheet>
+            <Sheet SheetClose={true}>
               <SheetTrigger asChild>
                 <Button
                   variant="outline"
@@ -57,7 +57,7 @@ const Navbar = () => {
                     <Link
                       key={index + "mobile"}
                       href={menu.path}
-                      className="text-muted-foreground hover:text-foreground"
+                      className="text-white hover:text-foreground"
                     >
                       {menu.name}
                     </Link>

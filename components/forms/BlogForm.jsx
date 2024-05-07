@@ -13,34 +13,23 @@ import { Button } from "../ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Textarea } from "../ui/textarea";
-import { toast } from "sonner";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState } from "draft-js";
 import { PlusIcon } from "lucide-react";
+import { Label } from "../ui/label";
 const FormSchema = z.object({
-  title: z.string(),
-  regular_price: z.string(),
+  title: z.string().min(2, { message: "Enter a title" }),
   tags: z.string(),
-  description: z.string(),
-  downloadable_file: z.string(),
-  preview_audio: z.string(),
 });
 const BlogForm = () => {
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       title: "",
-      regular_price: "",
       tags: "",
-      description: "",
-      downloadable_file: "",
-      preview_audio: "",
     },
   });
-  const [date, setDate] = React.useState();
-  const [audioFiles, setAudioFiles] = React.useState([]);
-  const [previews, setPreviews] = React.useState([]);
+
   const [image, setImage] = useState(null);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -73,24 +62,14 @@ const BlogForm = () => {
       reader.readAsDataURL(file);
     }
   };
-  const handleFileChange = (e) => {
-    const files = e.target.files;
-    setAudioFiles(files);
 
-    const audioPreviews = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      audioPreviews.push(URL.createObjectURL(file));
-    }
-    setPreviews(audioPreviews);
-  };
   function onSubmit(data) {
-    console.log("data==>", data);
-    const formData = new FormData();
-    for (let i = 0; i < audioFiles.length; i++) {
-      formData.append("preview_audio", audioFiles[i]);
-    }
-    console.log("audioFiles", audioFiles);
+    const fromData = {
+      ...data,
+      content: editorState,
+      image_url: image || "",
+    };
+    console.log("fromData", fromData);
   }
   return (
     <>
@@ -141,30 +120,20 @@ const BlogForm = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-primary">
-                  Description (optional)
-                </FormLabel>
-                <FormControl>
-                  <div className="text-black border  rounded-md">
-                    <Editor
-                      editorState={editorState}
-                      toolbarClassName="  text-black"
-                      wrapperClassName=" "
-                      editorClassName=" text-white px-2 "
-                      onEditorStateChange={onEditorStateChange}
-                    />
-                  </div>
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div>
+            <Label className="text-primary mt-2 pb-1">
+              Description (optional)
+            </Label>
+            <div className="text-black border mt-1 rounded-md">
+              <Editor
+                editorState={editorState}
+                toolbarClassName="  text-black"
+                wrapperClassName=" "
+                editorClassName=" text-white px-2 "
+                onEditorStateChange={onEditorStateChange}
+              />
+            </div>
+          </div>
 
           <FormField
             control={form.control}

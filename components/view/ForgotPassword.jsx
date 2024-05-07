@@ -17,15 +17,13 @@ import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
 
 const FormSchema = z.object({
-  email: z.string({ message: "Enter a valid email." }),
-  password: z.string(),
+  email: z.string().email({ message: "Enter a valid email." }),
 });
 const ForgotPassword = () => {
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
   const onSubmit = (data) => {

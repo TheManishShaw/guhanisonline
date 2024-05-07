@@ -26,9 +26,9 @@ export const dashboardList = [
     icon: <Rss className="w-5 h-5" />,
   },
   {
-    name: "Users",
+    name: "Customers",
     path: "/dashboard/users",
-    tooltip: "Users",
+    tooltip: "Customers",
     icon: <Users className="w-5 h-5" />,
   },
 ];

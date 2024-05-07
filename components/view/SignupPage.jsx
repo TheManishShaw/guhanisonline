@@ -18,8 +18,8 @@ import { useForm } from "react-hook-form";
 const FormSchema = z.object({
   firstName: z.string().min(2).max(50),
   lastName: z.string().min(2).max(50),
-  email: z.string({ message: "Enter a valid email." }),
-  password: z.string(),
+  email: z.string().email({ message: "Enter a valid email." }),
+  password: z.string().min(5, { message: "Enter a password" }),
 });
 const SignupPage = () => {
   const form = useForm({

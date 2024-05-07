@@ -82,21 +82,14 @@ const AddBeatForm = () => {
     setPreviews(audioPreviews);
   };
   function onSubmit(data) {
-    console.log("data==>", data);
-    const formData = new FormData();
-    for (let i = 0; i < audioFiles.length; i++) {
-      formData.append("preview_audio", audioFiles[i]);
-    }
-    console.log("audioFiles", audioFiles);
-    formData.append("title", data.title);
-    formData.append("regular_price", data.regular_price);
-    formData.append("tags", data.tags);
-    formData.append("description", data.description);
-    formData.append("downloadable_file", data.downloadable_file);
-    formData.append("preview_audio", data.preview_audio);
-    console.log("format data ========>", formData);
+    console.log("data==>", data, image);
+    const formData = {
+      image: image ? image : "",
+      audios: audioFiles ? audioFiles : [],
+    };
+    console.log("fromData------", formData);
     toast.message("You submitted the following values:", {
-      description: JSON.stringify(data, null, 2),
+      description: JSON.stringify(formData, null, 2),
     });
   }
   return (
