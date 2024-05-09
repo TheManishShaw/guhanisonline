@@ -67,7 +67,7 @@ const DashboardLayout = ({ children }) => {
           </TooltipProvider>
         </nav>
       </aside>
-      <div className="flex text-white flex-col sm:gap-4 sm:py-4 sm:pl-14">
+      <div className="flex text-white flex-col sm:gap-4 pt-4 sm:pl-14">
         <header className="sticky justify-between  top-0 z-30 flex h-14 items-center gap-4  bg-background px-4 sm:static sm:h-auto  sm:bg-transparent sm:px-6">
           <Sheet className="bg-background">
             <SheetTrigger asChild>
@@ -165,7 +165,9 @@ const DashboardLayout = ({ children }) => {
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
-        <main className="p-6 sm:px-6 sm:py-0">{children}</main>
+        <main className="p-6 sm:px-6 sm:py-6 min-h-screen bg-muted/40">
+          {children}
+        </main>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import AnimationWrapper from "@/components/animation/AnimationWrapper";
 import HeadingSection from "@/components/ui/common/HeadingSection";
 import { MusicIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -13,7 +14,7 @@ const page = () => {
         image="/assets/images/login/placeholder.svg"
       />
       <div className="flex flex-col min-h-[100dvh]">
-        <main className="flex-1">
+        <div className="flex-1">
           <AnimationWrapper
             initial={{ opacity: 0, x: -100 }}
             animate={{ opacity: 1, x: 0, transition: { duration: 2 } }}
@@ -104,7 +105,7 @@ const page = () => {
                   animate={{ opacity: 1, x: 0, transition: { duration: 1 } }}
                   transition={{ duration: 1 }}
                 >
-                  <img
+                  <Image
                     alt="Producer"
                     className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
                     height="310"
@@ -118,7 +119,7 @@ const page = () => {
           <section className="w-full py-12 md:py-24 lg:py-32 bg-background dark:bg-gray-800">
             <div className="container px-4 md:px-6">
               <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
-                <img
+                <Image
                   alt="Beat Making"
                   className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
                   height="310"
@@ -150,7 +151,7 @@ const page = () => {
                       Explore Beats
                     </Link>
                     <Link
-                      className="inline-flex h-10 items-center justify-center rounded-md border  px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+                      className="inline-flex h-10 items-center justify-center rounded-md border  px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
                       href="#"
                     >
                       Contact Producer
@@ -228,26 +229,7 @@ const page = () => {
               </div>
             </div>
           </section>
-        </main>
-        <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            © 2024 Beat Maker. All rights reserved.
-          </p>
-          <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-            <Link
-              className="text-xs hover:underline underline-offset-4"
-              href="#"
-            >
-              Terms of Service
-            </Link>
-            <Link
-              className="text-xs hover:underline underline-offset-4"
-              href="#"
-            >
-              Privacy
-            </Link>
-          </nav>
-        </footer>
+        </div>
       </div>
     </>
   );

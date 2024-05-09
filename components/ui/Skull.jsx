@@ -14,14 +14,15 @@ function Skull() {
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     // Set clear color to transparent
     renderer.setClearColor(0x000000, 0.8); // 0x000000 represents black, 0 represents transparency
-
+    renderer.shadowMap.enabled = true;
     // Lights
-    const light = new THREE.DirectionalLight(0xffffff, 0.9);
-    light.position.setScalar(10);
+    const light = new THREE.DirectionalLight(0xffffff, 2);
+    light.position.setScalar(2);
+    light.position.set(20, 20, 50, 50);
     light.castShadow = true;
     scene.add(light);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
-
+    scene.add(new THREE.AmbientLight(0xffffff, 0.1));
+    // scene.add(new THREE.CameraHelper(light.shadow.camera));
     // Mount renderer to canvas
     const canvas = canvasRef.current;
     canvas.appendChild(renderer.domElement);
@@ -34,12 +35,13 @@ function Skull() {
 
     const loader = new GLTFLoader();
     loader.load("/assets/3d/scene.gltf", (gltf) => {
-      gltf.scene.scale.setScalar(0.7);
+      gltf.scene.scale.setScalar(0.6);
       base.add(gltf.scene);
     });
-
+    loader.receiveShadow = true;
     // Event listener
     const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -2);
+    plane.receiveShadow = true;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     const pointOfIntersection = new THREE.Vector3();

@@ -1,22 +1,9 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import WaveSurfer from "wavesurfer.js";
-import { Button } from "./button";
-import {
-  DownloadIcon,
-  HeartIcon,
-  PauseIcon,
-  PlayIcon,
-  PlusIcon,
-} from "lucide-react";
+import { PauseIcon, PlayIcon } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "./badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./tooltip";
 
 const SingleBeat = ({ audioUrl, name, singer, price }) => {
   const [waveform, setWaveform] = useState(null);
@@ -33,7 +20,7 @@ const SingleBeat = ({ audioUrl, name, singer, price }) => {
       progressColor: "#000",
       cursorWidth: 0,
       barWidth: 3,
-      height: 50,
+      height: 30,
       normalize: true,
     });
 
@@ -62,13 +49,11 @@ const SingleBeat = ({ audioUrl, name, singer, price }) => {
 
   const togglePlayPause = () => {
     if (!waveform) return;
-
     if (isPlaying) {
       waveform.pause();
     } else {
       waveform.play();
     }
-
     setIsPlaying(!isPlaying);
   };
 
@@ -79,71 +64,49 @@ const SingleBeat = ({ audioUrl, name, singer, price }) => {
   };
   return (
     <>
-      <div className="flex items-center p-4 bg-muted hover:shadow-white/25 hover:shadow-md hover:scale-[1.002] rounded-lg">
-        <Button
-          className="p-2 mr-4 rounded-full relative   border border-spacing-3"
-          variant="ghost"
-          onClick={togglePlayPause}
-        >
-          <Image
-            src="/assets/images/login/placeholder.svg"
-            alt="user"
-            className="z-0 relative rounded-full"
-            width={50}
-            height={50}
-          />
-          {isPlaying ? (
-            <PauseIcon className="  h-6 w-6" />
-          ) : (
-            <PlayIcon className="h-6 w-6" />
-          )}
-        </Button>
+      <div className="flex items-center px-4 py0.5 bg-muted hover:shadow-white/25 hover:shadow-md hover:scale-[1.002] rounded-lg">
+        <div className="relative w-10 h-10 ">
+          <div
+            className="absolute rounded-md inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/assets/images/background.jpg')",
+            }}
+          ></div>
+          <button
+            onClick={togglePlayPause}
+            className="absolute  inset-0 flex items-center justify-center transition duration-300 opacity-100 hover:opacity-100 focus:outline-none"
+          >
+            <span className="bg-black bg-opacity-80 p-1  rounded-full">
+              {isPlaying ? (
+                <PauseIcon className="pl-1 w-6 h-6" />
+              ) : (
+                <PlayIcon className="pl-1 w-6 h-6" />
+              )}
+            </span>
+          </button>
+        </div>
+        <div className="relative h-14 w-14"></div>
 
         <div className="flex-grow">
           <div className="flex justify-between">
             <div>
-              <h3 className="text-lg font-semibold">{name ?? "--"}</h3>
-              <p className="text-sm text-gray-500">By {singer ?? "--"}</p>
+              <h3 className="text-lg font-semibold ">{name ?? "--"}</h3>
+              {/* <p className="text-sm text-gray-500">By {singer ?? "--"}</p> */}
             </div>
-            <div ref={waveformRef} className=" max-w-lg w-full h-[50px]"></div>
+            <div
+              ref={waveformRef}
+              className=" hidden sm:block sm:max-w-sm md:max-w-md w-full h-[20px]"
+            ></div>
 
             <div className="text-right">
-              <span className="block text-sm">
-                {formatTime(duration)} {formatTime(currentTime)}
-              </span>
-              <span className="block text-sm text-gray-500">5 Tracks</span>
+              <span className="block text-sm mt-1">{formatTime(duration)}</span>
             </div>
           </div>
         </div>
-        <div className="flex items-center ml-4">
+        <div className="flex gap-4 items-center ml-4">
           <Badge className="mr-2" variant="default">
             BPM {bpm || "--"}
           </Badge>
-          ${price}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button className="p-2" variant="ghost">
-                  <PlusIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Add to cart</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button className="p-2" variant="ghost">
-                  <DownloadIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Download preview song</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
       </div>
     </>
