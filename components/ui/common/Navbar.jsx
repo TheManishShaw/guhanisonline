@@ -22,7 +22,7 @@ const Navbar = () => {
   return (
     <>
       {
-        <header className="sticky top-0 flex z-10  h-20 items-center gap-4 border-b bg-background text-white backdrop-blur-lg px-4 md:px-6">
+        <header className="sticky top-0 flex z-50  h-20 items-center gap-4 border-b bg-background text-white backdrop-blur-lg px-4 md:px-6">
           <Link href="/">Logo</Link>
           <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
             <form className="ml-auto flex-1 sm:flex-initial">
