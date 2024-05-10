@@ -1,3 +1,4 @@
+import SingleBlogCard from "@/components/ui/SingleBlogCard";
 import HeadingSection from "@/components/ui/common/HeadingSection";
 import React from "react";
 
@@ -9,6 +10,12 @@ const page = () => {
         description="Dive into the groove: Explore our collection of beats curated to inspire and elevate your music journey"
         image="/assets/images/login/placeholder.svg"
       />
+      <div className="grid grid-cols-3 gap-8 mx-auto w-full flex-wrap">
+        <SingleBlogCard />
+        <SingleBlogCard />
+        <SingleBlogCard />
+        <SingleBlogCard />
+      </div>
     </section>
   );
 };

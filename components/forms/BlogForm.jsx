@@ -21,7 +21,7 @@ const FormSchema = z.object({
   title: z.string().min(2, { message: "Enter a title" }),
   tags: z.string(),
 });
-const BlogForm = () => {
+const BlogForm = ({ type }) => {
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -127,9 +127,9 @@ const BlogForm = () => {
             <div className="text-black border mt-1 rounded-md">
               <Editor
                 editorState={editorState}
-                toolbarClassName="  text-black"
-                wrapperClassName=" "
-                editorClassName=" text-white px-2 "
+                toolbarClassName="text-black"
+                wrapperClassName="bg-white"
+                editorClassName=" text-black px-2 "
                 onEditorStateChange={onEditorStateChange}
               />
             </div>

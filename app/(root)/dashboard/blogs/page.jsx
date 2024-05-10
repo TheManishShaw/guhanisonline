@@ -8,6 +8,7 @@ import {
 import BeatsPage from "@/components/view/BeatsPage";
 import React from "react";
 import Link from "next/link";
+import BlogsListTable from "@/components/view/BlogsListTable";
 
 const page = () => {
   return (
@@ -32,7 +33,7 @@ const page = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <BeatsPage />
+          <BlogsListTable />
         </CardContent>
       </Card>
     </>

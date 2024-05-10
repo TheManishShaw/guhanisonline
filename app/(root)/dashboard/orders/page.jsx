@@ -1,3 +1,4 @@
+import SingleBlogCard from "@/components/ui/SingleBlogCard";
 import {
   Card,
   CardContent,
@@ -5,8 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import BeatsPage from "@/components/view/BeatsPage";
-import Link from "next/link";
+import OrderListTable from "@/components/view/OrderListTable";
 import React from "react";
 
 const page = () => {
@@ -19,7 +19,7 @@ const page = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <BeatsPage />
+        <OrderListTable />
       </CardContent>
     </Card>
   );

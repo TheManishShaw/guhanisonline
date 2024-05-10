@@ -33,6 +33,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import BeatsListTable from "@/components/view/BeatsListTable";
 import BeatsPage from "@/components/view/BeatsPage";
 import {
   ChevronRightIcon,
@@ -82,7 +83,7 @@ const page = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <BeatsPage />
+          <BeatsListTable />
         </CardContent>
       </Card>
     </>

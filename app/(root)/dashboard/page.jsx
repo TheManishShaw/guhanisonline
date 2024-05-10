@@ -97,21 +97,6 @@ const page = () => {
         </CardFooter>
       </Card>
 
-      <Card className="mb-8">
-        <CardHeader className="pb-2">
-          <CardDescription>This Week</CardDescription>
-          <CardTitle className="text-4xl">$1,329</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-xs text-muted-foreground">
-            +25% from last week
-          </div>
-        </CardContent>
-        <CardFooter>
-          {/* <Progress value={25} aria-label="25% increase" /> */}
-        </CardFooter>
-      </Card>
-
       <Card className="xl:col-span-2 mb-8">
         <CardHeader className="flex flex-row items-center">
           <div className="grid gap-2">
