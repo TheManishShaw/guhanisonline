@@ -24,6 +24,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import ScrollAnimationWrapper from "../animation/ScrollAnimationWrapper";
 import getScrollAnimation from "@/lib/getScrollAnimation";
+import ContactForm from "../forms/ContactForm";
 
 const ContactPage = () => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
@@ -43,27 +44,7 @@ const ContactPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 animate-fade-in">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" placeholder="Enter your first name" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" placeholder="Enter your last name" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" placeholder="Enter your email" type="email" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="message">Message</Label>
-                <Textarea id="message" placeholder="Enter your message" />
-              </div>
-              <Button className="w-full" type="submit">
-                Submit
-              </Button>
+              <ContactForm />
             </CardContent>
           </Card>
           <div className=" w-full rounded-lg overflow-hidden shadow-lg">

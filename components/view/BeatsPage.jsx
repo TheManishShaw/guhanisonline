@@ -1,26 +1,73 @@
+"use client";
 import React from "react";
-import { columns } from "../ui/datatable/coloums";
-import { DataTable } from "../ui/datatable/data-table";
-import { tasks } from "@/app/(root)/dashboard/beats/page";
 import SingleBeat from "../ui/SingleBeat";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { Card } from "../ui/card";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem } from "@/lib/store/features/cart/Cart";
 
 const BeatsPage = () => {
   const data = [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
-    { id: 8 },
-    { id: 8 },
-    { id: 8 },
+    {
+      id: 1,
+      price: "23.23",
+      title: "Blurred Vision",
+      image: "/assets/images/login/placeholder.svg",
+    },
+    {
+      id: 2,
+      price: "34.3",
+      title: "Trust The Process",
+      image: "/assets/images/login/placeholder.svg",
+    },
+    {
+      id: 3,
+      price: "34.3",
+      title: "Trust The Process 2",
+      image: "/assets/images/login/placeholder.svg",
+    },
+    {
+      id: 4,
+      price: "34.3",
+      title: "Trust The Process 4",
+      image: "/assets/images/login/placeholder.svg",
+    },
+    {
+      id: 5,
+      price: "34.3",
+      title: "Trust The Process 5",
+      image: "/assets/images/login/placeholder.svg",
+    },
+    {
+      id: 6,
+      price: "34.3",
+      title: "Trust The Process 6",
+      image: "/assets/images/login/placeholder.svg",
+    },
+    {
+      id: 7,
+      price: "34.3",
+      title: "Trust The Process 7",
+      image: "/assets/images/login/placeholder.svg",
+    },
+    {
+      id: 8,
+      price: "34.3",
+      title: "Trust The Process 8",
+      image: "/assets/images/login/placeholder.svg",
+    },
+    {
+      id: 9,
+      price: "34.3",
+      title: "Trust The Process 9",
+      image: "/assets/images/login/placeholder.svg",
+    },
   ];
+  const cartItems = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
+  console.log("cartItems", cartItems);
   return (
     <div className="w-full mx-auto">
       {/* <DataTable data={tasks} columns={columns} /> */}
@@ -32,10 +79,10 @@ const BeatsPage = () => {
           <div className="relative w-full h-36 bg-white rounded-lg shadow-lg overflow-hidde mb-8">
             <div className="absolute inset-0 rounded-lg overflow-hidden bg-gray-400">
               <Image
-                src="/assets/images/login/placeholder.svg"
+                src={item.image}
                 layout="fill"
                 objectFit="cover"
-                alt=""
+                alt="nothing"
               />
               <div className="absolute inset-0 backdrop backdrop-blur-10 bg-gradient-to-b from-transparent to-black"></div>
             </div>
@@ -46,21 +93,22 @@ const BeatsPage = () => {
                   height={200}
                   className="rounded-lg"
                   src="https://images.unsplash.com/photo-1543794327-59a91fb815d1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80"
-                  alt=""
+                  alt="test"
                 />
               </div>
               <div className="text-white pt-4 w-full">
                 <div className=" flex items-center justify-between w-full">
                   <div className="">
-                    <h3 className="font-bold text-3xl ">Album</h3>
+                    <h3 className="font-bold text-3xl ">{item.title}</h3>
                     <div className="text-sm opacity-60">Super Interpret</div>
                     <span className="block text-sm text-gray-500">
                       5 Tracks
                     </span>
                   </div>
                   <div className="-translate-x-6">
-                    <p className="mb-3 font-extrabold"> $ 23.23</p>
+                    <p className="mb-3 font-extrabold"> $ {item.price}</p>
                     <Button
+                      onClick={() => dispatch(addItem(item))}
                       className=" bg-primary px-3 text-black py-0.5"
                       variant="ghost"
                     >

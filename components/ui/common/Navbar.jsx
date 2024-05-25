@@ -1,7 +1,7 @@
 "use client";
-import { CircleUser, Menu, Package2, Search } from "lucide-react";
+import { CircleUser, Menu, Package2, Search, ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,15 +14,22 @@ import { Button } from "../button";
 import { Sheet, SheetContent, SheetTrigger } from "../sheet";
 import { usePathname } from "next/navigation";
 import { menuList } from "@/constants/menuitems/menuList";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const path = usePathname();
+  const [cartItemLength, setCartItemLength] = useState();
   const user = false;
-  console.log("path", path);
+
+  const cartItems = useSelector((state) => state.cart.items);
+  useEffect(() => {
+    setCartItemLength(cartItems.length);
+  }, [cartItems]);
+
   return (
     <>
       {
-        <header className="sticky top-0 flex z-50  h-20 items-center gap-4 border-b bg-background text-white backdrop-blur-lg px-4 md:px-6">
+        <header className="sticky top-0 flex z-50 w-full  h-20 items-center gap-4 border-b bg-background text-white backdrop-blur-lg px-4 md:px-6">
           <Link href="/">Logo</Link>
           <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
             <form className="ml-auto flex-1 sm:flex-initial">
@@ -45,6 +52,19 @@ const Navbar = () => {
                 </nav>
               </div>
             </form>
+            <Link href="/cart">
+              <div className="relative me-2">
+                <ShoppingCart />
+                {cartItemLength?.length != 0 ? (
+                  <p className="-top-2 start-4 absolute w-full text-center bg-white border-2 text-black font-bold border-white  rounded-full">
+                    {cartItemLength}
+                  </p>
+                ) : (
+                  ""
+                )}
+              </div>
+            </Link>
+
             <Sheet SheetClose={true}>
               <SheetTrigger asChild>
                 <Button

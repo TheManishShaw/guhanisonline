@@ -1,6 +1,11 @@
 import HeadingSection from "@/components/ui/common/HeadingSection";
 import React from "react";
 
+export const metadata = {
+  title: "Clientele | Guhanis Official",
+  description: "Artist | Music Producer",
+};
+
 const page = () => {
   return (
     <div>
@@ -10,21 +15,21 @@ const page = () => {
         image="/assets/images/login/placeholder.svg"
       />
 
-      <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-        <div class="md:grid md:grid-cols-2 md:gap-10 lg:gap-16 md:items-center">
-          <div class="hidden md:block mb-24 md:mb-0 sm:px-6">
-            <div class="relative">
+      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+        <div className="md:grid md:grid-cols-2 md:gap-10 lg:gap-16 md:items-center">
+          <div className="hidden md:block mb-24 md:mb-0 sm:px-6">
+            <div className="relative">
               <img
-                class="rounded-xl"
+                className="rounded-xl"
                 src="/assets/images/login/placeholder.svg"
                 alt="Image Description"
                 width={500}
                 height={500}
               />
 
-              <div class="absolute bottom-0 start-0 -z-[1] translate-y-10 -translate-x-14">
+              <div className="absolute bottom-0 start-0 -z-[1] translate-y-10 -translate-x-14">
                 <svg
-                  class="max-w-40 h-auto text-gray-200"
+                  className="max-w-40 h-auto text-gray-200"
                   width="696"
                   height="653"
                   viewBox="0 0 696 653"
@@ -86,9 +91,9 @@ const page = () => {
           </div>
 
           <div>
-            <blockquote class="relative">
+            <blockquote className="relative">
               <svg
-                class="absolute top-0 start-0 transform -translate-x-8 -translate-y-4 size-24 text-gray-500"
+                className="absolute top-0 start-0 transform -translate-x-8 -translate-y-4 size-24 text-gray-500"
                 width="16"
                 height="16"
                 viewBox="0 0 16 16"
@@ -102,32 +107,32 @@ const page = () => {
                 />
               </svg>
 
-              <div class="relative z-10">
-                <p class="text-xs font-semibold text-gray-100 tracking-wide uppercase mb-3">
+              <div className="relative z-10">
+                <p className="text-xs font-semibold text-gray-100 tracking-wide uppercase mb-3">
                   Featured client
                 </p>
 
-                <p class="text-xl font-medium italic text-primary md:text-2xl md:leading-normal xl:text-3xl xl:leading-normal">
+                <p className="text-xl font-medium italic text-primary md:text-2xl md:leading-normal xl:text-3xl xl:leading-normal">
                   To say that switching to Preline has been life-changing is an
                   understatement. My business has tripled and I got my life
                   back.
                 </p>
               </div>
 
-              <footer class="mt-6">
-                <div class="flex items-center">
-                  <div class="md:hidden flex-shrink-0">
+              <footer className="mt-6">
+                <div className="flex items-center">
+                  <div className="md:hidden flex-shrink-0">
                     <img
-                      class="size-12 rounded-full"
+                      className="size-12 rounded-full"
                       src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
                       alt="Image Description"
                     />
                   </div>
-                  <div class="ms-4 md:ms-0">
-                    <div class="text-base font-semibold text-white">
+                  <div className="ms-4 md:ms-0">
+                    <div className="text-base font-semibold text-white">
                       Nicole Grazioso
                     </div>
-                    <div class="text-xs text-gray-300">
+                    <div className="text-xs text-gray-300">
                       Director Payments & Risk | XYZ CEO
                     </div>
                   </div>
@@ -137,12 +142,12 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-        <div class="md:grid md:grid-cols-2 md:gap-10 lg:gap-16 md:items-center">
+      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+        <div className="md:grid md:grid-cols-2 md:gap-10 lg:gap-16 md:items-center">
           <div>
-            <blockquote class="relative">
+            <blockquote className="relative">
               <svg
-                class="absolute top-0 start-0 transform -translate-x-8 -translate-y-4 size-24 text-gray-500"
+                className="absolute top-0 start-0 transform -translate-x-8 -translate-y-4 size-24 text-gray-500"
                 width="16"
                 height="16"
                 viewBox="0 0 16 16"
@@ -156,32 +161,32 @@ const page = () => {
                 />
               </svg>
 
-              <div class="relative z-10">
-                <p class="text-xs font-semibold text-gray-100 tracking-wide uppercase mb-3">
+              <div className="relative z-10">
+                <p className="text-xs font-semibold text-gray-100 tracking-wide uppercase mb-3">
                   Featured client
                 </p>
 
-                <p class="text-xl font-medium italic text-primary md:text-2xl md:leading-normal xl:text-3xl xl:leading-normal">
+                <p className="text-xl font-medium italic text-primary md:text-2xl md:leading-normal xl:text-3xl xl:leading-normal">
                   To say that switching to Preline has been life-changing is an
                   understatement. My business has tripled and I got my life
                   back.
                 </p>
               </div>
 
-              <footer class="mt-6">
-                <div class="flex items-center">
-                  <div class="md:hidden flex-shrink-0">
+              <footer className="mt-6">
+                <div className="flex items-center">
+                  <div className="md:hidden flex-shrink-0">
                     <img
-                      class="size-12 rounded-full"
+                      className="size-12 rounded-full"
                       src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
                       alt="Image Description"
                     />
                   </div>
-                  <div class="ms-4 md:ms-0">
-                    <div class="text-base font-semibold text-white">
+                  <div className="ms-4 md:ms-0">
+                    <div className="text-base font-semibold text-white">
                       Nicole Grazioso
                     </div>
-                    <div class="text-xs text-gray-300">
+                    <div className="text-xs text-gray-300">
                       Director Payments & Risk | XYZ CEO
                     </div>
                   </div>
@@ -189,19 +194,19 @@ const page = () => {
               </footer>
             </blockquote>
           </div>
-          <div class="hidden md:block mb-24 md:mb-0 sm:px-6">
-            <div class="relative">
+          <div className="hidden md:block mb-24 md:mb-0 sm:px-6">
+            <div className="relative">
               <img
-                class="rounded-xl"
+                className="rounded-xl"
                 src="/assets/images/login/placeholder.svg"
                 alt="Image Description"
                 width={500}
                 height={500}
               />
 
-              <div class="absolute bottom-0 end-0 -z-[1] translate-y-10 -translate-x-2">
+              <div className="absolute bottom-0 end-0 -z-[1] translate-y-10 -translate-x-2">
                 <svg
-                  class="max-w-40 h-auto text-gray-200"
+                  className="max-w-40 h-auto text-gray-200"
                   width="696"
                   height="653"
                   viewBox="0 0 696 653"

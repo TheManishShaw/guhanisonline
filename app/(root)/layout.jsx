@@ -9,7 +9,7 @@ export default function RootLayout({ children }) {
   const path = usePathname();
 
   return (
-    <main className=" h-screen w-full">
+    <main className=" h-full w-full">
       {path.startsWith("/dashboard") ? (
         <DashboardLayout>{children}</DashboardLayout>
       ) : (

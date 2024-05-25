@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -15,25 +15,50 @@ import {
   FormMessage,
 } from "../ui/form";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Spinner from "../ui/Spinner";
+import { signUp } from "@/lib/hooks/services/universalFetch";
+import { useMutation } from "@tanstack/react-query";
 const FormSchema = z.object({
-  firstName: z.string().min(2).max(50),
-  lastName: z.string().min(2).max(50),
+  first_name: z.string().min(2).max(50),
+  last_name: z.string().min(2).max(50),
+  name: z.string().min(2).max(50),
   email: z.string().email({ message: "Enter a valid email." }),
   password: z.string().min(5, { message: "Enter a password" }),
+  password_confirmation: z
+    .string()
+    .min(5, { message: "Password is not match" }),
 });
 const SignupPage = () => {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
+      name: "",
       email: "",
       password: "",
+      password_confirmation: "",
     },
   });
-  const onSubmit = (data) => {
-    console.log(data);
+
+  const { mutate, isLoading, isError, isSuccess, status, data } = useMutation({
+    mutationFn: (formData) => {
+      return signUp(formData);
+    },
+  });
+
+  const onSubmit = async (formData) => {
+    mutate(formData);
   };
+  useEffect(() => {
+    if (data?.status === 200) {
+      toast.success("Account Created Successfully");
+      router.push("/sign-in");
+    }
+  }, [isSuccess]);
 
   return (
     <div className="w-full  lg:grid  lg:grid-cols-2 h-screen">
@@ -54,7 +79,7 @@ const SignupPage = () => {
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="firstName"
+                    name="first_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>First Name</FormLabel>
@@ -69,7 +94,7 @@ const SignupPage = () => {
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="lastName"
+                    name="last_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Last Name</FormLabel>
@@ -82,6 +107,19 @@ const SignupPage = () => {
                   />
                 </div>
               </div>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input type="text" placeholder="username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -117,11 +155,35 @@ const SignupPage = () => {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="password_confirmation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+
+                    <FormControl>
+                      <Input
+                        placeholder="Confirm Password"
+                        type="password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <div className="grid gap-2">
                 <div className="flex items-center"></div>
               </div>
-              <Button type="submit" className="w-full">
-                Sign-up
+              <Button
+                // disabled={postMutation.status === "pending"}
+                type="submit"
+                className="w-full"
+              >
+                {" "}
+                Sign up
+                {/* {postMutation.status === "pending" ? <Spinner /> : " Sign-up"} */}
               </Button>
               {/* <Button variant="outline" className="w-full">
                 Sign-up with Google

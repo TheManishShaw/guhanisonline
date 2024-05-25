@@ -2,6 +2,11 @@ import SingleBlogCard from "@/components/ui/SingleBlogCard";
 import HeadingSection from "@/components/ui/common/HeadingSection";
 import React from "react";
 
+export const metadata = {
+  title: "Blog | Guhanis Official",
+  description: "Artist | Music Producer",
+};
+
 const page = () => {
   return (
     <section className="container mx-auto px-6">
@@ -10,7 +15,8 @@ const page = () => {
         description="Dive into the groove: Explore our collection of beats curated to inspire and elevate your music journey"
         image="/assets/images/login/placeholder.svg"
       />
-      <div className="grid grid-cols-3 gap-8 mx-auto w-full flex-wrap">
+
+      <div className="grid grid-cols-3 gap-8 mb-20 mx-auto w-full flex-wrap">
         <SingleBlogCard />
         <SingleBlogCard />
         <SingleBlogCard />

@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import WaveSurfer from "wavesurfer.js";
 import { PauseIcon, PlayIcon } from "lucide-react";
-import Image from "next/image";
 import { Badge } from "./badge";
 
 const SingleBeat = ({ audioUrl, name, singer, price }) => {
@@ -11,41 +10,6 @@ const SingleBeat = ({ audioUrl, name, singer, price }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [bpm, setBpm] = useState(null);
-  const waveformRef = useRef(null);
-
-  useEffect(() => {
-    const wavesurfer = WaveSurfer.create({
-      container: waveformRef.current,
-      waveColor: "#fff",
-      progressColor: "#000",
-      cursorWidth: 0,
-      barWidth: 3,
-      height: 30,
-      normalize: true,
-    });
-
-    wavesurfer.load(audioUrl);
-
-    setWaveform(wavesurfer);
-
-    return () => wavesurfer?.destroy();
-  }, [audioUrl]);
-
-  useEffect(() => {
-    if (!waveform) return;
-
-    waveform.on("audioprocess", () => {
-      setCurrentTime(waveform.getCurrentTime());
-      setDuration(waveform.getDuration());
-    });
-
-    waveform.on("ready", () => {
-      const peaks = waveform.backend?.getPeaks(10000);
-      console.log(peaks); // Use some algorithm to calculate BPM
-      // For demo purposes, just setting a random BPM
-      setBpm(Math.floor(Math.random() * 100) + 60);
-    });
-  }, [waveform]);
 
   const togglePlayPause = () => {
     if (!waveform) return;
@@ -93,10 +57,6 @@ const SingleBeat = ({ audioUrl, name, singer, price }) => {
               <h3 className="text-lg font-semibold ">{name ?? "--"}</h3>
               {/* <p className="text-sm text-gray-500">By {singer ?? "--"}</p> */}
             </div>
-            <div
-              ref={waveformRef}
-              className=" hidden sm:block sm:max-w-sm md:max-w-md w-full h-[20px]"
-            ></div>
 
             <div className="text-right">
               <span className="block text-sm mt-1">{formatTime(duration)}</span>

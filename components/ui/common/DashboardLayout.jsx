@@ -27,14 +27,17 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu";
 import Image from "next/image";
-import { redirect, usePathname } from "next/navigation";
+import { redirect } from "next/navigation";
 import { dashboardList } from "@/constants/menuitems/dashbaordMenu";
+import LoginAndLogOutButton from "../LoginAndLogOutButton";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 const DashboardLayout = ({ children }) => {
-  const path = usePathname();
+  const path = "";
   const loggedIn = true;
-
-  if (!loggedIn) redirect("/sign-in");
+  const { data: session } = useSession();
+  if (!session || !session.user) toast("not login");
 
   return (
     <div className="flex overflow-auto min-h-screen w-full flex-col text-white">
@@ -140,7 +143,7 @@ const DashboardLayout = ({ children }) => {
               )}
             </BreadcrumbList>
           </Breadcrumb>
-
+          {/* <LoginAndLogOutButton /> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -161,7 +164,9 @@ const DashboardLayout = ({ children }) => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/sign-in">Logout</Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

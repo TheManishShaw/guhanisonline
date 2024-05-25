@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,11 +16,18 @@ import {
 } from "../ui/form";
 import { useForm } from "react-hook-form";
 
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { signIn } from "@/lib/hooks/services/universalFetch";
+import dynamic from "next/dynamic";
+import { loginAction } from "@/lib/hooks/services/loginAction";
 const FormSchema = z.object({
   email: z.string().email({ message: "Enter a valid email." }),
   password: z.string().min(5, { message: "Enter a password" }),
 });
 const LoginPage = () => {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -28,9 +35,30 @@ const LoginPage = () => {
       password: "",
     },
   });
-  const onSubmit = (data) => {
-    console.log(data);
+  const { mutate, isLoading, isError, isSuccess, status, data, reset } =
+    useMutation({
+      mutationFn: (formData) => {
+        return signIn(formData);
+      },
+    });
+  const onSubmit = async (formData) => {
+    await loginAction(formData);
+    // await postMutation.mutateAsync(data);
+    // if (postMutation.status === "success") {
+    //   Cookies.set("loggedInUser", true);
+    //   toast.success("Login Successfully");
+    //   router.push("/dashboard");
+    // }
+    // console.log("postMutation.status", postMutation.status);
+    // mutate(formData);
   };
+  useEffect(() => {
+    if (data?.status === 200) {
+      toast.success("Login Successfully");
+      router.push("/dashboard");
+      reset();
+    }
+  }, [status === "success"]);
 
   return (
     <div className="w-full lg:grid   lg:grid-cols-2 h-screen">
@@ -95,8 +123,13 @@ const LoginPage = () => {
                 <div className="grid gap-2">
                   <div className="flex items-center"></div>
                 </div>
-                <Button type="submit" className="w-full">
-                  Login
+                <Button
+                  // disabled={postMutation.status === "pending"}
+                  type="submit"
+                  className="w-full"
+                >
+                  login
+                  {/* {postMutation.status === "pending" ? <Spinner /> : "Login"} */}
                 </Button>
               </form>
             </Form>

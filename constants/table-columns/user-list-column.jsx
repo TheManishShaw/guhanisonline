@@ -100,7 +100,7 @@ export const blogsListColumns = [
       <div className="flex items-center gap-4">
         <Image
           src={row.original.posterImg}
-          alt={row.original.name}
+          alt={row.original.name ?? "image"}
           className="rounded-full"
           width={50}
           height={50}

@@ -10,6 +10,10 @@ import React from "react";
 import Link from "next/link";
 import BlogsListTable from "@/components/view/BlogsListTable";
 
+export const metadata = {
+  title: "Blog List | Guhanis Official",
+  description: "Artist | Music Producer",
+};
 const page = () => {
   return (
     <>
