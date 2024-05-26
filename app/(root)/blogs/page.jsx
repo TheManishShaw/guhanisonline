@@ -16,7 +16,7 @@ const page = () => {
         image="/assets/images/login/placeholder.svg"
       />
 
-      <div className="grid grid-cols-3 gap-8 mb-20 mx-auto w-full flex-wrap">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 mx-auto w-full flex-wrap">
         <SingleBlogCard />
         <SingleBlogCard />
         <SingleBlogCard />

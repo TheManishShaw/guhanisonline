@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -27,17 +27,51 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { dashboardList } from "@/constants/menuitems/dashbaordMenu";
-import LoginAndLogOutButton from "../LoginAndLogOutButton";
-import { useSession } from "next-auth/react";
-import { toast } from "sonner";
+
+import axiosInstance from "@/lib/axiosInstance";
+import { destroyCookie, parseCookies } from "nookies";
+import { signOut } from "next-auth/react";
 
 const DashboardLayout = ({ children }) => {
   const path = "";
-  const loggedIn = true;
-  const { data: session } = useSession();
-  if (!session || !session.user) toast("not login");
+
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const { token } = parseCookies();
+
+    if (!token) {
+      router.push("/sign-in");
+      return;
+    }
+
+    axiosInstance
+      .get("/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setUser(response.data.user);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch user data:", error);
+        destroyCookie(null, "token");
+        router.push("/sign-in");
+      });
+  }, [router]);
+  const handleLogout = async () => {
+    destroyCookie("token");
+    router.push("/");
+  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex overflow-auto min-h-screen w-full flex-col text-white">
@@ -165,7 +199,7 @@ const DashboardLayout = ({ children }) => {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem>
-                <Link href="/sign-in">Logout</Link>
+                <Button onClick={handleLogout}>Logout</Button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -69,14 +69,14 @@ const BeatsPage = () => {
   const dispatch = useDispatch();
   console.log("cartItems", cartItems);
   return (
-    <div className="w-full mx-auto">
+    <div className="w-full max-w-5xl mx-auto">
       {/* <DataTable data={tasks} columns={columns} /> */}
       {data.map((item, index) => (
         <Card
           key={index}
           className=" mx-auto my-8 flex max-w-container flex-col items-center gap-3 p-4 rounded-xl shadow-lg "
         >
-          <div className="relative w-full h-36 bg-white rounded-lg shadow-lg overflow-hidde mb-8">
+          <div className="relative w-full h-36 bg-white rounded-lg shadow-lg overflow-hidden mb-8">
             <div className="absolute inset-0 rounded-lg overflow-hidden bg-gray-400">
               <Image
                 src={item.image}
@@ -87,7 +87,7 @@ const BeatsPage = () => {
               <div className="absolute inset-0 backdrop backdrop-blur-10 bg-gradient-to-b from-transparent to-black"></div>
             </div>
             <div className="px-4 w-full flex space-x-6 transform translate-x-6 translate-y-8">
-              <div className="w-36 h-36 rounded-lg shadow-lg overflow-hidden">
+              <div className="w-36 h-38 rounded-lg shadow-lg overflow-hidden">
                 <Image
                   width={200}
                   height={200}
@@ -96,29 +96,36 @@ const BeatsPage = () => {
                   alt="test"
                 />
               </div>
-              <div className="text-white pt-4 w-full">
+              <div className="text-white w-full">
                 <div className=" flex items-center justify-between w-full">
                   <div className="">
-                    <h3 className="font-bold text-3xl ">{item.title}</h3>
+                    <h3 className="lg:text-3xl lg:font-normal font-light text-xl ">
+                      {item.title}
+                    </h3>
                     <div className="text-sm opacity-60">Super Interpret</div>
                     <span className="block text-sm text-gray-500">
                       5 Tracks
                     </span>
                   </div>
                   <div className="-translate-x-6">
-                    <p className="mb-3 font-extrabold"> $ {item.price}</p>
+                    <p className="mb-3 font-extrabold text-2xl">
+                      {" "}
+                      $ {item.price}
+                    </p>
                     <Button
                       onClick={() => dispatch(addItem(item))}
                       className=" bg-primary px-3 text-black py-0.5"
                       variant="ghost"
                     >
                       <ShoppingCart className="h-4 w-4" />
-                      <span className="mx-2">Add to cart</span>
+                      <span className="mx-2 text-lg font-bold">
+                        Add to cart
+                      </span>
                     </Button>
                   </div>
                 </div>
 
-                <div className="mt-4 text-gray-400">
+                <div className=" text-gray-400">
                   <div className="flex items-center space-x-2 text-xs">
                     <svg
                       className="w-4 h-4"

@@ -15,11 +15,11 @@ import {
   FormMessage,
 } from "../ui/form";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Spinner from "../ui/Spinner";
 import { signUp } from "@/lib/hooks/services/universalFetch";
-import { useMutation } from "@tanstack/react-query";
+import { setCookie } from "nookies";
+
 const FormSchema = z.object({
   first_name: z.string().min(2).max(50),
   last_name: z.string().min(2).max(50),
@@ -44,29 +44,37 @@ const SignupPage = () => {
     },
   });
 
-  const { mutate, isLoading, isError, isSuccess, status, data } = useMutation({
-    mutationFn: (formData) => {
-      return signUp(formData);
-    },
-  });
-
   const onSubmit = async (formData) => {
-    mutate(formData);
-  };
-  useEffect(() => {
-    if (data?.status === 200) {
-      toast.success("Account Created Successfully");
-      router.push("/sign-in");
+    try {
+      const response = await signUp(formData);
+
+      if (response.status === 201) {
+        // Store the token in cookies
+        setCookie(null, "token", response.data.token, {
+          maxAge: 30 * 24 * 60 * 60, // 30 days
+          path: "/",
+        });
+
+        // Redirect to dashboard
+        router.push("/sign-in");
+      } else {
+        console.log("Failed to register");
+      }
+    } catch (error) {
+      toast.error(error?.message);
+      console.log(error);
     }
-  }, [isSuccess]);
+
+    // mutate(formData);
+  };
 
   return (
     <div className="w-full  lg:grid  lg:grid-cols-2 h-screen">
       <div className="flex  items-center justify-center py-12">
         <div className="mx-auto  grid w-[550px] bg-background backdrop-blur-lg border text-white p-10 rounded-xl gap-6">
           <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">Sign up</h1>
-            <p className="text-balance text-muted-foreground">
+            <h1 className="text-5xl font-bold">Sign up</h1>
+            <p className="text-balance text-xl text-muted-foreground">
               Enter your details below to sign-up to create your account
             </p>
           </div>
@@ -190,7 +198,7 @@ const SignupPage = () => {
               </Button> */}
             </form>
           </Form>
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-4 text-center text-xl">
             Do you have an account?{" "}
             <Link href="/sign-in" className="underline">
               Sign-in

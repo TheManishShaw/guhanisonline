@@ -15,6 +15,7 @@ import { Sheet, SheetContent, SheetTrigger } from "../sheet";
 import { usePathname } from "next/navigation";
 import { menuList } from "@/constants/menuitems/menuList";
 import { useSelector } from "react-redux";
+import Image from "next/image";
 
 const Navbar = () => {
   const path = usePathname();
@@ -29,12 +30,19 @@ const Navbar = () => {
   return (
     <>
       {
-        <header className="sticky top-0 flex z-50 w-full  h-20 items-center gap-4 border-b bg-background text-white backdrop-blur-lg px-4 md:px-6">
-          <Link href="/">Logo</Link>
+        <header className="sticky top-0 flex z-50 overflow-hidden w-full  h-20 items-center gap-4 border-b bg-background text-white backdrop-blur-lg px-4 md:px-6">
+          <Link className="text-2xl" href="/">
+            <Image
+              src="/assets/images/logo/logo_white.png"
+              width={50}
+              height={50}
+              alt="logo"
+            />
+          </Link>
           <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
             <form className="ml-auto flex-1 sm:flex-initial">
               <div className="relative">
-                <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+                <nav className="hidden flex-col gap-6 text-2xl font-medium md:flex md:flex-row md:items-center md:gap-5  lg:gap-6">
                   {menuList.map((menu, index) => (
                     <Link
                       key={index}
@@ -77,7 +85,7 @@ const Navbar = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="bg-background text-white">
-                <nav className="grid gap-6 text-lg font-medium">
+                <nav className="grid gap-6  font-medium">
                   {menuList.map((menu, index) => (
                     <Link
                       key={index + "mobile"}
@@ -114,7 +122,7 @@ const Navbar = () => {
             ) : (
               <Link
                 href={"/sign-in"}
-                className="bg-primary text-black px-4 py-2 rounded-md"
+                className="bg-primary text-black text-2xl px-4 py-1 rounded-md"
               >
                 Login
               </Link>

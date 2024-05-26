@@ -108,11 +108,11 @@ const page = () => {
               </svg>
 
               <div className="relative z-10">
-                <p className="text-xs font-semibold text-gray-100 tracking-wide uppercase mb-3">
+                <p className="text-lg font-semibold text-gray-100 tracking-wide uppercase mb-3">
                   Featured client
                 </p>
 
-                <p className="text-xl font-medium italic text-primary md:text-2xl md:leading-normal xl:text-3xl xl:leading-normal">
+                <p className="text-3xl font-medium italic text-primary md:text-3xl md:leading-normal xl:text-5xl xl:leading-normal">
                   To say that switching to Preline has been life-changing is an
                   understatement. My business has tripled and I got my life
                   back.
@@ -129,10 +129,10 @@ const page = () => {
                     />
                   </div>
                   <div className="ms-4 md:ms-0">
-                    <div className="text-base font-semibold text-white">
+                    <div className="text-[1.5rem] font-semibold text-white">
                       Nicole Grazioso
                     </div>
-                    <div className="text-xs text-gray-300">
+                    <div className="text-md text-gray-300">
                       Director Payments & Risk | XYZ CEO
                     </div>
                   </div>
@@ -162,11 +162,11 @@ const page = () => {
               </svg>
 
               <div className="relative z-10">
-                <p className="text-xs font-semibold text-gray-100 tracking-wide uppercase mb-3">
+                <p className="text-lg font-semibold text-gray-100 tracking-wide uppercase mb-3">
                   Featured client
                 </p>
 
-                <p className="text-xl font-medium italic text-primary md:text-2xl md:leading-normal xl:text-3xl xl:leading-normal">
+                <p className="text-3xl font-medium italic text-primary md:text-3xl md:leading-normal xl:text-5xl xl:leading-normal">
                   To say that switching to Preline has been life-changing is an
                   understatement. My business has tripled and I got my life
                   back.
@@ -183,10 +183,10 @@ const page = () => {
                     />
                   </div>
                   <div className="ms-4 md:ms-0">
-                    <div className="text-base font-semibold text-white">
+                    <div className="text-[1.5rem] font-semibold text-white">
                       Nicole Grazioso
                     </div>
-                    <div className="text-xs text-gray-300">
+                    <div className="text-md text-gray-300">
                       Director Payments & Risk | XYZ CEO
                     </div>
                   </div>

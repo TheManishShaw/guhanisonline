@@ -29,27 +29,27 @@ const page = () => {
               <div className="px-4 md:px-6 space-y-10 xl:space-y-16">
                 <div className="grid max-w-[1300px] mx-auto gap-4 px-4 sm:px-6 md:px-10 md:grid-cols-2 md:gap-16">
                   <div>
-                    <h1 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem]">
+                    <h1 className=" text-3xl font-bold sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem]">
                       High-Quality Beats for Your Next Hit
                     </h1>
-                    <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
+                    <p className="mx-auto max-w-[700px] text-gray-500 subtext dark:text-gray-400">
                       Discover our library of expertly crafted beats, perfect
                       for elevating your music production to new heights.
                     </p>
                   </div>
                   <div className="flex flex-col items-start space-y-4">
-                    <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-black text-sm dark:bg-gray-800">
+                    <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-black text-lg dark:bg-gray-800">
                       Beat Maker
                     </div>
                     <div className="space-x-4">
                       <Link
-                        className="inline-flex h-9 items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
+                        className="inline-flex h-9 items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-md font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
                         href="#"
                       >
                         Browse Beats
                       </Link>
                       <Link
-                        className="inline-flex h-9 items-center justify-center rounded-md border  bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 text-black focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+                        className="inline-flex h-9 items-center justify-center rounded-md border  bg-white px-4 py-2 text-md font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 text-black focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
                         href="#"
                       >
                         Contact Us
@@ -73,13 +73,13 @@ const page = () => {
                 >
                   <div className="flex flex-col justify-center space-y-4">
                     <div className="space-y-2">
-                      <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm dark:bg-gray-800">
+                      <div className="inline-block rounded-lg bg-background px-3 py-1 text-xl dark:bg-gray-800">
                         Producers Experience
                       </div>
-                      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                      <h2 className="text-3xl font-bold sm:text-5xl">
                         Crafting Beats for Over a Decade
                       </h2>
-                      <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                      <p className="max-w-[600px] text-gray-500 subtext dark:text-gray-400">
                         With over 10 years of experience in the music industry,
                         our producer has honed their craft to create beats that
                         are both innovative and commercially viable. From
@@ -131,13 +131,13 @@ const page = () => {
                 />
                 <div className="flex flex-col justify-center space-y-4">
                   <div className="space-y-2">
-                    <div className="inline-block rounded-lg border px-3 py-1 text-sm dark:bg-gray-800">
+                    <div className="inline-block rounded-lg border px-3 py-1 text-xl dark:bg-gray-800">
                       Beat Making Process
                     </div>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    <h2 className="text-3xl font-bold  sm:text-5xl">
                       Crafting Beats with Care and Precision
                     </h2>
-                    <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                    <p className="max-w-[600px] text-gray-500 subtext dark:text-gray-400">
                       Our producer uses a combination of cutting-edge software,
                       analog gear, and a deep understanding of music theory to
                       create beats that are both technically impressive and
@@ -216,14 +216,14 @@ const page = () => {
                     </div>
                   </div>
                   <div className="mx-auto flex w-full flex-col items-start justify-center p-4 sm:p-8 space-y-4">
-                    <blockquote className="text-lg font-semibold leading-snug lg:text-xl lg:leading-normal xl:text-2xl">
+                    <blockquote className="text-xl font-semibold leading-snug lg:text-xl lg:leading-normal xl:text-2xl">
                       Im constantly amazed by the creativity and innovation in
                       these beats. They ve helped me take my sound to new
                       heights.“
                     </blockquote>
                     <div>
                       <div className="font-semibold">Rihanna</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                      <div className="text-lg text-gray-500 dark:text-gray-400">
                         Multi-Platinum Artist
                       </div>
                     </div>

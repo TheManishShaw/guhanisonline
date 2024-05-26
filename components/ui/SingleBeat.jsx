@@ -54,17 +54,19 @@ const SingleBeat = ({ audioUrl, name, singer, price }) => {
         <div className="flex-grow">
           <div className="flex justify-between">
             <div>
-              <h3 className="text-lg font-semibold ">{name ?? "--"}</h3>
+              <h3 className="lg:text-xl lg:font-normal font-light text-sm ">
+                {name ?? "--"}
+              </h3>
               {/* <p className="text-sm text-gray-500">By {singer ?? "--"}</p> */}
             </div>
 
             <div className="text-right">
-              <span className="block text-sm mt-1">{formatTime(duration)}</span>
+              <span className="block text-md mt-1">{formatTime(duration)}</span>
             </div>
           </div>
         </div>
         <div className="flex gap-4 items-center ml-4">
-          <Badge className="mr-2" variant="default">
+          <Badge className="mr-2 text-lg" variant="default">
             BPM {bpm || "--"}
           </Badge>
         </div>

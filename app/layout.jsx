@@ -15,7 +15,7 @@ import SessionsProvider from "./SessionsProvider";
 
 // Font files can be colocated inside of `app`
 const myFont = localFont({
-  src: "../public/assets/fonts/JMH Typewriter-Bold.ttf",
+  src: "../public/assets/fonts/advanced_pixel-7.ttf",
 });
 
 export default function RootLayout({ children }) {

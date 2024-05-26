@@ -15,18 +15,31 @@ import {
   FormMessage,
 } from "../ui/form";
 import { useForm } from "react-hook-form";
-
+import { useFormState } from "react-dom";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { signIn } from "@/lib/hooks/services/universalFetch";
-import dynamic from "next/dynamic";
-import { loginAction } from "@/lib/hooks/services/loginAction";
+import { setCookie } from "nookies";
+import { signIn } from "@/auth";
+import { login } from "@/lib/hooks/services/loginAction";
+
 const FormSchema = z.object({
   email: z.string().email({ message: "Enter a valid email." }),
   password: z.string().min(5, { message: "Enter a password" }),
 });
+
+const loginInitialState = {
+  message: "",
+  errors: {
+    email: "",
+    password: "",
+    credentials: "",
+    unknown: "",
+  },
+};
+
 const LoginPage = () => {
+  const [formState, formAction] = useFormState(login, loginInitialState);
+
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -35,44 +48,38 @@ const LoginPage = () => {
       password: "",
     },
   });
-  const { mutate, isLoading, isError, isSuccess, status, data, reset } =
-    useMutation({
-      mutationFn: (formData) => {
-        return signIn(formData);
-      },
-    });
   const onSubmit = async (formData) => {
-    await loginAction(formData);
-    // await postMutation.mutateAsync(data);
-    // if (postMutation.status === "success") {
-    //   Cookies.set("loggedInUser", true);
-    //   toast.success("Login Successfully");
-    //   router.push("/dashboard");
+    // try {
+    //   const res = await signIn("Credentials", formData);
+    //   console.log("res====>", res);
+    //   if (res.status === 200) {
+    //     setCookie(null, "token", res.data.access_token, {
+    //       maxAge: res.data.expires_in,
+    //       path: "/sign-in",
+    //     });
+    //     toast.success("Login successfully");
+    //     router.push("/dashboard");
+    //   }
+    // } catch (error) {
+    //   toast.error(error?.message);
+    //   console.log(error);
     // }
-    // console.log("postMutation.status", postMutation.status);
-    // mutate(formData);
   };
-  useEffect(() => {
-    if (data?.status === 200) {
-      toast.success("Login Successfully");
-      router.push("/dashboard");
-      reset();
-    }
-  }, [status === "success"]);
 
   return (
     <div className="w-full lg:grid   lg:grid-cols-2 h-screen">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[550px] bg-background text-white border  gap-6 p-10 rounded-xl">
           <div className="grid gap-2 text-center ">
-            <h1 className="text-3xl font-bold">Login</h1>
-            <p className="text-balance text-muted-foreground">
+            <h1 className="text-5xl font-bold">Login</h1>
+            <p className="text-balance text-xl text-muted-foreground">
               Enter your email below to login to your account
             </p>
           </div>
           <div className="grid gap-4">
             <Form {...form}>
               <form
+                action={formAction}
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
               >
@@ -103,7 +110,7 @@ const LoginPage = () => {
                         <FormLabel>Password</FormLabel>
                         <Link
                           href="/forgot-password"
-                          className="ml-auto inline-block text-sm underline"
+                          className="ml-auto inline-block text-md underline"
                         >
                           Forgot your password?
                         </Link>
@@ -138,7 +145,7 @@ const LoginPage = () => {
               Login with Google
             </Button> */}
           </div>
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-4 text-center text-xl">
             Don&apos;t have an account?{" "}
             <Link href="/sign-up" className="underline">
               Sign up

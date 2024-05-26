@@ -42,6 +42,8 @@ const AddBeatForm = () => {
   });
   const [date, setDate] = React.useState();
   const [audioFiles, setAudioFiles] = React.useState([]);
+  const [beats, setBeats] = useState([]);
+
   const [previews, setPreviews] = React.useState([]);
   const [image, setImage] = useState(null);
 
@@ -81,6 +83,31 @@ const AddBeatForm = () => {
     }
     setPreviews(audioPreviews);
   };
+  const handleBeatChange = (event) => {
+    const files = Array.from(event.target.files);
+    const filePromises = files.map((file) => {
+      return new Promise((resolve) => {
+        const audio = new Audio(URL.createObjectURL(file));
+        audio.addEventListener("loadedmetadata", () => {
+          resolve({
+            file,
+            name: file.name,
+            duration: audio.duration,
+          });
+        });
+      });
+    });
+
+    Promise.all(filePromises).then((newBeats) => {
+      setBeats(newBeats);
+    });
+  };
+
+  const handleRemoveBeat = (index) => {
+    const newBeats = beats.filter((_, i) => i !== index);
+    setBeats(newBeats);
+  };
+
   function onSubmit(data) {
     console.log("data==>", data, image);
     const formData = {
@@ -256,12 +283,12 @@ const AddBeatForm = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Preview Audio files"
                     type="file"
-                    onChange={handleFileChange}
+                    id="beats"
                     accept="audio/*"
                     multiple
-                    {...field}
+                    onChange={handleBeatChange}
+                    required
                   />
                 </FormControl>
 
@@ -269,6 +296,28 @@ const AddBeatForm = () => {
               </FormItem>
             )}
           />
+
+          <div id="beatList" className="beat-preview">
+            {beats.map((beat, index) => (
+              <div
+                key={index}
+                className="beat-item  bg-white flex items-center gap-2"
+              >
+                <p>
+                  {beat.name} -{" "}
+                  {new Date(beat.duration * 1000).toISOString().substr(11, 8)}
+                </p>
+                <audio
+                  className="w-full bg-black rounded-lg"
+                  controls
+                  src={URL.createObjectURL(beat.file)}
+                />
+                <Button type="button" onClick={() => handleRemoveBeat(index)}>
+                  Remove
+                </Button>
+              </div>
+            ))}
+          </div>
 
           <Button type="submit">Submit</Button>
         </form>

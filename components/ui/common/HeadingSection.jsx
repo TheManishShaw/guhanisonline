@@ -16,10 +16,10 @@ const HeadingSection = ({ image, title, description }) => {
         >
           <div className="flex flex-col justify-center space-y-4">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl xl:text-7xl">
+              <h1 className="heading font-bold  tracking-wide sm:text-5xl md:text-6xl xl:text-7xl">
                 {title}
               </h1>
-              <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+              <p className="max-w-[600px] text-gray-500 subtext dark:text-gray-400">
                 {description}
               </p>
             </div>

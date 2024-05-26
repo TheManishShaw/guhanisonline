@@ -20,7 +20,7 @@ const SingleBlogCard = () => {
             alt="cover"
             width={300}
             height={340}
-            className="z-1 rounded-md absolute bottom-0"
+            className=" rounded-md absolute bottom-0"
           />
         </div>
 

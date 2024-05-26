@@ -37,8 +37,10 @@ const ContactPage = () => {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle>Contact Us</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-4xl tracking-wide">
+                Contact Us
+              </CardTitle>
+              <CardDescription className="text-md">
                 Fill out the form below and well get back to you as soon as
                 possible.
               </CardDescription>
