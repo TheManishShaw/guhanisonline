@@ -1,4 +1,3 @@
-import LoginAndLogOutButton from "@/components/ui/LoginAndLogOutButton";
 import CartPage from "@/components/view/CartPage";
 import React from "react";
 export const metadata = {
@@ -7,7 +6,7 @@ export const metadata = {
 };
 
 const page = () => {
-  return <LoginAndLogOutButton />;
+  return <CartPage />;
 };
 
 export default page;

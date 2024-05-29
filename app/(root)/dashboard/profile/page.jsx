@@ -1,26 +1,26 @@
-import AddBeatForm from "@/components/forms/AddBeatForm";
+import AccountSettingForm from "@/components/forms/AccountSettingForm";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import React from "react";
-export const metadata = {
-  title: "Add beats | Guhanis Official",
-  description: "Artist | Music Producer",
-};
+
 const page = () => {
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Add Beats</CardTitle>
-          <CardDescription>Manage your beats details.</CardDescription>
+          <CardTitle>Profile Setting</CardTitle>
         </CardHeader>
         <CardContent>
-          <AddBeatForm />
+          <AccountSettingForm />
         </CardContent>
       </Card>
     </>

@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu";
 import { Button } from "../button";
-import { Sheet, SheetContent, SheetTrigger } from "../sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "../sheet";
 import { usePathname } from "next/navigation";
 import { menuList } from "@/constants/menuitems/menuList";
 import { useSelector } from "react-redux";
@@ -21,16 +21,18 @@ const Navbar = () => {
   const path = usePathname();
   const [cartItemLength, setCartItemLength] = useState();
   const user = false;
-
+  const [open, setOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.items);
   useEffect(() => {
     setCartItemLength(cartItems.length);
   }, [cartItems]);
-
+  useEffect(() => {
+    [SheetClose, { asChild: path === "/beats" }];
+  }, [path]);
   return (
     <>
       {
-        <header className="sticky top-0 flex z-50 overflow-hidden w-full  h-20 items-center gap-4 border-b bg-background text-white backdrop-blur-lg px-4 md:px-6">
+        <header className="sticky top-0 flex z-[99] overflow-hidden w-full  h-20 items-center gap-4 border-b bg-background text-white backdrop-blur-lg px-4 md:px-6">
           <Link className="text-2xl" href="/">
             <Image
               src="/assets/images/logo/logo_white.png"
@@ -73,7 +75,7 @@ const Navbar = () => {
               </div>
             </Link>
 
-            <Sheet SheetClose={true}>
+            <Sheet SheetClose={true} open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="outline"
@@ -84,13 +86,16 @@ const Navbar = () => {
                   <span className="sr-only">Toggle navigation menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="bg-background text-white">
+              <SheetContent
+                side="left"
+                className="bg-background mt-20 text-white"
+              >
                 <nav className="grid gap-6  font-medium">
                   {menuList.map((menu, index) => (
                     <Link
                       key={index + "mobile"}
                       href={menu.path}
-                      className="text-white hover:text-foreground"
+                      className="text-white text-xl hover:text-foreground"
                     >
                       {menu.name}
                     </Link>

@@ -28,8 +28,8 @@ const page = () => {
             </div>
             <div className=" ">
               <Link
-                className="bg-primary text-black px-5 py-3 rounded-lg"
-                href="/dashboard/blogs/add-blog"
+                className="bg-primary text-2xl text-black px-5 py-3 rounded-lg"
+                href="/dashboard/blogs/add"
               >
                 Add Blog
               </Link>

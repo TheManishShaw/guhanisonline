@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,31 +15,15 @@ import {
   FormMessage,
 } from "../ui/form";
 import { useForm } from "react-hook-form";
-import { useFormState } from "react-dom";
-import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { setCookie } from "nookies";
-import { signIn } from "@/auth";
-import { login } from "@/lib/hooks/services/loginAction";
 
 const FormSchema = z.object({
   email: z.string().email({ message: "Enter a valid email." }),
   password: z.string().min(5, { message: "Enter a password" }),
 });
 
-const loginInitialState = {
-  message: "",
-  errors: {
-    email: "",
-    password: "",
-    credentials: "",
-    unknown: "",
-  },
-};
-
 const LoginPage = () => {
-  const [formState, formAction] = useFormState(login, loginInitialState);
-
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -49,25 +33,27 @@ const LoginPage = () => {
     },
   });
   const onSubmit = async (formData) => {
-    // try {
-    //   const res = await signIn("Credentials", formData);
-    //   console.log("res====>", res);
-    //   if (res.status === 200) {
-    //     setCookie(null, "token", res.data.access_token, {
-    //       maxAge: res.data.expires_in,
-    //       path: "/sign-in",
-    //     });
-    //     toast.success("Login successfully");
-    //     router.push("/dashboard");
-    //   }
-    // } catch (error) {
-    //   toast.error(error?.message);
-    //   console.log(error);
-    // }
+    try {
+      const result = await signIn("credentials", {
+        redirect: true,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (result.status === 200) {
+        router.push("/dashboard");
+      } else {
+        console.log("Failed to register");
+      }
+
+      console.log("result ---->", result);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <div className="w-full lg:grid   lg:grid-cols-2 h-screen">
+    <div className="w-full lg:grid lg:grid-cols-2 h-screen">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[550px] bg-background text-white border  gap-6 p-10 rounded-xl">
           <div className="grid gap-2 text-center ">
@@ -79,7 +65,6 @@ const LoginPage = () => {
           <div className="grid gap-4">
             <Form {...form}>
               <form
-                action={formAction}
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
               >
@@ -140,10 +125,6 @@ const LoginPage = () => {
                 </Button>
               </form>
             </Form>
-
-            {/* <Button variant="outline" className="w-full">
-              Login with Google
-            </Button> */}
           </div>
           <div className="mt-4 text-center text-xl">
             Don&apos;t have an account?{" "}
@@ -159,6 +140,7 @@ const LoginPage = () => {
           alt="Image"
           width="1920"
           height="1080"
+          priority={true}
           className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>

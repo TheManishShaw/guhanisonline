@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   FormControl,
@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Textarea } from "../ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon, PlusIcon } from "lucide-react";
+import { CalendarIcon, PlayIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -107,7 +107,22 @@ const AddBeatForm = () => {
     const newBeats = beats.filter((_, i) => i !== index);
     setBeats(newBeats);
   };
+  const [currentAudio, setCurrentAudio] = useState(null);
 
+  useEffect(() => {
+    return () => {
+      if (currentAudio) {
+        currentAudio.pause();
+      }
+    };
+  }, [currentAudio]);
+
+  const handlePlay = (audioElement) => {
+    if (currentAudio && currentAudio !== audioElement) {
+      currentAudio.pause();
+    }
+    setCurrentAudio(audioElement);
+  };
   function onSubmit(data) {
     console.log("data==>", data, image);
     const formData = {
@@ -297,24 +312,34 @@ const AddBeatForm = () => {
             )}
           />
 
-          <div id="beatList" className="beat-preview">
+          <div id="beatList" className="beat-preview space-y-5">
             {beats.map((beat, index) => (
               <div
                 key={index}
-                className="beat-item  bg-white flex items-center gap-2"
+                className="beat-item px-4 mb-2 bg-[#F1F3F4] rounded-lg flex items-center gap-2 justify-between"
               >
-                <p>
+                <p className="text-black max-w-md w-full text-xl">
                   {beat.name} -{" "}
-                  {new Date(beat.duration * 1000).toISOString().substr(11, 8)}
+                  {/* {new Date(beat.duration * 1000).toISOString().substr(11, 8)} */}
                 </p>
                 <audio
-                  className="w-full bg-black rounded-lg"
+                  className="w-full max-w-lg rounded-lg"
                   controls
                   src={URL.createObjectURL(beat.file)}
+                  onPlay={(e) => handlePlay(e.target)}
                 />
-                <Button type="button" onClick={() => handleRemoveBeat(index)}>
-                  Remove
-                </Button>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => handleRemoveBeat(index)}
+                      size="icon"
+                      className="text-black hover:bg-red-500 hover:text-white"
+                      variant="ghost"
+                    >
+                      <TrashIcon className="w-6 h-6" />
+                    </Button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

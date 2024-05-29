@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { auth } from "@/lib/auth";
 import {
   Activity,
   ArrowUpRight,
@@ -26,14 +27,19 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-
-const page = () => {
+export const metadata = {
+  title: "Dashboard | Guhanis Official",
+  description: "Artist | Music Producer",
+};
+const page = async () => {
   return (
     <>
       <div className="w-full flex mb-8  gap-8">
         <Card className="w-full">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-2xl font-medium">
+              Total Revenue
+            </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -46,7 +52,9 @@ const page = () => {
 
         <Card className="w-full">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
+            <CardTitle className="text-2xl font-medium">
+              Subscriptions
+            </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -59,7 +67,7 @@ const page = () => {
 
         <Card className="w-full">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sales</CardTitle>
+            <CardTitle className="text-2xl font-medium">Sales</CardTitle>
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -72,7 +80,7 @@ const page = () => {
 
         <Card className="w-full">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Now</CardTitle>
+            <CardTitle className="text-2xl font-medium">Active Now</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -86,7 +94,7 @@ const page = () => {
 
       <Card className="sm:col-span-2 mb-8">
         <CardHeader className="pb-3">
-          <CardTitle>Your Orders</CardTitle>
+          <CardTitle className="text-2xl">Your Orders</CardTitle>
           <CardDescription className="max-w-lg text-balance leading-relaxed">
             Introducing Our Dynamic Orders Dashboard for Seamless Management and
             Insightful Analysis.
@@ -100,7 +108,7 @@ const page = () => {
       <Card className="xl:col-span-2 mb-8">
         <CardHeader className="flex flex-row items-center">
           <div className="grid gap-2">
-            <CardTitle>Transactions</CardTitle>
+            <CardTitle className="text-3xl">Transactions</CardTitle>
             <CardDescription>
               Recent transactions from your store.
             </CardDescription>

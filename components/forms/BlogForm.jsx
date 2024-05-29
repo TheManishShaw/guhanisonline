@@ -17,6 +17,7 @@ import { Editor } from "react-draft-wysiwyg";
 import { EditorState } from "draft-js";
 import { PlusIcon } from "lucide-react";
 import { Label } from "../ui/label";
+import { addBlog } from "@/lib/hooks/services/universalFetch";
 const FormSchema = z.object({
   title: z.string().min(2, { message: "Enter a title" }),
   tags: z.string(),
@@ -63,13 +64,18 @@ const BlogForm = ({ type }) => {
     }
   };
 
-  function onSubmit(data) {
+  async function onSubmit(data) {
     const fromData = {
       ...data,
       content: editorState,
       image_url: image || "",
     };
-    console.log("fromData", fromData);
+    try {
+      const res = await addBlog(fromData);
+      console.log("res===>", res);
+    } catch (error) {
+      console.log("error", error);
+    }
   }
   return (
     <>

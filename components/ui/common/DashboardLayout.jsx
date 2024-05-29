@@ -32,56 +32,31 @@ import { dashboardList } from "@/constants/menuitems/dashbaordMenu";
 
 import axiosInstance from "@/lib/axiosInstance";
 import { destroyCookie, parseCookies } from "nookies";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import withAuth from "@/lib/withAuth";
 
 const DashboardLayout = ({ children }) => {
   const path = "";
 
-  const router = useRouter();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
 
-  useEffect(() => {
-    const { token } = parseCookies();
-
-    if (!token) {
-      router.push("/sign-in");
-      return;
-    }
-
-    axiosInstance
-      .get("/users/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setUser(response.data.user);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch user data:", error);
-        destroyCookie(null, "token");
-        router.push("/sign-in");
-      });
-  }, [router]);
-  const handleLogout = async () => {
-    destroyCookie("token");
-    router.push("/");
-  };
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
+  console.log("session", session);
   return (
-    <div className="flex overflow-auto min-h-screen w-full flex-col text-white">
+    <div className="flex  overflow-auto min-h-screen w-full flex-col text-white">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 py-4">
           <Link
             href="/dashboard"
-            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2  text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
+            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2  text-xl font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
           >
-            Logo
+            <Image
+              src="/assets/images/logo/logo_white.png"
+              alt="logo"
+              width={50}
+              height={50}
+            />
             <span className="sr-only">logo</span>
           </Link>
           <TooltipProvider>
@@ -92,13 +67,15 @@ const DashboardLayout = ({ children }) => {
                     href={link.path}
                     className={`${
                       path === link.path ? "bg-accent" : ""
-                    } flex h-9 w-9 items-center  justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8`}
+                    } flex h-9 w-9 items-center  justify-center text-xl rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8`}
                   >
                     {link.icon}
                     <span className="sr-only">{link.name}</span>
                   </Link>
                 </TooltipTrigger>
-                <TooltipContent side="right">{link.name}</TooltipContent>
+                <TooltipContent side="right" className="text-xl">
+                  {link.name}
+                </TooltipContent>
               </Tooltip>
             ))}
           </TooltipProvider>
@@ -141,7 +118,7 @@ const DashboardLayout = ({ children }) => {
                 <BreadcrumbLink asChild>
                   <Link
                     href="/dashboard"
-                    className="text-white hover:text-white/80"
+                    className="text-white text-xl hover:text-white/80"
                   >
                     Dashboard
                   </Link>
@@ -177,32 +154,43 @@ const DashboardLayout = ({ children }) => {
               )}
             </BreadcrumbList>
           </Breadcrumb>
-          {/* <LoginAndLogOutButton /> */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="overflow-hidden rounded-full"
-              >
-                <Image
-                  src="/assets/images/avatar/avatar.png"
-                  width={36}
-                  height={36}
-                  alt="Avatar"
+          {session?.user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
                   className="overflow-hidden rounded-full"
-                />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-
-              <DropdownMenuItem>
-                <Button onClick={handleLogout}>Logout</Button>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                >
+                  <Image
+                    src="/assets/images/avatar/avatar.png"
+                    width={36}
+                    height={36}
+                    alt="Avatar"
+                    className="overflow-hidden rounded-full"
+                  />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel className="text-xl py-0">
+                  My Account
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-xl py-1 font-bold">
+                  {session.user.name}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-xl py-1 font-bold cursor-pointer"
+                  onClick={() => signOut()}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href="/api/auth/signin">Login</Link>
+          )}
         </header>
         <main className="p-6 sm:px-6 sm:py-6 min-h-screen bg-muted/40">
           {children}
@@ -212,4 +200,4 @@ const DashboardLayout = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default withAuth(DashboardLayout);

@@ -19,21 +19,12 @@ import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { signUp } from "@/lib/hooks/services/universalFetch";
 import { setCookie } from "nookies";
+import { signUpFormSchema } from "@/lib/validation/validation";
 
-const FormSchema = z.object({
-  first_name: z.string().min(2).max(50),
-  last_name: z.string().min(2).max(50),
-  name: z.string().min(2).max(50),
-  email: z.string().email({ message: "Enter a valid email." }),
-  password: z.string().min(5, { message: "Enter a password" }),
-  password_confirmation: z
-    .string()
-    .min(5, { message: "Password is not match" }),
-});
 const SignupPage = () => {
   const router = useRouter();
   const form = useForm({
-    resolver: zodResolver(FormSchema),
+    resolver: zodResolver(signUpFormSchema),
     defaultValues: {
       first_name: "",
       last_name: "",
@@ -61,7 +52,11 @@ const SignupPage = () => {
         console.log("Failed to register");
       }
     } catch (error) {
-      toast.error(error?.message);
+      toast.error(
+        `${error?.response?.data?.email} ${
+          error?.response?.data?.password ? error?.response?.data?.password : ""
+        }` || error?.message
+      );
       console.log(error);
     }
 
