@@ -4,28 +4,42 @@ import React from "react";
 import { FaLocationArrow } from "react-icons/fa6";
 import { PinContainer } from "./3d-pin";
 
-const SingleBlogCard = () => {
+const SingleBlogCard = ({
+  title,
+  content,
+  summary,
+  image,
+  tags,
+  created_at,
+  blog_id,
+}) => {
   return (
     <div className="lg:min-h-[32.5rem] h-[25rem] flex items-center justify-center sm:w-96 w-full">
-      <PinContainer title="Blog details" href="/blogs/blog-details">
-        <div className="relative flex items-center justify-center sm:w-96 w-[80vw] overflow-hidden h-[20vh] lg:h-[30vh] mb-10">
+      <PinContainer
+        title="Blog details"
+        href={`/blogs/blog-details/${blog_id}`}
+      >
+        <Link
+          href={`/blogs/blog-details/${blog_id}`}
+          className="relative flex items-center justify-center sm:w-96 w-[80vw] overflow-hidden h-[20vh] lg:h-[30vh] mb-10"
+        >
           <div
-            className="relative w-full h-full overflow-hidden lg:rounded-3xl"
+            className="relative w-full min-h-32 h-60  overflow-hidden lg:rounded-3xl"
             style={{ backgroundColor: "#13162D" }}
           >
-            <img src="/assets/images/bg.png" alt="bgimg" />
+            <img src="/assets/images/blog.jpg" alt="bgimg" />
           </div>
-          <Image
+          {/* <Image
             src="/assets/images/blog.jpg"
             alt="cover"
             width={300}
             height={340}
             className=" rounded-md absolute bottom-0"
-          />
-        </div>
+          /> */}
+        </Link>
 
         <h1 className="font-bold lg:text-2xl md:text-xl text-base line-clamp-1">
-          UI/UX Review Check
+          {title}
         </h1>
 
         <p
@@ -35,8 +49,7 @@ const SingleBlogCard = () => {
             margin: "1vh 0",
           }}
         >
-          The place is close to Barceloneta Beach and bus stop just 2 min by
-          walk and near to where you can enjoy the main night life in Barcelona.
+          {content}
         </p>
 
         <div className="flex items-center justify-between mt-7 mb-3">
@@ -56,7 +69,7 @@ const SingleBlogCard = () => {
 
           <Link
             className="flex justify-center items-center"
-            href="/blogs/blog-details"
+            href={`/blogs/blog-details/${blog_id}`}
           >
             <p className="flex lg:text-xl md:text-xs text-sm text-purple">
               More details

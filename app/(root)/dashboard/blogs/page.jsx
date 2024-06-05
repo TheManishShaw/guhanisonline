@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import BeatsPage from "@/components/view/BeatsPage";
+import BeatsPage from "@/components/view/PublicBeatsPage";
 import React from "react";
 import Link from "next/link";
 import BlogsListTable from "@/components/view/BlogsListTable";

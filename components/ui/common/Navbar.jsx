@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 import { menuList } from "@/constants/menuitems/menuList";
 import { useSelector } from "react-redux";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 const Navbar = () => {
   const path = usePathname();
@@ -23,6 +24,7 @@ const Navbar = () => {
   const user = false;
   const [open, setOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.items);
+  const { data: session, status } = useSession();
   useEffect(() => {
     setCartItemLength(cartItems.length);
   }, [cartItems]);
@@ -124,6 +126,8 @@ const Navbar = () => {
                   <DropdownMenuItem>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            ) : session?.user ? (
+              `${session.user.name}`
             ) : (
               <Link
                 href={"/sign-in"}

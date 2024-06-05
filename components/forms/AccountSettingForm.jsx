@@ -14,8 +14,19 @@ import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { getSelfDetails } from "@/lib/hooks/services/universalFetch";
 
 const AccountSettingForm = () => {
+  const {
+    isPending,
+    isError,
+    data: selfDetails,
+    error,
+  } = useQuery({
+    queryKey: ["getSelfDetails"],
+    queryFn: getSelfDetails,
+  });
+  console.log("selfDetails", selfDetails);
   const form = useForm({
     // resolver: zodResolver(contactFormSchema),
     defaultValues: {

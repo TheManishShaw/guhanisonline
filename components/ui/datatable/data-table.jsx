@@ -27,7 +27,7 @@ import {
   TableRow,
 } from "../table";
 
-export function DataTable({ columns, data }) {
+export function DataTable({ columns, data, isLoading }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [columnFilters, setColumnFilters] = React.useState([]);
@@ -79,7 +79,9 @@ export function DataTable({ columns, data }) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              "Loading..."
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

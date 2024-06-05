@@ -7,8 +7,10 @@ import Image from "next/image";
 import { Card } from "../ui/card";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "@/lib/store/features/cart/Cart";
+import { useQuery } from "@tanstack/react-query";
+import { getOpenBeatsList } from "@/lib/hooks/services/universalFetch";
 
-const BeatsPage = () => {
+const PublicBeatsPage = () => {
   const data = [
     {
       id: 1,
@@ -68,10 +70,20 @@ const BeatsPage = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   console.log("cartItems", cartItems);
+  const {
+    isPending,
+    isError,
+    data: collection,
+    error,
+  } = useQuery({
+    queryKey: ["getOpenBeatsList"],
+    queryFn: getOpenBeatsList,
+  });
+  console.log("collection", collection);
   return (
     <div className="w-full max-w-5xl mx-auto">
       {/* <DataTable data={tasks} columns={columns} /> */}
-      {data.map((item, index) => (
+      {collection?.map((item, index) => (
         <Card
           key={index}
           className=" mx-auto my-8 flex max-w-container flex-col items-center gap-3 p-4 rounded-xl shadow-lg "
@@ -79,7 +91,7 @@ const BeatsPage = () => {
           <div className="relative w-full h-36 bg-white rounded-lg shadow-lg overflow-hidden mb-8">
             <div className="absolute inset-0 rounded-lg overflow-hidden bg-gray-400">
               <Image
-                src={item.image}
+                src={`/${item?.cover_image_path}`}
                 layout="fill"
                 objectFit="cover"
                 alt="nothing"
@@ -100,11 +112,11 @@ const BeatsPage = () => {
                 <div className=" flex items-center justify-between w-full">
                   <div className="">
                     <h3 className="lg:text-3xl lg:font-normal font-light text-xl ">
-                      {item.title}
+                      {item?.title}
                     </h3>
-                    <div className="text-sm opacity-60">Super Interpret</div>
+                    <div className="text-sm opacity-60">{item.description}</div>
                     <span className="block text-sm text-gray-500">
-                      5 Tracks
+                      {item?.beats?.length} Tracks
                     </span>
                   </div>
                   <div className="-translate-x-6">
@@ -146,30 +158,15 @@ const BeatsPage = () => {
             </div>
           </div>
           <div className="w-full space-y-4">
-            <SingleBeat
-              audioUrl="/assets/audio/Yimmy.mp3"
-              name="yimmy yimmy fkdfkfkfsfks"
-              singer=" Manish Shaw"
-              price="$23.34"
-            />
-            <SingleBeat
-              audioUrl="/assets/audio/Yimmy.mp3"
-              name="yimmy yimmy fkdfkfkfsfks"
-              singer=" Manish Shaw"
-              price="$23.34"
-            />
-            <SingleBeat
-              audioUrl="/assets/audio/Yimmy.mp3"
-              name="yimmy yimmy fkdfkfkfsfks"
-              singer=" Manish Shaw"
-              price="$23.34"
-            />
-            <SingleBeat
-              audioUrl="/assets/audio/Yimmy.mp3"
-              name="yimmy yimmy fkdfkfkfsfks"
-              singer=" Manish Shaw"
-              price="$23.34"
-            />
+            {item?.beats?.map((beat, index) => (
+              <SingleBeat
+                key={index}
+                audioUrl="/assets/audio/Yimmy.mp3"
+                name="yimmy yimmy fkdfkfkfsfks"
+                singer=" Manish Shaw"
+                price="$23.34"
+              />
+            ))}
           </div>
         </Card>
       ))}
@@ -177,4 +174,4 @@ const BeatsPage = () => {
   );
 };
 
-export default BeatsPage;
+export default PublicBeatsPage;

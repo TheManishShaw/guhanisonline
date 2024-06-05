@@ -15,6 +15,15 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/unauthorized",
+        destination: "/sign-in",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

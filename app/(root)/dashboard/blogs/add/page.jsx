@@ -7,6 +7,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import React from "react";
+export const metadata = {
+  title: "Add Blog | Guhanis Official",
+  description: "Artist | Music Producer",
+};
 
 const page = () => {
   return (

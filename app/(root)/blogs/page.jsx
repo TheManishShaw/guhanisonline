@@ -1,5 +1,5 @@
-import SingleBlogCard from "@/components/ui/SingleBlogCard";
 import HeadingSection from "@/components/ui/common/HeadingSection";
+import PublicBlogPage from "@/components/view/PublicBlogPage";
 import React from "react";
 
 export const metadata = {
@@ -7,7 +7,7 @@ export const metadata = {
   description: "Artist | Music Producer",
 };
 
-const page = () => {
+const Page = () => {
   return (
     <section className="container mx-auto px-6">
       <HeadingSection
@@ -15,15 +15,9 @@ const page = () => {
         description="Dive into the groove: Explore our collection of beats curated to inspire and elevate your music journey"
         image="/assets/images/login/placeholder.svg"
       />
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 mx-auto w-full">
-        <SingleBlogCard />
-        <SingleBlogCard />
-        <SingleBlogCard />
-        <SingleBlogCard />
-      </div>
+      <PublicBlogPage />
     </section>
   );
 };
 
-export default page;
+export default Page;

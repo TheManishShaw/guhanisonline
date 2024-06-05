@@ -7,14 +7,18 @@ import { blogsListColumns } from "@/constants/table-columns/user-list-column";
 import { getAllBlogList } from "@/lib/hooks/services/universalFetch";
 
 const BlogsListTable = () => {
-  const { isPending, isError, data, error } = useQuery({
+  const { isPending, isError, data, isLoading, error } = useQuery({
     queryKey: ["allBlogList"],
     queryFn: getAllBlogList,
   });
   console.log("first", data);
   return (
     <div className="w-full mx-auto">
-      <DataTable data={blogsListData} columns={blogsListColumns} />
+      <DataTable
+        data={data ?? []}
+        isLoading={isLoading}
+        columns={blogsListColumns}
+      />
     </div>
   );
 };
