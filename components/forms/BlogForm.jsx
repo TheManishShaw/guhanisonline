@@ -14,8 +14,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import ReactQuill, { Quill } from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import ImageResize from "quill-image-resize-module-react";
 Quill.register("modules/imageResize", ImageResize);
+
 import { Label } from "../ui/label";
 import { addBlog } from "@/lib/hooks/services/universalFetch";
 import { FileUploader } from "react-drag-drop-files";
