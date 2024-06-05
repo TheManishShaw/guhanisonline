@@ -1,7 +1,7 @@
 "use client";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
 // export const metadata = {
 //   title: "Home | Guhanis Official",
 //   description: "Artist | Music Producer",

@@ -6,7 +6,7 @@ import { getOpenBlogsDetailById } from "@/lib/hooks/services/universalFetch";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import moment from "moment";
-import { PortableText } from "@portabletext/react";
+
 import * as htmlparser2 from "htmlparser2";
 const PublicBlogDetailPage = () => {
   const params = useParams();
