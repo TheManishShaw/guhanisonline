@@ -9,16 +9,21 @@ import { removeItem } from "@/lib/store/features/cart/Cart";
 import Link from "next/link";
 
 const CartPage = () => {
-  const [finalAmount, setFinalAmount] = useState(0);
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
-  const totalAmount = useSelector((state) => state.cart.totalAmount);
-  const cartTotalAmount = totalAmount;
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
+
+  const calculateTotalAmount = () => {
+    return cartItems.reduce((total, item) => {
+      return total + item.price * (item.quantity || 1);
+    }, 0);
+  };
+
+  const cartTotalAmount = calculateTotalAmount();
 
   if (!isLoaded) {
     return "Loading..."; // Or a loading indicator
@@ -35,7 +40,7 @@ const CartPage = () => {
         </div>
         <div className="grid gap-4">
           {cartItems &&
-            cartItems?.map((item, index) => (
+            cartItems.map((item, index) => (
               <Card
                 key={index}
                 className="grid p-4 grid-cols-[80px_1fr_auto] items-center gap-4"
@@ -75,7 +80,9 @@ const CartPage = () => {
         </div>
         <div className="flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-800">
           <div className="text-lg font-medium">Total</div>
-          <div className="text-2xl font-bold">${cartTotalAmount}</div>
+          <div className="text-2xl font-bold">
+            ${cartTotalAmount.toFixed(2)}
+          </div>
         </div>
         <Link href="/checkout">
           <Button className="w-full" size="lg">

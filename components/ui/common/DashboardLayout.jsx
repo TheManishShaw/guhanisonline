@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../tooltip";
-import { Home, ListMusic, PanelLeft, Rss } from "lucide-react";
+import { Home, ListMusic, PanelLeft, Rss, User2Icon } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "../sheet";
 import { Button } from "../button";
 import {
@@ -27,29 +27,28 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu";
 import Image from "next/image";
-import { redirect, useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
+import withAuth from "@/lib/withAuth";
+import { usePathname } from "next/navigation";
+import { FaBlog } from "react-icons/fa6";
 import { dashboardList } from "@/constants/menuitems/dashbaordMenu";
 
-import axiosInstance from "@/lib/axiosInstance";
-import { destroyCookie, parseCookies } from "nookies";
-import { signOut, useSession } from "next-auth/react";
-import withAuth from "@/lib/withAuth";
-
 const DashboardLayout = ({ children }) => {
-  const path = "";
+  const { data: session } = useSession();
+  const userRole = session?.user?.role || "user"; // default to "user" if role is undefined
+  const path = usePathname();
+  // Filter routes based on the user's role
+  const filteredDashboardList = dashboardList.filter((item) =>
+    item.roles.includes(userRole)
+  );
 
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
-
-  console.log("session", session);
   return (
-    <div className="flex  overflow-auto min-h-screen w-full flex-col text-white">
+    <div className="flex overflow-auto min-h-screen w-full flex-col text-white">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 py-4">
           <Link
             href="/dashboard"
-            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2  text-xl font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
+            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 text-xl font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
           >
             <Image
               src="/assets/images/logo/logo_white.png"
@@ -60,14 +59,14 @@ const DashboardLayout = ({ children }) => {
             <span className="sr-only">logo</span>
           </Link>
           <TooltipProvider>
-            {dashboardList.map((link, index) => (
+            {filteredDashboardList.map((link, index) => (
               <Tooltip key={index}>
                 <TooltipTrigger asChild>
                   <Link
                     href={link.path}
                     className={`${
                       path === link.path ? "bg-accent" : ""
-                    } flex h-9 w-9 items-center  justify-center text-xl rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8`}
+                    } flex h-9 w-9 items-center justify-center text-xl rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8`}
                   >
                     {link.icon}
                     <span className="sr-only">{link.name}</span>
@@ -82,7 +81,7 @@ const DashboardLayout = ({ children }) => {
         </nav>
       </aside>
       <div className="flex text-white flex-col sm:gap-4 pt-4 sm:pl-14">
-        <header className="sticky justify-between  top-0 z-30 flex h-14 items-center gap-4  bg-background px-4 sm:static sm:h-auto  sm:bg-transparent sm:px-6">
+        <header className="sticky justify-between top-0 z-30 flex h-14 items-center gap-4 bg-background px-4 sm:static sm:h-auto sm:bg-transparent sm:px-6">
           <Sheet className="bg-background">
             <SheetTrigger asChild>
               <Button size="icon" variant="outline" className="sm:hidden">
@@ -99,7 +98,7 @@ const DashboardLayout = ({ children }) => {
                   logo
                   <span className="sr-only">logo</span>
                 </Link>
-                {dashboardList.map((link, index) => (
+                {filteredDashboardList.map((link, index) => (
                   <Link
                     key={index}
                     href={link.path}
@@ -124,9 +123,7 @@ const DashboardLayout = ({ children }) => {
                   </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
-
               <BreadcrumbSeparator />
-
               <BreadcrumbItem>
                 <BreadcrumbPage>
                   <Link

@@ -4,6 +4,7 @@ import Footer from "@/components/ui/common/Footer";
 import Navbar from "@/components/ui/common/Navbar";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { PlaybackProvider } from "../PlaybackContext";
 
 export default function RootLayout({ children }) {
   const path = usePathname();
@@ -15,7 +16,7 @@ export default function RootLayout({ children }) {
       ) : (
         <>
           <Navbar />
-          {children}
+          <PlaybackProvider>{children}</PlaybackProvider>
           <Footer />
         </>
       )}

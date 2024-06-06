@@ -10,16 +10,20 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import { useForm } from "react-hook-form";
 import {
   getSelfDetails,
   updateSelfDetails,
 } from "@/lib/hooks/services/universalFetch"; // Assuming you have an update API
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 const AccountSettingForm = () => {
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+
   const {
     isPending,
     isError,
@@ -31,7 +35,6 @@ const AccountSettingForm = () => {
   });
 
   const form = useForm({
-    // resolver: zodResolver(contactFormSchema), // Uncomment and use a validation schema if needed
     defaultValues: {
       name: "",
       email: "",
@@ -54,18 +57,12 @@ const AccountSettingForm = () => {
   }, [selfDetails, form]);
 
   const mutation = useMutation({
-    mutationFn: updateSelfDetails,
+    mutationFn: (formData) => updateSelfDetails(userId, formData),
     onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Your details have been updated successfully.",
-      });
+      toast.success("Your details have been updated successfully.");
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: `There was an error updating your details: ${error.message}`,
-      });
+      toast.error(`There was an error updating your details: ${error.message}`);
     },
   });
 

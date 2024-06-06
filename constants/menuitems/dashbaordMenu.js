@@ -1,34 +1,49 @@
-import { Home, ListMusic, Rss, ShoppingCart, Users } from "lucide-react";
+import {
+  Home,
+  ListMusic,
+  Rss,
+  ShoppingCart,
+  User2Icon,
+  Users,
+} from "lucide-react";
+import { FaBlog } from "react-icons/fa6";
 
 export const dashboardList = [
   {
-    name: "Dashboard",
     path: "/dashboard",
-    tooltip: "Dashboard",
-    icon: <Home className="w-5 h-5" />,
+    name: "Home",
+    icon: <Home />,
+    roles: ["admin", "user"],
   },
   {
-    name: "Orders",
-    path: "/dashboard/orders",
-    tooltip: "Orders",
-    icon: <ShoppingCart className="w-5 h-5" />,
-  },
-  {
-    name: "Beats",
     path: "/dashboard/beats",
-    tooltip: "Beats",
-    icon: <ListMusic className="w-5 h-5" />,
+    name: "Music",
+    icon: <ListMusic />,
+    roles: ["admin"],
   },
   {
-    name: "Blogs",
     path: "/dashboard/blogs",
-    tooltip: "Blogs",
-    icon: <Rss className="w-5 h-5" />,
+    name: "Blog",
+    icon: <FaBlog />,
+    roles: ["admin"],
   },
   {
-    name: "Customers",
     path: "/dashboard/users",
-    tooltip: "Customers",
-    icon: <Users className="w-5 h-5" />,
+    name: "Users",
+    icon: <User2Icon />,
+    roles: ["admin"],
   },
+  {
+    path: "/dashboard/profile",
+    name: "Profile",
+    icon: <Rss />,
+    roles: ["admin", "user"], // Updated to include admin
+  },
+  {
+    path: "/dashboard/orders",
+    name: "Orders",
+    icon: <ShoppingCart />,
+    roles: ["admin", "user"], // Updated to include admin
+  },
+  // Add other routes here
 ];

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "@/lib/store/features/cart/Cart";
 import { useQuery } from "@tanstack/react-query";
 import { getOpenBeatsList } from "@/lib/hooks/services/universalFetch";
+import { useRouter } from "next/navigation";
 
 const PublicBeatsPage = () => {
   const data = [
@@ -18,58 +19,13 @@ const PublicBeatsPage = () => {
       title: "Blurred Vision",
       image: "/assets/images/login/placeholder.svg",
     },
-    {
-      id: 2,
-      price: "34.3",
-      title: "Trust The Process",
-      image: "/assets/images/login/placeholder.svg",
-    },
-    {
-      id: 3,
-      price: "34.3",
-      title: "Trust The Process 2",
-      image: "/assets/images/login/placeholder.svg",
-    },
-    {
-      id: 4,
-      price: "34.3",
-      title: "Trust The Process 4",
-      image: "/assets/images/login/placeholder.svg",
-    },
-    {
-      id: 5,
-      price: "34.3",
-      title: "Trust The Process 5",
-      image: "/assets/images/login/placeholder.svg",
-    },
-    {
-      id: 6,
-      price: "34.3",
-      title: "Trust The Process 6",
-      image: "/assets/images/login/placeholder.svg",
-    },
-    {
-      id: 7,
-      price: "34.3",
-      title: "Trust The Process 7",
-      image: "/assets/images/login/placeholder.svg",
-    },
-    {
-      id: 8,
-      price: "34.3",
-      title: "Trust The Process 8",
-      image: "/assets/images/login/placeholder.svg",
-    },
-    {
-      id: 9,
-      price: "34.3",
-      title: "Trust The Process 9",
-      image: "/assets/images/login/placeholder.svg",
-    },
+    // ...other data items
   ];
+
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
-  console.log("cartItems", cartItems);
+  const router = useRouter();
+
   const {
     isPending,
     isError,
@@ -79,10 +35,13 @@ const PublicBeatsPage = () => {
     queryKey: ["getOpenBeatsList"],
     queryFn: getOpenBeatsList,
   });
-  console.log("collection", collection);
+
+  const isItemInCart = (itemId) => {
+    return cartItems.some((cartItem) => cartItem.id === itemId);
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto">
-      {/* <DataTable data={tasks} columns={columns} /> */}
       {collection?.map((item, index) => (
         <Card
           key={index}
@@ -98,7 +57,7 @@ const PublicBeatsPage = () => {
               />
               <div className="absolute inset-0 backdrop backdrop-blur-10 bg-gradient-to-b from-transparent to-black"></div>
             </div>
-            <div className="px-4 w-full flex space-x-6 transform translate-x-6 translate-y-8">
+            <div className="px-4 w-full flex space-x-4 transform translate-x-6 translate-y-4 md:translate-y-8">
               <div className="w-36 h-38 rounded-lg shadow-lg overflow-hidden">
                 <Image
                   width={200}
@@ -109,35 +68,50 @@ const PublicBeatsPage = () => {
                 />
               </div>
               <div className="text-white w-full">
-                <div className=" flex items-center justify-between w-full">
+                <div className=" md:flex block items-center justify-between w-full">
                   <div className="">
                     <h3 className="lg:text-3xl lg:font-normal font-light text-xl ">
                       {item?.title}
                     </h3>
-                    <div className="text-sm opacity-60">{item.description}</div>
-                    <span className="block text-sm text-gray-500">
+                    <div className="text-sm opacity-60 hidden md:block">
+                      {item.description}
+                    </div>
+                    <span className=" text-sm text-gray-500 hidden md:block">
                       {item?.beats?.length} Tracks
                     </span>
                   </div>
-                  <div className="-translate-x-6">
+                  <div className="-translate-x-0 sm:-translate-x-6">
                     <p className="mb-3 font-extrabold text-2xl">
                       {" "}
                       $ {item.price}
                     </p>
-                    <Button
-                      onClick={() => dispatch(addItem(item))}
-                      className=" bg-primary px-3 text-black py-0.5"
-                      variant="ghost"
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                      <span className="mx-2 text-lg font-bold">
-                        Add to cart
-                      </span>
-                    </Button>
+                    {isItemInCart(item.id) ? (
+                      <Button
+                        onClick={() => router.push("/cart")}
+                        className=" bg-primary px-3 text-black py-0.5"
+                        variant="ghost"
+                      >
+                        <ShoppingCart className="h-4 w-4" />
+                        <span className="mx-2 text-lg font-bold">
+                          Go to Cart
+                        </span>
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => dispatch(addItem(item))}
+                        className=" bg-primary px-3 text-black py-0.5"
+                        variant="ghost"
+                      >
+                        <ShoppingCart className="h-4 w-4" />
+                        <span className="mx-2 text-lg font-bold">
+                          Add to cart
+                        </span>
+                      </Button>
+                    )}
                   </div>
                 </div>
 
-                <div className=" text-gray-400">
+                <div className=" text-gray-400 hidden md:block">
                   <div className="flex items-center space-x-2 text-xs">
                     <svg
                       className="w-4 h-4"
@@ -167,6 +141,12 @@ const PublicBeatsPage = () => {
                 price="$23.34"
               />
             ))}
+            <SingleBeat
+              audioUrl="/assets/audio/Yimmy.mp3"
+              name="yimmy yimmy fkdfkfkfsfks"
+              singer=" Manish Shaw"
+              price="$23.34"
+            />
           </div>
         </Card>
       ))}
