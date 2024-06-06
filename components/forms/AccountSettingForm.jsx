@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -9,12 +9,15 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { getSelfDetails } from "@/lib/hooks/services/universalFetch";
+import {
+  getSelfDetails,
+  updateSelfDetails,
+} from "@/lib/hooks/services/universalFetch"; // Assuming you have an update API
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 const AccountSettingForm = () => {
   const {
@@ -26,32 +29,85 @@ const AccountSettingForm = () => {
     queryKey: ["getSelfDetails"],
     queryFn: getSelfDetails,
   });
-  console.log("selfDetails", selfDetails);
+
   const form = useForm({
-    // resolver: zodResolver(contactFormSchema),
+    // resolver: zodResolver(contactFormSchema), // Uncomment and use a validation schema if needed
     defaultValues: {
+      name: "",
+      email: "",
       first_name: "",
       last_name: "",
-      email: "",
       phone: "",
-      message: "",
+      address: "",
+      street: "",
+      city: "",
+      state: "",
+      zip_code: "",
+      country: "",
     },
   });
+
+  useEffect(() => {
+    if (selfDetails) {
+      form.reset(selfDetails);
+    }
+  }, [selfDetails, form]);
+
+  const mutation = useMutation({
+    mutationFn: updateSelfDetails,
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Your details have been updated successfully.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: `There was an error updating your details: ${error.message}`,
+      });
+    },
+  });
+
   function onSubmit(formData) {
-    // mutate(formData);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    mutation.mutate(formData);
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
-        <div className="grid grid-cols-2  items-center gap-4 w-full">
+        <div className="grid grid-cols-2 items-center gap-4 w-full">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">User Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="username" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    disabled
+                    placeholder="user@example.com"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="first_name"
@@ -61,7 +117,6 @@ const AccountSettingForm = () => {
                 <FormControl>
                   <Input placeholder="John" {...field} />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -75,21 +130,6 @@ const AccountSettingForm = () => {
                 <FormControl>
                   <Input placeholder="Doe" {...field} />
                 </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-primary">Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="john@example.com" {...field} />
-                </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -103,32 +143,91 @@ const AccountSettingForm = () => {
                 <FormControl>
                   <Input placeholder="+91 96468-34345" {...field} />
                 </FormControl>
-
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">Address</FormLabel>
+                <FormControl>
+                  <Input placeholder="address" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="street"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">Street</FormLabel>
+                <FormControl>
+                  <Input placeholder="street" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">City</FormLabel>
+                <FormControl>
+                  <Input placeholder="city" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="state"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">State</FormLabel>
+                <FormControl>
+                  <Input placeholder="state" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="zip_code"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">Zip Code</FormLabel>
+                <FormControl>
+                  <Input placeholder="zip code" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="country"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">Country</FormLabel>
+                <FormControl>
+                  <Input placeholder="country" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Message</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Write you message"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button className="w-full" type="submit">
-          Submit
+        <Button className="w-full" type="submit" disabled={isPending}>
+          {isPending ? "Submitting..." : "Submit"}
         </Button>
       </form>
     </Form>

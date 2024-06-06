@@ -56,7 +56,7 @@ const ContactForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
-        <div className="grid grid-cols-2  items-center gap-4 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2  items-center gap-4 w-full">
           <FormField
             control={form.control}
             name="first_name"

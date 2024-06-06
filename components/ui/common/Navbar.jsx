@@ -107,29 +107,47 @@ const Navbar = () => {
               </nav>
             </SheetContent>
           </Sheet>
-          {user ? (
+
+          {session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="icon"
-                  className="rounded-full"
+                  className="overflow-hidden rounded-full"
                 >
-                  <CircleUser className="h-5 w-5" />
-                  <span className="sr-only">Toggle user menu</span>
+                  <Image
+                    src="/assets/images/avatar/avatar.png"
+                    width={36}
+                    height={36}
+                    alt="Avatar"
+                    className="overflow-hidden rounded-full"
+                  />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuContent align="end" className="z-[99] ">
+                <DropdownMenuLabel className="text-xl py-0">
+                  My Account
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem className="text-xl py-1 font-bold">
+                  <Link href="/dashboard/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-xl py-1 font-bold">
+                  {session.user.name}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-xl py-1 font-bold cursor-pointer"
+                  onClick={() => signOut()}
+                >
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          ) : session?.user ? (
-            `${session.user.name}`
           ) : (
             <Link
-              href={"/sign-in"}
+              href={"/api/auth/signin"}
               className="bg-primary text-black text-2xl px-4 py-1 rounded-md"
             >
               Login
