@@ -30,7 +30,6 @@ import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import withAuth from "@/lib/withAuth";
 import { usePathname } from "next/navigation";
-import { FaBlog } from "react-icons/fa6";
 import { dashboardList } from "@/constants/menuitems/dashbaordMenu";
 
 const DashboardLayout = ({ children }) => {
@@ -128,7 +127,7 @@ const DashboardLayout = ({ children }) => {
                 <BreadcrumbPage>
                   <Link
                     href={path}
-                    className="text-white capitalize hover:text-white/80"
+                    className="text-white text-xl capitalize hover:text-white/80"
                   >
                     {path.split("/")[2]}
                   </Link>
@@ -141,7 +140,7 @@ const DashboardLayout = ({ children }) => {
                     <BreadcrumbPage>
                       <Link
                         href={path}
-                        className="text-white capitalize hover:text-white/80"
+                        className="text-white text-xl capitalize hover:text-white/80"
                       >
                         {path.split("/")[3]}
                       </Link>

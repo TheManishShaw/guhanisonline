@@ -8,10 +8,17 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    domains: ["guhanapi.ivdata.in"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "guhanapi.ivdata.in",
+        port: "",
+        pathname: "/storage/**",
       },
     ],
   },

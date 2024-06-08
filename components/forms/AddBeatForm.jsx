@@ -8,25 +8,18 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { cn } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Textarea } from "../ui/textarea";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { Calendar } from "../ui/calendar";
-import { format } from "date-fns";
+import { TrashIcon } from "lucide-react";
 import { toast } from "sonner";
-import { FileUploader } from "react-drag-drop-files";
-import { beatsFormSchema } from "@/lib/validation/validation";
+import axiosInstance from "@/lib/axiosInstance";
+import { addBeats } from "@/lib/hooks/services/universalFetch";
 
-const fileTypes = ["JPG", "PNG", "GIF"];
 const AddBeatForm = () => {
   const form = useForm({
-    resolver: zodResolver(beatsFormSchema),
+    // resolver: zodResolver(beatsFormSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -38,20 +31,36 @@ const AddBeatForm = () => {
       ],
     },
   });
+
   const [date, setDate] = useState();
   const [beats, setBeats] = useState([]);
   const [currentAudio, setCurrentAudio] = useState(null);
-  const [file, setFile] = useState(null);
-  const handleChange = (file) => {
-    setFile(file);
-  };
+  const [coverImage, setCoverImage] = useState(null);
+  const [coverImagePreview, setCoverImagePreview] = useState(null);
+  const [zipFile, setZipFile] = useState(null);
+
   useEffect(() => {
-    return () => {
-      if (currentAudio) {
-        currentAudio.pause();
-      }
-    };
-  }, [currentAudio]);
+    if (coverImage) {
+      setCoverImagePreview(URL.createObjectURL(coverImage));
+      uploadFile(coverImage, "cover_image");
+    }
+  }, [coverImage]);
+
+  useEffect(() => {
+    if (zipFile) {
+      uploadFile(zipFile, "zip_file");
+    }
+  }, [zipFile]);
+
+  const handleCoverImageChange = (event) => {
+    const file = event.target.files[0];
+    setCoverImage(file);
+  };
+
+  const handleZipFileChange = (event) => {
+    const file = event.target.files[0];
+    setZipFile(file);
+  };
 
   const handleBeatChange = (event) => {
     const files = Array.from(event.target.files);
@@ -69,7 +78,13 @@ const AddBeatForm = () => {
     });
 
     Promise.all(filePromises).then((newBeats) => {
-      setBeats(newBeats);
+      const uploadPromises = newBeats.map((beat) =>
+        uploadFile(beat.file, "beat")
+      );
+      Promise.all(uploadPromises).then((uploadResponses) => {
+        console.log("Upload responses:", uploadResponses);
+      });
+      setBeats([...beats, ...newBeats]);
     });
   };
 
@@ -91,76 +106,76 @@ const AddBeatForm = () => {
     }
   };
 
-  const onSubmit = (data) => {
-    const formdata = new FormData();
-    formdata.append("title", data.title);
-    formdata.append("description", data.description);
-    formdata.append("price", data.price);
-    formdata.append("cover_image", data.cover_image);
-    formdata.append("file", data.file);
+  const uploadFile = (file, type) => {
+    const formData = new FormData();
+    formData.append("file", file);
 
-    data?.beats?.forEach((beat, index) => {
-      formdata.append(`beats[${index}][title]`, beat.title);
-      formdata.append(`beats[${index}][description]`, beat.description);
-      formdata.append(`beats[${index}][price]`, beat.price);
-      formdata.append(`beats[${index}][file]`, beat.file);
-      formdata.append(`beats[${index}][cover_image]`, beat.cover_image);
-    });
+    return axiosInstance
+      .post("/fileupload?file", formData)
+      .then((response) => {
+        toast.success(`File uploaded successfully: ${file.name}`);
+        console.log(`${type} upload response data:`, response.data);
+        return response.data;
+      })
+      .catch((error) => {
+        toast.error(`Failed to upload file: ${file.name}`);
+        console.error(`${type} upload error:`, error);
+        throw error;
+      });
+  };
 
-    // console.log("formdata", {
-    //   title: data.title,
-    //   regular_price: data.regular_price,
-    //   tags: data.tags,
-    //   description: data.description || "",
-    //   released_date: date ? date.toISOString() : "",
-    //   image: file ? "Image attached" : "No image",
-    //   downloadable_file: downloadableFile ? downloadableFile.name : "No file",
-    //   preview_audio_files: beats.map((beat) => beat.file.name),
-    // });
-    console.log("formData", formdata);
+  const onSubmit = async (data) => {
+    let formData = {
+      title: data.title,
+      description: data.description,
+      price: data.price,
+      file: data.url, // Initially empty for the collection.zip URL
+      cover_image: data.url, // Initially empty for the cover image URL
+      beats: data.beats.map((beat, index) => ({
+        ...beat,
+        cover_image: data.url, // Initially empty for each beat's cover image URL
+      })),
+    };
 
-    // toast.message("You submitted the following values:", {
-    //   description: JSON.stringify(
-    //     {
-    //       title: data.title,
-    //       regular_price: data.regular_price,
-    //       tags: data.tags,
-    //       description: data.description || "",
-    //       released_date: date ? date.toISOString() : "",
-    //       image: image ? "Image attached" : "No image",
-    //       downloadable_file: downloadableFile
-    //         ? downloadableFile.name
-    //         : "No file",
-    //       preview_audio_files: beats.map((beat) => beat.file.name),
-    //     },
-    //     null,
-    //     2
-    //   ),
-    // });
+    try {
+      // Send formData to the server
+      const res = await addBeats(formData);
+      console.log("res", res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        // encType="multipart/form-data"
-        className="w-full space-y-6"
-      >
-        <div className=" flex border-2 border-white rounded-md border-dotted justify-center items-center">
-          <div>
-            <FileUploader
-              handleChange={handleChange}
-              name="file"
-              classes="!w-full !h-28 text-2xl !border-none text-[45px] !justify-center !items-center  !flex !text-white"
-              label="Upload or drop a file right here"
-              hoverTitle="Drop here"
-              maxSize="2"
-              className=""
-              types={fileTypes}
-            />
-            <span className="text-2xl w-full text-center">{file?.name}</span>
-          </div>
-        </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+        <FormField
+          control={form.control}
+          name="cover_image"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-primary">Cover Image</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  placeholder="cover image"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleCoverImageChange(e);
+                  }}
+                />
+              </FormControl>
+              {coverImagePreview && (
+                <img
+                  src={coverImagePreview}
+                  alt="Cover Preview"
+                  className="mt-4 w-32 h-32 object-cover"
+                />
+              )}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="title"
@@ -175,60 +190,22 @@ const AddBeatForm = () => {
           )}
         />
         <div className="grid grid-cols-2 items-center gap-4 w-full">
-          <div className="">
-            <FormLabel className="text-primary mb-2">Released Date</FormLabel>
-            <Popover className="bg-muted">
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-full bg-background mt-2 hover:bg-transparent hover:text-muted-foreground hover:ring-1 ring-muted border-muted justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
           <FormField
             control={form.control}
             className="w-full"
-            name="regular_price"
+            name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-primary">Regular Price</FormLabel>
+                <FormLabel className="text-primary">Price</FormLabel>
                 <FormControl>
-                  <Input placeholder="Regular Price" type="number" {...field} />
+                  <Input placeholder="Price" type="number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="tags"
-          className="w-full"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Tags</FormLabel>
-              <FormControl>
-                <Input placeholder="Tags" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={form.control}
           name="description"
@@ -250,7 +227,7 @@ const AddBeatForm = () => {
         />
         <FormField
           control={form.control}
-          name="downloadable_file"
+          name="file"
           className="w-full"
           render={({ field }) => (
             <FormItem>
@@ -260,7 +237,10 @@ const AddBeatForm = () => {
                   placeholder="Files For Download"
                   type="file"
                   accept=".zip,.rar,.7zip"
-                  {...form.register("downloadable_file")}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleZipFileChange(e);
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -269,7 +249,7 @@ const AddBeatForm = () => {
         />
         <FormField
           control={form.control}
-          name="preview_audio"
+          name="beats"
           className="w-full"
           render={({ field }) => (
             <FormItem>
@@ -283,7 +263,6 @@ const AddBeatForm = () => {
                   accept="audio/*"
                   multiple
                   onChange={handleBeatChange}
-                  {...form.register("preview_audio")}
                 />
               </FormControl>
               <FormMessage />

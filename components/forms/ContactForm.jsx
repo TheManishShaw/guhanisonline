@@ -13,10 +13,11 @@ import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "../ui/textarea";
-import { toast } from "../ui/use-toast";
+
 import { useMutation } from "@tanstack/react-query";
 import { contactForm } from "@/lib/hooks/services/universalFetch";
 import { contactFormSchema } from "@/lib/validation/validation";
+import { toast } from "sonner";
 
 const ContactForm = () => {
   const form = useForm({
@@ -30,29 +31,18 @@ const ContactForm = () => {
     },
   });
   const { mutate, isLoading, isError, isSuccess, status, data } = useMutation({
-    mutationFn: (formData) => {
-      return contactForm(formData);
+    mutationFn: (formData) => contactForm(formData),
+    onSuccess: async (res) => {
+      toast.success(`${res?.data?.message}`);
+      form.reset();
     },
+    onError: async (error) => toast.error(error),
   });
 
   function onSubmit(formData) {
     mutate(formData);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
   }
 
-  useEffect(() => {
-    if (data?.status === 200) {
-      toast.success("Account Created Successfully");
-      // router.push("/sign-in");
-    }
-  }, [isSuccess]);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
@@ -132,8 +122,8 @@ const ContactForm = () => {
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit">
-          Submit
+        <Button disabled={isLoading} className="w-full" type="submit">
+          {isLoading ? "Submitting" : "Submit"}
         </Button>
       </form>
     </Form>

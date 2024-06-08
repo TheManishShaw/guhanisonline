@@ -2,13 +2,13 @@
 import React from "react";
 import { DataTable } from "../ui/datatable/data-table";
 import { useQuery } from "@tanstack/react-query";
-import { beatsListColumns } from "@/constants/table-columns/user-list-column";
-import { getBeatsList } from "@/lib/hooks/services/universalFetch";
+import { clienteleListColumns } from "@/constants/table-columns/user-list-column";
+import { getAllClienteleList } from "@/lib/hooks/services/universalFetch";
 
-const BeatsListTable = () => {
+const ClienteleListTable = () => {
   const { isPending, isError, data, isLoading, error } = useQuery({
-    queryKey: ["getBeatsList"],
-    queryFn: getBeatsList,
+    queryKey: ["getAllClienteleList"],
+    queryFn: getAllClienteleList,
   });
   console.log("first", data);
   return (
@@ -16,10 +16,10 @@ const BeatsListTable = () => {
       <DataTable
         data={data ?? []}
         isLoading={isLoading}
-        columns={beatsListColumns}
+        columns={clienteleListColumns}
       />
     </div>
   );
 };
 
-export default BeatsListTable;
+export default ClienteleListTable;

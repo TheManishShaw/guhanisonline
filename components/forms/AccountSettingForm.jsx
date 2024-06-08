@@ -27,6 +27,7 @@ const AccountSettingForm = () => {
   const {
     isPending,
     isError,
+    isLoading,
     data: selfDetails,
     error,
   } = useQuery({
@@ -70,6 +71,7 @@ const AccountSettingForm = () => {
     mutation.mutate(formData);
   }
 
+  if (isLoading) return "loading ...";
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">

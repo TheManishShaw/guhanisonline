@@ -2,7 +2,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { addBlog } from "@/lib/hooks/services/universalFetch";
+import { addClientele } from "@/lib/hooks/services/universalFetch";
 import "react-quill/dist/quill.snow.css";
 import {
   Form,
@@ -14,28 +14,22 @@ import {
 } from "../ui/form";
 import { Textarea } from "../ui/textarea";
 import { useForm } from "react-hook-form";
-import { Label } from "../ui/label";
-import ReactQuill, { Quill } from "react-quill";
 import ImageResize from "quill-image-resize-module-react";
 import { toast } from "sonner";
 import Image from "next/image";
 
-Quill.register("modules/imageResize", ImageResize);
-
-const BlogForm = () => {
+const ClienteleForm = () => {
   const form = useForm({
     // resolver: zodResolver(beatsFormSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      summary: "",
-      tags: "",
+      name: "",
+      design: "",
+      testimonial: "",
     },
   });
 
   const fileInputRef = useRef(null); // Add useRef for file input
   const [image, setImage] = useState(null);
-  const [editorHtml, setEditorHtml] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false); // State for submission status
 
@@ -49,34 +43,28 @@ const BlogForm = () => {
     }
   };
 
-  const handleEditorChange = useCallback((html) => {
-    setEditorHtml(html);
-  }, []);
-
   const onSubmit = async (data) => {
     setIsSubmitting(true); // Set submitting state to true
     console.log("data", data);
     const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("image", image);
-    formData.append("content", data.content);
-    formData.append("summary", editorHtml);
-    formData.append("tags", data.tags);
-
+    formData.append("name", data.name);
+    formData.append("photo", image);
+    formData.append("design", data.design);
+    formData.append("testimonial", data.testimonial);
     try {
-      const response = await addBlog(formData);
+      const response = await addClientele(formData);
       if (response.status === 201) {
-        toast.success(response?.data?.message ?? "Blog Created Successfully");
+        toast.success("Clientele Created Successfully");
         form.reset();
         setImage(null); // Clear image state
         setImagePreview(null); // Clear image preview
-        setEditorHtml(""); // Clear editor HTML
         if (fileInputRef.current) {
           fileInputRef.current.value = ""; // Clear file input value
         }
       }
     } catch (error) {
       console.error("Error uploading the image", error);
+      setIsSubmitting(false); // Set submitting state to false
     } finally {
       setIsSubmitting(false); // Set submitting state to false
     }
@@ -87,10 +75,10 @@ const BlogForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <FormField
           control={form.control}
-          name="image"
+          name="photo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Cover Image</FormLabel>
+              <FormLabel className="text-primary"> Client Image</FormLabel>
               <FormControl>
                 <Input
                   type="file"
@@ -116,59 +104,47 @@ const BlogForm = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Title</FormLabel>
-              <FormControl>
-                <Input placeholder="title" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Content (optional)</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="content"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div>
-          <Label className="text-primary mt-2 pb-1">Summary (optional)</Label>
-          <div className="text-white border mt-1 rounded-md">
-            <ReactQuill
-              theme="snow"
-              onChange={handleEditorChange}
-              value={editorHtml}
-              modules={modules}
-              formats={formats}
-              bounds={"#root"}
-              placeholder="Write something..."
-            />
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="design"
+            className="w-full"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">Designation</FormLabel>
+                <FormControl>
+                  <Input placeholder="Founder" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <FormField
           control={form.control}
-          name="tags"
-          className="w-full"
+          name="testimonial"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Tags</FormLabel>
+              <FormLabel className="text-primary">Testimonial</FormLabel>
               <FormControl>
-                <Input placeholder="Tags" {...field} />
+                <Textarea
+                  placeholder="testimonial"
+                  className="resize-none"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -182,45 +158,4 @@ const BlogForm = () => {
   );
 };
 
-export default BlogForm;
-
-const modules = {
-  toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    [{ size: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [
-      { list: "ordered" },
-      { list: "bullet" },
-      { indent: "-1" },
-      { indent: "+1" },
-    ],
-    ["link", "image", "video"],
-    ["clean"],
-  ],
-  clipboard: {
-    // toggle to add extra line breaks when pasting HTML:
-    matchVisual: false,
-  },
-  imageResize: {
-    parchment: Quill.import("parchment"),
-    modules: ["Resize", "DisplaySize"],
-  },
-};
-
-const formats = [
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "image",
-  "video",
-];
+export default ClienteleForm;
