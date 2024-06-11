@@ -1,8 +1,8 @@
 "use client";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { addBlog } from "@/lib/hooks/services/universalFetch";
+import { addBlog, updateBlogById } from "@/lib/hooks/services/universalFetch";
 import "react-quill/dist/quill.snow.css";
 import {
   Form,
@@ -19,25 +19,51 @@ import ReactQuill, { Quill } from "react-quill";
 import ImageResize from "quill-image-resize-module-react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { blogFormSchema } from "@/lib/validation/validation";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 Quill.register("modules/imageResize", ImageResize);
 
-const BlogForm = () => {
+const BlogForm = ({ type, existingData }) => {
+  const params = useParams();
+  const router = useRouter();
+  // console.log("params", params.blog_id);
+  // console.log("existingData", existingData);
+  const isUpdate = type === "update";
+  // console.log("isUpdate", isUpdate);
+  const defaultValues = isUpdate
+    ? {
+        title: existingData?.title,
+        content: existingData?.content,
+        summary: existingData?.summary,
+        tags: existingData?.tags,
+      }
+    : {
+        title: "",
+        content: "",
+        summary: "",
+        tags: "",
+      };
   const form = useForm({
-    // resolver: zodResolver(beatsFormSchema),
-    defaultValues: {
-      title: "",
-      content: "",
-      summary: "",
-      tags: "",
-    },
+    resolver: zodResolver(blogFormSchema),
+    defaultValues: defaultValues,
   });
 
-  const fileInputRef = useRef(null); // Add useRef for file input
+  const fileInputRef = useRef(null);
   const [image, setImage] = useState(null);
-  const [editorHtml, setEditorHtml] = useState("");
-  const [imagePreview, setImagePreview] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // State for submission status
+  const [editorHtml, setEditorHtml] = useState(existingData?.summary);
+  const [imagePreview, setImagePreview] = useState(existingData?.image);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (existingData) {
+      setImage(existingData.image);
+      setEditorHtml(existingData.summary);
+      setImagePreview(existingData.image);
+    }
+  }, [existingData]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -54,34 +80,55 @@ const BlogForm = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    setIsSubmitting(true); // Set submitting state to true
-    console.log("data", data);
+    setIsSubmitting(true);
     const formData = new FormData();
     formData.append("title", data.title);
-    formData.append("image", image);
+    if (image) {
+      formData.append("image", image);
+    }
     formData.append("content", data.content);
     formData.append("summary", editorHtml);
     formData.append("tags", data.tags);
 
     try {
-      const response = await addBlog(formData);
+      const response = isUpdate
+        ? await updateBlogById(params.blog_id, formData)
+        : await addBlog(formData);
+      console.log("responsse", response);
       if (response.status === 201) {
-        toast.success(response?.data?.message ?? "Blog Created Successfully");
+        toast.success(
+          response?.data?.message ??
+            (isUpdate
+              ? "Blog Updated Successfully"
+              : "Blog Created Successfully")
+        );
         form.reset();
-        setImage(null); // Clear image state
-        setImagePreview(null); // Clear image preview
-        setEditorHtml(""); // Clear editor HTML
+        setImage(null);
+        setImagePreview(null);
+        setEditorHtml("");
         if (fileInputRef.current) {
-          fileInputRef.current.value = ""; // Clear file input value
+          fileInputRef.current.value = "";
+        }
+      }
+      if (response.status === 200) {
+        router.push("/dashboard/blogs");
+        toast.success(response?.data?.message ?? "Blog Updated Successfully");
+        form.reset();
+        setImage(null);
+        setImagePreview(null);
+        setEditorHtml("");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
         }
       }
     } catch (error) {
       console.error("Error uploading the image", error);
+      toast.error(`Something want working in the out end ${error}`);
     } finally {
-      setIsSubmitting(false); // Set submitting state to false
+      setIsSubmitting(false);
     }
   };
-
+  if (!existingData) return "Loading...";
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
@@ -100,7 +147,7 @@ const BlogForm = () => {
                     field.onChange(e);
                     handleImageChange(e);
                   }}
-                  ref={fileInputRef} // Attach ref to the input
+                  ref={fileInputRef}
                 />
               </FormControl>
               {imagePreview && (
@@ -199,7 +246,6 @@ const modules = {
     ["clean"],
   ],
   clipboard: {
-    // toggle to add extra line breaks when pasting HTML:
     matchVisual: false,
   },
   imageResize: {

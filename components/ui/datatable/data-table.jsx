@@ -65,7 +65,11 @@ export function DataTable({ columns, data, isLoading }) {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
+                    <TableHead
+                      className="text-2xl"
+                      key={header.id}
+                      colSpan={header.colSpan}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -80,7 +84,14 @@ export function DataTable({ columns, data, isLoading }) {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              "Loading..."
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-2xl"
+                >
+                  Loading...
+                </TableCell>
+              </TableRow>
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow

@@ -18,7 +18,7 @@ const page = () => {
           <CardDescription>Manage your beats details.</CardDescription>
         </CardHeader>
         <CardContent>
-          <AddBeatForm />
+          <AddBeatForm type="edit" />
         </CardContent>
       </Card>
     </>

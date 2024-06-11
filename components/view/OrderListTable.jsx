@@ -10,13 +10,24 @@ import { getAllOrderList } from "@/lib/hooks/services/universalFetch";
 import { useQuery } from "@tanstack/react-query";
 
 const OrderListTable = () => {
-  const { isPending, isError, data, error } = useQuery({
-    queryKey: ["allBlogList"],
+  const {
+    isPending,
+    isError,
+    data: orderList,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["getAllOrderList"],
     queryFn: getAllOrderList,
   });
+  console.log("orders, ", orderList);
   return (
     <div className="w-full mx-auto">
-      <DataTable data={ordersDetailsData} columns={ordersColumns} />
+      <DataTable
+        data={orderList ?? []}
+        isLoading={isLoading}
+        columns={ordersColumns}
+      />
     </div>
   );
 };

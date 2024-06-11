@@ -42,11 +42,20 @@ export const ordersColumns = [
     enableHiding: false,
   },
   {
-    accessorKey: "product",
+    accessorKey: "product_id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Product" />
+      <DataTableColumnHeader column={column} title="Product Id" />
     ),
-    cell: ({ row }) => <div>{row.original.product}</div>,
+    cell: ({ row }) => <div>{row.original.product_id}</div>,
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "quantity",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Quantity" />
+    ),
+    cell: ({ row }) => <Badge>{row.original.quantity}</Badge>,
     enableSorting: false,
     enableHiding: false,
   },

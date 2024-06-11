@@ -12,7 +12,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import StoreProvider from "./StoreProvider";
 import Script from "next/script";
 import SessionsProvider from "./SessionsProvider";
-
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 // Font files can be colocated inside of `app`
 const myFont = localFont({
   src: "../public/assets/fonts/advanced_pixel-7.ttf",
@@ -28,19 +28,26 @@ export default function RootLayout({ children }) {
         className={`${myFont.className} bg-background`}
       >
         <SessionsProvider>
-          <StoreProvider>
-            <QueryClientProvider client={queryClient}>
-              {children}
-              <Toaster richColors position="top-center" />
-              <ReactQueryDevtools initialIsOpen={false} />
-            </QueryClientProvider>
-          </StoreProvider>
+          <PayPalScriptProvider
+            options={{
+              "client-id":
+                "AYI2ckD-VUorFA7pi-meCy2Yq1pfuJSOpvtbAYz5GUTh6c2eGNCGAvTooxlSANAMovCrkPYF2w4xkrkN",
+            }}
+          >
+            <StoreProvider>
+              <QueryClientProvider client={queryClient}>
+                {children}
+                <Toaster richColors position="top-center" />
+                <ReactQueryDevtools initialIsOpen={false} />
+              </QueryClientProvider>
+            </StoreProvider>
+          </PayPalScriptProvider>
         </SessionsProvider>
       </body>
-      <Script
+      {/* <Script
         type="text/javascript"
         src="https://www.paypal.com/sdk/js?client-id=AYI2ckD-VUorFA7pi-meCy2Yq1pfuJSOpvtbAYz5GUTh6c2eGNCGAvTooxlSANAMovCrkPYF2w4xkrkN"
-      ></Script>
+      ></Script> */}
     </html>
   );
 }

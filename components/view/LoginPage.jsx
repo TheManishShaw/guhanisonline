@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,7 @@ import {
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Spinner from "../ui/Spinner";
 
 const FormSchema = z.object({
   email: z.string().email({ message: "Enter a valid email." }),
@@ -24,6 +25,7 @@ const FormSchema = z.object({
 });
 
 const LoginPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -34,6 +36,7 @@ const LoginPage = () => {
   });
   const onSubmit = async (formData) => {
     try {
+      setIsLoading(true);
       const result = await signIn("credentials", {
         redirect: true,
         email: formData.email,
@@ -42,12 +45,15 @@ const LoginPage = () => {
 
       if (result.status === 200) {
         router.push("/dashboard");
+        // setIsLoading(false);
       } else {
         console.log("Failed to register");
+        // setIsLoading(false);
       }
-
       console.log("result ---->", result);
     } catch (error) {
+      setIsLoading(false);
+
       console.log(error);
     }
   };
@@ -115,13 +121,8 @@ const LoginPage = () => {
                 <div className="grid gap-2">
                   <div className="flex items-center"></div>
                 </div>
-                <Button
-                  // disabled={postMutation.status === "pending"}
-                  type="submit"
-                  className="w-full"
-                >
-                  login
-                  {/* {postMutation.status === "pending" ? <Spinner /> : "Login"} */}
+                <Button disabled={isLoading} type="submit" className="w-full">
+                  {isLoading === "pending" ? <Spinner /> : "Login"}
                 </Button>
               </form>
             </Form>

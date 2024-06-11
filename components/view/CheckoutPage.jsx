@@ -1,13 +1,26 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import Image from "next/image";
+import PayPalButton from "../ui/PayPalButton";
 
 const CheckoutPage = () => {
+  const [paidFor, setPaidFor] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSuccess = (details) => {
+    setPaidFor(true);
+    console.log("Transaction completed by " + details.payer.name.given_name);
+  };
+
+  const handleError = (err) => {
+    setError(err);
+    console.error("PayPal Checkout onError", err);
+  };
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   const totalAmount = useSelector((state) => state.cart.totalAmount);
@@ -59,7 +72,7 @@ const CheckoutPage = () => {
       <div className="rounded-lg border bg-black p-6 shadow-md">
         <h2 className="mb-4 text-2xl font-bold">Order Summary</h2>
         <div className="space-y-4">
-          {cartItems &&
+          {/* {cartItems &&
             cartItems.map((item, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -83,14 +96,23 @@ const CheckoutPage = () => {
                 </div>
                 <div className="text-lg font-semibold">${item.price}</div>
               </div>
-            ))}
+            ))} */}
 
           {/* <Separator /> */}
           <div className="flex items-center justify-between">
             <p className="text-lg font-semibold">Total</p>
-            <p className="text-2xl font-bold">${totalAmount}</p>
+            {/* <p className="text-2xl font-bold">${totalAmount}</p> */}
           </div>
-          <Button className="w-full">Place Order</Button>
+          {paidFor ? (
+            <span>Payment Successful!</span>
+          ) : (
+            <PayPalButton
+              amount="1.00"
+              onSuccess={handleSuccess}
+              onError={handleError}
+            />
+          )}
+          {error && <span>Error: {error.message}</span>}
         </div>
       </div>
     </section>

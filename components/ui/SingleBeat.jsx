@@ -5,7 +5,7 @@ import { PauseIcon, PlayIcon } from "lucide-react";
 import { Badge } from "./badge";
 import { usePlayback } from "@/app/PlaybackContext";
 
-const SingleBeat = ({ audioUrl, name, singer, price }) => {
+const SingleBeat = ({ audioUrl, name, image, singer, audioBpm }) => {
   const waveformRef = useRef(null);
   const wavesurferRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -81,7 +81,7 @@ const SingleBeat = ({ audioUrl, name, singer, price }) => {
           <div
             className="absolute rounded-md inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: "url('/assets/images/background.jpg')",
+              backgroundImage: `url(${image})`,
             }}
           ></div>
           <button
@@ -118,7 +118,7 @@ const SingleBeat = ({ audioUrl, name, singer, price }) => {
         </div>
         <div className=" flex items-center justify-center px-3 w-full max-w-20">
           <span className="bg-gray-700 rounded-lg px-1 py-1 ml-1 self-center w-full">
-            {"  "} BPM {bpm || "--"}
+            {"  "} BPM {audioBpm ? audioBpm : bpm || "--"}
           </span>
         </div>
       </div>

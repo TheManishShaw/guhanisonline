@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -22,6 +22,7 @@ import { setCookie } from "nookies";
 import { signUpFormSchema } from "@/lib/validation/validation";
 
 const SignupPage = () => {
+  const [loading, setLoading] = useState();
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(signUpFormSchema),
@@ -37,15 +38,16 @@ const SignupPage = () => {
 
   const onSubmit = async (formData) => {
     try {
+      setLoading(true);
       const response = await signUp(formData);
 
       if (response.status === 201) {
         // Store the token in cookies
-        setCookie(null, "token", response.data.token, {
-          maxAge: 30 * 24 * 60 * 60, // 30 days
-          path: "/",
-        });
-
+        // setCookie(null, "token", response.data.token, {
+        //   maxAge: 30 * 24 * 60 * 60, // 30 days
+        //   path: "/",
+        // });
+        toast.success("Signup Successfully ");
         // Redirect to dashboard
         router.push("/sign-in");
       } else {
@@ -57,6 +59,8 @@ const SignupPage = () => {
           error?.response?.data?.password ? error?.response?.data?.password : ""
         }` || error?.message
       );
+      setLoading(false);
+
       console.log(error);
     }
 

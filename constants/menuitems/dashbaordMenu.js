@@ -3,6 +3,7 @@ import {
   ListMusic,
   Rss,
   ShoppingCart,
+  User2,
   User2Icon,
   Users,
 } from "lucide-react";
@@ -13,11 +14,17 @@ export const dashboardList = [
     path: "/dashboard",
     name: "Home",
     icon: <Home />,
+    roles: ["admin"],
+  },
+  {
+    path: "/dashboard/profile",
+    name: "Profile",
+    icon: <User2 />,
     roles: ["admin", "user"],
   },
   {
     path: "/dashboard/beats",
-    name: "Music",
+    name: "Beats",
     icon: <ListMusic />,
     roles: ["admin"],
   },
@@ -34,16 +41,15 @@ export const dashboardList = [
     roles: ["admin"],
   },
   {
-    path: "/dashboard/profile",
-    name: "Profile",
+    path: "/dashboard/clientele",
+    name: "Clientele",
     icon: <Rss />,
-    roles: ["admin", "user"], // Updated to include admin
+    roles: ["admin"],
   },
   {
     path: "/dashboard/orders",
     name: "Orders",
     icon: <ShoppingCart />,
-    roles: ["admin", "user"], // Updated to include admin
+    roles: ["admin", "user"],
   },
-  // Add other routes here
 ];

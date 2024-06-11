@@ -1,15 +1,16 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import RelatedPost from "../ui/RelatedPost";
 import Image from "next/image";
 import { getOpenBlogsDetailById } from "@/lib/hooks/services/universalFetch";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import moment from "moment";
+import SingleBlogCard from "../ui/SingleBlogCard";
 
-import * as htmlparser2 from "htmlparser2";
 const PublicBlogDetailPage = () => {
   const params = useParams();
+  const [blogList, setBlogList] = useState([]);
   const {
     status,
     data: blogDetail,
@@ -21,6 +22,11 @@ const PublicBlogDetailPage = () => {
     queryFn: () => getOpenBlogsDetailById(params.blog_id),
     enabled: params.blog_id !== null,
   });
+
+  useEffect(() => {
+    setBlogList(JSON?.parse(localStorage.getItem("blog")));
+  }, [blogDetail]);
+  console.log("bloglist", blogList);
   console.log("blogDetail?.image !== null", blogDetail?.image !== null);
   console.log("data", blogDetail);
   return (
@@ -38,7 +44,7 @@ const PublicBlogDetailPage = () => {
                     <div className="mr-4">
                       <div className="relative h-10 w-10 overflow-hidden rounded-full">
                         <Image
-                          src="/assets/images/login/placeholder.svg"
+                          src={"/assets/images/login/placeholder.svg"}
                           alt="author"
                           fill
                         />
@@ -134,9 +140,9 @@ const PublicBlogDetailPage = () => {
                 </div>
                 <div className="text-base font-medium leading-relaxed text-body-color">
                   {/* <PortableText value={blogDetail?.summary} /> */}
-                  {/* <div
+                  <div
                     dangerouslySetInnerHTML={{ __html: blogDetail?.summary }}
-                  /> */}
+                  />
                   {/* {htmlparser2.parseDocument(blogDetail?.summary)} */}
                 </div>
 
@@ -166,16 +172,19 @@ const PublicBlogDetailPage = () => {
                 Related Posts
               </h3>
               <ul className="p-8">
-                <li className="mb-6 border-b border-body-color border-opacity-10 pb-6 dark:border-white dark:border-opacity-10">
-                  <RelatedPost
-                    title={blogDetail?.title}
-                    image={blogDetail?.image}
-                    slug={`/blog/blog-details/${blogDetail?.blog_id}`}
-                    date={moment(blogDetail?.created_at).format(
-                      "MMMM Do YYYY  "
-                    )}
-                  />
-                </li>
+                {blogList.slice(0, 4).map((blog, index) => (
+                  <li
+                    key={index}
+                    className="mb-6 border-b border-body-color border-opacity-10 pb-6 dark:border-white dark:border-opacity-10"
+                  >
+                    <RelatedPost
+                      title={blog?.title}
+                      image={blog?.image}
+                      slug={`/blogs/blog-details/${blog?.blog_id}`}
+                      date={moment(blog?.created_at).format("MMMM Do YYYY  ")}
+                    />
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -196,6 +205,11 @@ const PublicBlogDetailPage = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-5 mx-auto w-full">
+        {blogList.slice(0, 3).map((blog, index) => (
+          <SingleBlogCard {...blog} key={index} />
+        ))}
       </div>
     </section>
   );

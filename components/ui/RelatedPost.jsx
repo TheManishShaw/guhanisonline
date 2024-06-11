@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 
 const RelatedPost = ({ image, title, slug, date }) => {
+  
   return (
     <div className="flex items-center lg:block xl:flex">
       <div className="mr-5 lg:mb-3 xl:mb-0">

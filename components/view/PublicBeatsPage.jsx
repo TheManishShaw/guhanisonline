@@ -63,7 +63,7 @@ const PublicBeatsPage = () => {
                   width={200}
                   height={200}
                   className="rounded-lg"
-                  src="https://images.unsplash.com/photo-1543794327-59a91fb815d1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80"
+                  src={`${item?.cover_image_path}&auto=format&fit=crop&w=200&h=200&q=80`}
                   alt="test"
                 />
               </div>
@@ -135,18 +135,19 @@ const PublicBeatsPage = () => {
             {item?.beats?.map((beat, index) => (
               <SingleBeat
                 key={index}
-                audioUrl="/assets/audio/Yimmy.mp3"
-                name="yimmy yimmy fkdfkfkfsfks"
-                singer=" Manish Shaw"
-                price="$23.34"
+                image={beat.cover_image_path}
+                audioUrl={beat.file_path}
+                name={beat.title}
+                audioBpm={beat.bpm}
+                singer=""
               />
             ))}
-            <SingleBeat
+            {/* <SingleBeat
               audioUrl="/assets/audio/Yimmy.mp3"
               name="yimmy yimmy fkdfkfkfsfks"
               singer=" Manish Shaw"
               price="$23.34"
-            />
+            /> */}
           </div>
         </Card>
       ))}

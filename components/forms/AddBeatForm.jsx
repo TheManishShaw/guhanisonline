@@ -12,49 +12,107 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { Textarea } from "../ui/textarea";
-import { TrashIcon } from "lucide-react";
+import { TrashIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axiosInstance";
-import { addBeats } from "@/lib/hooks/services/universalFetch";
+import { addBeats, updateBeatsById } from "@/lib/hooks/services/universalFetch";
 
-const AddBeatForm = () => {
+const AddBeatForm = ({ type }) => {
+  const existingData = {
+    collection_id: 10,
+    title: "Yimmy Yimmy",
+    description:
+      "Tayc | Shreya Ghoshal | Jacqueline Fernandez | Rajat N | Rana",
+    price: 212,
+    cover_image_path:
+      "http://guhanapi.ivdata.in/storage/uploads/QjOs28Cm6JAkzg8fOOs0K8B3dBbuiInsgA8PfJIu.jpg",
+    created_at: "2024-06-09T17:16:21.000000Z",
+    updated_at: "2024-06-09T17:16:21.000000Z",
+    beats: [
+      {
+        beat_id: 12,
+        title: "Yimmy Yimmy(PagalWorld.com.sb)",
+        description: null,
+        price: 212,
+        bpm: null,
+        file_path: "",
+        cover_image_path:
+          "http://guhanapi.ivdata.in/storage/uploads/ThYKbtY8wfKrL2U2V9CWi3UnaMsoC2viIdPWzkjw.jpg",
+        collection_id: 10,
+        created_at: "2024-06-09T17:16:21.000000Z",
+        updated_at: "2024-06-09T17:16:21.000000Z",
+      },
+    ],
+  };
+  const isUpdate = type === "edit";
+
+  const defaultValues = isUpdate
+    ? {
+        title: existingData.title,
+        description: existingData.description,
+        cover_image: existingData.cover_image_path,
+        file: existingData.file,
+        price: existingData.price,
+        beats: existingData.beats.map((beat) => ({
+          audio: beat.file_path,
+          cover: beat.cover_image_path,
+          title: beat.title,
+          description: beat.description || beat.title || "",
+          price: beat.price,
+        })),
+      }
+    : {
+        title: "",
+        description: "",
+        cover_image: "",
+        file: "",
+        price: "",
+        beats: [
+          { audio: "", cover: "", title: "", description: "", price: "" },
+        ],
+      };
+
   const form = useForm({
-    // resolver: zodResolver(beatsFormSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      cover_image: "",
-      file: "",
-      price: "",
-      beats: [
-        { title: "", description: "", file: "", cover_image: "", price: "" },
-      ],
-    },
+    defaultValues,
   });
 
-  const [date, setDate] = useState();
-  const [beats, setBeats] = useState([]);
-  const [currentAudio, setCurrentAudio] = useState(null);
-  const [coverImage, setCoverImage] = useState(null);
-  const [coverImagePreview, setCoverImagePreview] = useState(null);
+  const [mainCoverImage, setMainCoverImage] = useState(null);
   const [zipFile, setZipFile] = useState(null);
+  const [beats, setBeats] = useState(
+    isUpdate
+      ? existingData.beats.map((beat) => ({
+          audio: null,
+          cover: null,
+          ...beat,
+        }))
+      : [{ audio: null, cover: null }]
+  );
+  const [uploadedFiles, setUploadedFiles] = useState({
+    cover_image: existingData ? existingData.cover_image_path : "",
+    file: existingData ? existingData.file : "",
+    beats: existingData
+      ? existingData.beats.map((beat) => ({
+          audio: beat.file_path,
+          cover: beat.cover_image_path,
+        }))
+      : [],
+  });
 
   useEffect(() => {
-    if (coverImage) {
-      setCoverImagePreview(URL.createObjectURL(coverImage));
-      uploadFile(coverImage, "cover_image");
+    if (mainCoverImage) {
+      uploadFile(mainCoverImage, "cover_image");
     }
-  }, [coverImage]);
+  }, [mainCoverImage]);
 
   useEffect(() => {
     if (zipFile) {
-      uploadFile(zipFile, "zip_file");
+      uploadFile(zipFile, "file");
     }
   }, [zipFile]);
 
-  const handleCoverImageChange = (event) => {
+  const handleMainCoverImageChange = (event) => {
     const file = event.target.files[0];
-    setCoverImage(file);
+    setMainCoverImage(file);
   };
 
   const handleZipFileChange = (event) => {
@@ -62,48 +120,50 @@ const AddBeatForm = () => {
     setZipFile(file);
   };
 
-  const handleBeatChange = (event) => {
-    const files = Array.from(event.target.files);
-    const filePromises = files.map((file) => {
-      return new Promise((resolve) => {
-        const audio = new Audio(URL.createObjectURL(file));
-        audio.addEventListener("loadedmetadata", () => {
-          resolve({
-            file,
-            name: file.name,
-            duration: audio.duration,
-          });
-        });
-      });
-    });
+  const handleBeatChange = (event, index, type) => {
+    const file = event.target.files[0];
+    const newBeats = [...beats];
 
-    Promise.all(filePromises).then((newBeats) => {
-      const uploadPromises = newBeats.map((beat) =>
-        uploadFile(beat.file, "beat")
-      );
-      Promise.all(uploadPromises).then((uploadResponses) => {
-        console.log("Upload responses:", uploadResponses);
-      });
-      setBeats([...beats, ...newBeats]);
-    });
+    if (type === "audio") {
+      // Extract the title and BPM from the file name
+      const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
+      const bpmMatch = fileNameWithoutExtension.match(/_bpm(\d+)/);
+      const bpm = bpmMatch ? bpmMatch[1] : "";
+
+      newBeats[index] = {
+        ...newBeats[index],
+        audio: file,
+        title: fileNameWithoutExtension,
+        bpm: bpm,
+      };
+
+      uploadFile(file, `beats[${index}].audio`);
+    } else if (type === "cover") {
+      newBeats[index] = {
+        ...newBeats[index],
+        cover: file,
+      };
+
+      uploadFile(file, `beats[${index}].cover`);
+    }
+
+    setBeats(newBeats);
   };
 
   const handleRemoveBeat = (index) => {
     const newBeats = beats.filter((_, i) => i !== index);
+    const newUploadedFiles = { ...uploadedFiles };
+    newUploadedFiles.beats.splice(index, 1);
     setBeats(newBeats);
+    setUploadedFiles(newUploadedFiles);
   };
 
-  const handlePlay = (audioElement) => {
-    if (currentAudio && currentAudio !== audioElement) {
-      currentAudio.pause();
-    }
-    if (audioElement.paused) {
-      audioElement.play();
-      setCurrentAudio(audioElement);
-    } else {
-      audioElement.pause();
-      setCurrentAudio(null);
-    }
+  const handleAddBeat = () => {
+    setBeats([...beats, { audio: null, cover: null }]);
+    setUploadedFiles({
+      ...uploadedFiles,
+      beats: [...uploadedFiles.beats, { audio: "", cover: "" }],
+    });
   };
 
   const uploadFile = (file, type) => {
@@ -114,7 +174,24 @@ const AddBeatForm = () => {
       .post("/fileupload?file", formData)
       .then((response) => {
         toast.success(`File uploaded successfully: ${file.name}`);
-        console.log(`${type} upload response data:`, response.data);
+        const fileUrl = response.data.file_path;
+
+        setUploadedFiles((prev) => {
+          const newUploadedFiles = { ...prev };
+          if (type === "cover_image") {
+            newUploadedFiles.cover_image = fileUrl;
+          } else if (type === "file") {
+            newUploadedFiles.file = fileUrl;
+          } else if (type.startsWith("beats")) {
+            const index = parseInt(type.match(/\d+/)[0], 10);
+            const field = type.includes("audio") ? "audio" : "cover";
+            newUploadedFiles.beats[index] = {
+              ...newUploadedFiles.beats[index],
+              [field]: fileUrl,
+            };
+          }
+          return newUploadedFiles;
+        });
         return response.data;
       })
       .catch((error) => {
@@ -125,21 +202,26 @@ const AddBeatForm = () => {
   };
 
   const onSubmit = async (data) => {
-    let formData = {
+    const formData = {
       title: data.title,
       description: data.description,
       price: data.price,
-      file: data.url, // Initially empty for the collection.zip URL
-      cover_image: data.url, // Initially empty for the cover image URL
+      file: uploadedFiles.file,
+      cover_image: uploadedFiles.cover_image,
       beats: data.beats.map((beat, index) => ({
-        ...beat,
-        cover_image: data.url, // Initially empty for each beat's cover image URL
+        title: beats[index]?.title || "",
+        description: beat.description,
+        price: data.price,
+        file_path: uploadedFiles.beats[index]?.audio || "",
+        cover_image: uploadedFiles.beats[index]?.cover || "",
+        bpm: beats[index]?.bpm || "",
       })),
     };
 
     try {
-      // Send formData to the server
-      const res = await addBeats(formData);
+      const res = isUpdate
+        ? await updateBeatsById(existingData.collection_id, formData)
+        : await addBeats(formData);
       console.log("res", res);
     } catch (error) {
       console.log(error);
@@ -159,37 +241,44 @@ const AddBeatForm = () => {
                 <Input
                   type="file"
                   placeholder="cover image"
+                  accept="image/*"
                   onChange={(e) => {
                     field.onChange(e);
-                    handleCoverImageChange(e);
+                    handleMainCoverImageChange(e);
                   }}
                 />
               </FormControl>
-              {coverImagePreview && (
+              {mainCoverImage ? (
                 <img
-                  src={coverImagePreview}
+                  src={URL.createObjectURL(mainCoverImage)}
                   alt="Cover Preview"
                   className="mt-4 w-32 h-32 object-cover"
                 />
-              )}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-primary">Title</FormLabel>
-              <FormControl>
-                <Input placeholder="title" {...field} />
-              </FormControl>
+              ) : isUpdate && uploadedFiles.cover_image ? (
+                <img
+                  src={uploadedFiles.cover_image}
+                  alt="Cover Preview"
+                  className="mt-4 w-32 h-32 object-cover"
+                />
+              ) : null}
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="grid grid-cols-2 items-center gap-4 w-full">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary">Title</FormLabel>
+                <FormControl>
+                  <Input placeholder="title" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             className="w-full"
@@ -253,48 +342,86 @@ const AddBeatForm = () => {
           className="w-full"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">
-                Preview Audio files
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  id="beats"
-                  accept="audio/*"
-                  multiple
-                  onChange={handleBeatChange}
-                />
-              </FormControl>
+              <div className="w-full flex items-center justify-between">
+                <FormLabel className="text-primary">
+                  Preview Audio Files
+                </FormLabel>
+                <Button
+                  type="button"
+                  onClick={handleAddBeat}
+                  className="bg-white text-black"
+                  variant="ghost"
+                >
+                  <PlusIcon className="w-6 h-6 mr-2" />
+                  Add Another Beat
+                </Button>
+              </div>
+              {beats.map((beat, index) => (
+                <div
+                  key={index}
+                  className="beat-item px-4 mb-2 pt-4 pb-6 border gap-4 rounded-lg flex items-center justify-between"
+                >
+                  <FormField
+                    control={form.control}
+                    name={`beats[${index}].audio`}
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel className="text-primary">
+                          Audio File {index + 1}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="file"
+                            accept="audio/*"
+                            onChange={(e) => {
+                              field.onChange(e);
+                              handleBeatChange(e, index, "audio");
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`beats[${index}].cover`}
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel className="text-primary">
+                          Cover Image {index + 1}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            className="w-full mb-4"
+                            onChange={(e) => {
+                              field.onChange(e);
+                              handleBeatChange(e, index, "cover");
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <span
+                    onClick={() => handleRemoveBeat(index)}
+                    size="icon"
+                    type="button"
+                    className="text-black mt-8  p-2.5 rounded-lg bg-white hover:bg-red-500 hover:text-white"
+                    variant="ghost"
+                  >
+                    <TrashIcon className="w-6 h-6 " />
+                  </span>
+                </div>
+              ))}
+
               <FormMessage />
             </FormItem>
           )}
         />
-        <div id="beatList" className="beat-preview space-y-5">
-          {beats.map((beat, index) => (
-            <div
-              key={index}
-              className="beat-item px-4 mb-2 bg-[#F1F3F4] rounded-lg flex items-center gap-2 justify-between"
-            >
-              <p className="text-black max-w-md w-full text-xl">{beat.name}</p>
-              <audio
-                className="w-full max-w-lg rounded-lg"
-                controls
-                src={URL.createObjectURL(beat.file)}
-                onPlay={(e) => handlePlay(e.target)}
-              />
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => handleRemoveBeat(index)}
-                  size="icon"
-                  className="text-black hover:bg-red-500 hover:text-white"
-                  variant="ghost"
-                >
-                  <TrashIcon className="w-6 h-6" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
         <Button type="submit">Submit</Button>
       </form>
     </Form>
