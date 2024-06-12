@@ -99,7 +99,7 @@ const Navbar = () => {
                   <Link
                     key={index + "mobile"}
                     href={menu.path}
-                    className="text-white text-xl hover:text-foreground"
+                    className="text-white text-2xl hover:text-foreground"
                   >
                     {menu.name}
                   </Link>
