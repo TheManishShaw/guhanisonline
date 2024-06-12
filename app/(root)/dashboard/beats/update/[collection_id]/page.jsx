@@ -7,22 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import DashboardLayout from "@/components/ui/common/DashboardLayout";
+import BeatsUpdatePage from "@/components/view/updateForms/BeatsUpdatePage";
 import React from "react";
 
 const page = () => {
-  return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Update Beats</CardTitle>
-          <CardDescription>Manage your beats details.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <AddBeatForm type="edit" />
-        </CardContent>
-      </Card>
-    </>
-  );
+  return <BeatsUpdatePage />;
 };
 
 export default page;

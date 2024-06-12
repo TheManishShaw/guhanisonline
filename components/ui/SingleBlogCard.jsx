@@ -27,7 +27,11 @@ const SingleBlogCard = ({
             className="relative w-full min-h-32 h-60  overflow-hidden lg:rounded-3xl"
             style={{ backgroundColor: "#13162D" }}
           >
-            <img src={image ? image : "/assets/images/blog.jpg"} alt="bgimg" />
+            <img
+              src={image ? image : "/assets/images/blog.jpg"}
+              className="bg-cover w-full h-full"
+              alt="bgimg"
+            />
           </div>
           {/* <Image
             src="/assets/images/blog.jpg"

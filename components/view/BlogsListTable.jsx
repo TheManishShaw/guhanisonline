@@ -57,7 +57,7 @@ const BlogsListTable = () => {
           <Image
             src={row.original?.image ?? "/assets/images/login/placeholder.svg"}
             alt={row.original.name ?? "image"}
-            className="rounded-full"
+            className="rounded-md w-[50px] h-[50px]"
             width={50}
             height={50}
           />
@@ -93,7 +93,7 @@ const BlogsListTable = () => {
         <DataTableColumnHeader column={column} title="Tags" />
       ),
       cell: ({ row }) => (
-        <div className="max-w-xl w-xl">
+        <div className="max-w-lg w-full">
           <div className="flex items-center gap-2">
             {row.original.tags
               .split(",")
@@ -132,7 +132,7 @@ const BlogsListTable = () => {
         <DataTableColumnHeader column={column} title="Create At" />
       ),
       cell: ({ row }) => (
-        <div className="max-w-[500px] text-xl w-[400px]">
+        <div className="max-w-[200px] text-xl w-[135px]">
           {moment(row.original.created_at).format("MMMM Do YYYY  ")}
         </div>
       ),

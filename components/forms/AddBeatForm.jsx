@@ -17,35 +17,9 @@ import { toast } from "sonner";
 import axiosInstance from "@/lib/axiosInstance";
 import { addBeats, updateBeatsById } from "@/lib/hooks/services/universalFetch";
 
-const AddBeatForm = ({ type }) => {
-  const existingData = {
-    collection_id: 10,
-    title: "Yimmy Yimmy",
-    description:
-      "Tayc | Shreya Ghoshal | Jacqueline Fernandez | Rajat N | Rana",
-    price: 212,
-    cover_image_path:
-      "http://guhanapi.ivdata.in/storage/uploads/QjOs28Cm6JAkzg8fOOs0K8B3dBbuiInsgA8PfJIu.jpg",
-    created_at: "2024-06-09T17:16:21.000000Z",
-    updated_at: "2024-06-09T17:16:21.000000Z",
-    beats: [
-      {
-        beat_id: 12,
-        title: "Yimmy Yimmy(PagalWorld.com.sb)",
-        description: null,
-        price: 212,
-        bpm: null,
-        file_path: "",
-        cover_image_path:
-          "http://guhanapi.ivdata.in/storage/uploads/ThYKbtY8wfKrL2U2V9CWi3UnaMsoC2viIdPWzkjw.jpg",
-        collection_id: 10,
-        created_at: "2024-06-09T17:16:21.000000Z",
-        updated_at: "2024-06-09T17:16:21.000000Z",
-      },
-    ],
-  };
+const AddBeatForm = ({ type, existingData }) => {
   const isUpdate = type === "edit";
-
+  console.log("existingData", existingData);
   const defaultValues = isUpdate
     ? {
         title: existingData.title,
@@ -88,9 +62,9 @@ const AddBeatForm = ({ type }) => {
       : [{ audio: null, cover: null }]
   );
   const [uploadedFiles, setUploadedFiles] = useState({
-    cover_image: existingData ? existingData.cover_image_path : "",
-    file: existingData ? existingData.file : "",
-    beats: existingData
+    cover_image: isUpdate ? existingData.cover_image_path : "",
+    file: isUpdate ? existingData.file : "",
+    beats: isUpdate
       ? existingData.beats.map((beat) => ({
           audio: beat.file_path,
           cover: beat.cover_image_path,
@@ -109,6 +83,12 @@ const AddBeatForm = ({ type }) => {
       uploadFile(zipFile, "file");
     }
   }, [zipFile]);
+
+  useEffect(() => {
+    if (isUpdate) {
+      form.reset(defaultValues);
+    }
+  }, [isUpdate, existingData]);
 
   const handleMainCoverImageChange = (event) => {
     const file = event.target.files[0];

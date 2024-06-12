@@ -16,7 +16,7 @@ import { usePathname } from "next/navigation";
 import { menuList } from "@/constants/menuitems/menuList";
 import { useSelector } from "react-redux";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 const Navbar = () => {
   const path = usePathname();

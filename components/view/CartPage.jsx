@@ -7,8 +7,10 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { removeItem } from "@/lib/store/features/cart/Cart";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const CartPage = () => {
+  const { data: session } = useSession();
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -84,11 +86,23 @@ const CartPage = () => {
             ${cartTotalAmount.toFixed(2)}
           </div>
         </div>
-        <Link href="/checkout">
-          <Button className="w-full" size="lg">
-            Checkout
-          </Button>
-        </Link>
+        {session?.user ? (
+          <Link href="/checkout">
+            <Button
+              disabled={cartItems.length === 0}
+              className="w-full"
+              size="lg"
+            >
+              Checkout
+            </Button>
+          </Link>
+        ) : (
+          <Link href="/api/auth/signin">
+            <Button className="w-full" size="lg">
+              Login
+            </Button>
+          </Link>
+        )}
       </div>
     </section>
   );

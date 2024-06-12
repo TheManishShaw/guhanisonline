@@ -29,41 +29,38 @@ Quill.register("modules/imageResize", ImageResize);
 const BlogForm = ({ type, existingData }) => {
   const params = useParams();
   const router = useRouter();
-  // console.log("params", params.blog_id);
-  // console.log("existingData", existingData);
   const isUpdate = type === "update";
-  // console.log("isUpdate", isUpdate);
-  const defaultValues = isUpdate
-    ? {
-        title: existingData?.title,
-        content: existingData?.content,
-        summary: existingData?.summary,
-        tags: existingData?.tags,
-      }
-    : {
-        title: "",
-        content: "",
-        summary: "",
-        tags: "",
-      };
+
   const form = useForm({
     resolver: zodResolver(blogFormSchema),
-    defaultValues: defaultValues,
+    defaultValues: {
+      title: "",
+      content: "",
+      summary: "",
+      tags: "",
+    },
   });
 
+  const { reset } = form;
   const fileInputRef = useRef(null);
   const [image, setImage] = useState(null);
-  const [editorHtml, setEditorHtml] = useState(existingData?.summary);
-  const [imagePreview, setImagePreview] = useState(existingData?.image);
+  const [editorHtml, setEditorHtml] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (existingData) {
+      reset({
+        title: existingData.title || "",
+        content: existingData.content || "",
+        summary: existingData.summary || "",
+        tags: existingData.tags || "",
+      });
       setImage(existingData.image);
       setEditorHtml(existingData.summary);
       setImagePreview(existingData.image);
     }
-  }, [existingData]);
+  }, [existingData, reset]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -94,7 +91,7 @@ const BlogForm = ({ type, existingData }) => {
       const response = isUpdate
         ? await updateBlogById(params.blog_id, formData)
         : await addBlog(formData);
-      console.log("responsse", response);
+      console.log("response", response);
       if (response.status === 201) {
         toast.success(
           response?.data?.message ??
@@ -123,12 +120,12 @@ const BlogForm = ({ type, existingData }) => {
       }
     } catch (error) {
       console.error("Error uploading the image", error);
-      toast.error(`Something want working in the out end ${error}`);
+      toast.error(`Something went wrong on our end: ${error}`);
     } finally {
       setIsSubmitting(false);
     }
   };
-  if (!existingData) return "Loading...";
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
@@ -154,8 +151,8 @@ const BlogForm = ({ type, existingData }) => {
                 <Image
                   src={imagePreview}
                   alt="Cover Preview"
-                  width={32}
-                  height={32}
+                  width={128}
+                  height={128}
                   className="mt-4 w-32 h-32 object-cover"
                 />
               )}

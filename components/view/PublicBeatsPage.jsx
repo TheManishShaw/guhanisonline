@@ -6,22 +6,12 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { Card } from "../ui/card";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem } from "@/lib/store/features/cart/Cart";
+import { addItem, selectCart } from "@/lib/store/features/cart/Cart";
 import { useQuery } from "@tanstack/react-query";
 import { getOpenBeatsList } from "@/lib/hooks/services/universalFetch";
 import { useRouter } from "next/navigation";
 
 const PublicBeatsPage = () => {
-  const data = [
-    {
-      id: 1,
-      price: "23.23",
-      title: "Blurred Vision",
-      image: "/assets/images/login/placeholder.svg",
-    },
-    // ...other data items
-  ];
-
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -35,9 +25,10 @@ const PublicBeatsPage = () => {
     queryKey: ["getOpenBeatsList"],
     queryFn: getOpenBeatsList,
   });
+  const cart = useSelector(selectCart);
 
-  const isItemInCart = (itemId) => {
-    return cartItems.some((cartItem) => cartItem.id === itemId);
+  const isItemInCart = (id) => {
+    return cart.items.some((item) => item.id === id);
   };
 
   return (
@@ -142,12 +133,6 @@ const PublicBeatsPage = () => {
                 singer=""
               />
             ))}
-            {/* <SingleBeat
-              audioUrl="/assets/audio/Yimmy.mp3"
-              name="yimmy yimmy fkdfkfkfsfks"
-              singer=" Manish Shaw"
-              price="$23.34"
-            /> */}
           </div>
         </Card>
       ))}

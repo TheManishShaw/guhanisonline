@@ -24,7 +24,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-
 const handleDeleteBeats = async (collection_id) => {
   try {
     const res = await deleteCollectionById(collection_id);
@@ -128,7 +127,6 @@ export const usersListColumns = [
   },
 ];
 
-
 export const clienteleListColumns = [
   {
     accessorKey: "id",
@@ -207,7 +205,7 @@ export const clienteleListColumns = [
       <DataTableColumnHeader column={column} title="Create At" />
     ),
     cell: ({ row }) => (
-      <div className="max-w-[500px] text-xl w-[400px]">
+      <div className="max-w-[200px] text-xl w-[130px]">
         {moment(row.original.created_at).format("MMMM Do YYYY  ")}
       </div>
     ),

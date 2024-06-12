@@ -75,13 +75,11 @@ const BeatsListTable = () => {
       cell: ({ row }) => (
         <div className="max-w-md">
           <Link
-            href={`/dashboard/beats/${row.original.collection_id}`}
+            href={`/dashboard/beats/update/${row.original.collection_id}`}
             className="text-xl hover:underline max-w-md w-64 font-bold line-clamp-1"
           >
             {row.original.title}
           </Link>
-
-          {/* <p className=" line-clamp-2">{row.original.description}</p> */}
         </div>
       ),
       enableSorting: false,
@@ -126,7 +124,7 @@ const BeatsListTable = () => {
         <DataTableColumnHeader column={column} title="Create At" />
       ),
       cell: ({ row }) => (
-        <div className="max-w-[500px] text-xl w-[400px]">
+        <div className="max-w-[200px] text-xl w-[130px]">
           {moment(row.original.created_at).format("MMMM Do YYYY  ")}
         </div>
       ),
