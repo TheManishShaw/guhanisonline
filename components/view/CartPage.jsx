@@ -38,16 +38,10 @@ const CartPage = () => {
       if (response.status === 201) {
         toast.success("Order created successfully");
         console.log("Order created successfully!");
-        if (typeof window !== "undefined") {
-          // Code that accesses localStorage
-
-          localStorage.setItem("orderDetails", JSON.stringify(response));
-        }
-        // localStorage.removeItem("cart");
-        // router.push("/dashboard/orders");
-        // Example redirect:
-        // router.push('/order-confirmation');
+        localStorage.setItem("orderDetails", JSON.stringify(response));
+        router.push("/checkout");
       } else {
+        setIsLoading(false);
         // Handle error scenarios
         console.error("Failed to create order:", response.statusText);
         // Optionally show error message to user
