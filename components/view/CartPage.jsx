@@ -19,13 +19,13 @@ const CartPage = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
+  console.log("cartItems===>", cartItems);
   const handleCreateOrder = async () => {
     try {
       setIsLoading(true);
       const orderItems = cartItems.map((item) => ({
-        collection_id: 10,
-        amount: 212, // Assuming each item's price represents the total amount for that collection
+        collection_id: item.collection_id,
+        amount: item.price, // Assuming each item's price represents the total amount for that collection
       }));
 
       const payload = {
@@ -34,11 +34,14 @@ const CartPage = () => {
 
       // Replace with your actual API call to create order
       const response = await createOrder(payload);
-      console.log("respnose", response);
+
       if (response.status === 201) {
         toast.success("Order created successfully");
-        console.log("Order created successfully!");
-        localStorage.setItem("orderDetails", JSON.stringify(response));
+        console.log("Order created successfully!", response);
+        localStorage.setItem(
+          "orderDetails",
+          JSON.stringify(response.data.order.id)
+        );
         router.push("/checkout");
       } else {
         setIsLoading(false);

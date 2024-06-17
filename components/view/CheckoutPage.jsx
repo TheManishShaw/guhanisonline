@@ -27,11 +27,6 @@ const CheckoutPage = () => {
 
   const handleSuccess = (details) => {
     setPaidFor(true);
-    toast.success("Order created successfully");
-    console.log("Order created successfully!");
-
-    localStorage.removeItem("cart");
-    router.push("/dashboard/orders");
   };
 
   const handleError = (err) => {
@@ -50,11 +45,14 @@ const CheckoutPage = () => {
   };
 
   const cartTotalAmount = calculateTotalAmount();
+  useEffect(() => {
+    const orderId = localStorage.getItem("orderDetails");
+    console.log("orderId", orderId);
+  }, []);
 
   if (!isClient && !session?.user) {
     return null; // Avoid rendering until client-side
   }
-
   return (
     <section className="container mx-auto my-12 flex items-center justify-center">
       <div className="flex mx-20 justify-center container gap-8">
