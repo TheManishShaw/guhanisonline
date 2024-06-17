@@ -37,7 +37,6 @@ const CartPage = () => {
 
       if (response.status === 201) {
         toast.success("Order created successfully");
-        console.log("Order created successfully!", response);
         localStorage.setItem(
           "orderDetails",
           JSON.stringify(response.data.order.id)
