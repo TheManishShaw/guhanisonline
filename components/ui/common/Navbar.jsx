@@ -23,11 +23,11 @@ const Navbar = () => {
   const [cartItemLength, setCartItemLength] = useState(0);
   const user = false;
   const [open, setOpen] = useState(false);
-  const cartItems = useSelector((state) => state.cart.items);
+  const cartItems = useSelector((state) => state?.cart?.items);
   const { data: session } = useSession();
 
   useEffect(() => {
-    setCartItemLength(cartItems.length);
+    setCartItemLength(cartItems?.length);
   }, [cartItems]);
 
   useEffect(() => {

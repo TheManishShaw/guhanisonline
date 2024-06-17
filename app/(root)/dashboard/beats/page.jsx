@@ -41,7 +41,7 @@ const page = () => {
             </div>
             <div className=" ">
               <Link
-                className="bg-primary text-black px-5 py-3 rounded-lg"
+                className="bg-primary text-black px-5 py-3 text-xl rounded-lg"
                 href="/dashboard/beats/add"
               >
                 Add Beats

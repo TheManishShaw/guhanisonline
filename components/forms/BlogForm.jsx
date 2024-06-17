@@ -2,7 +2,11 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { addBlog, updateBlogById } from "@/lib/hooks/services/universalFetch";
+import {
+  addBlog,
+  updateBlogById,
+  uploadFiles,
+} from "@/lib/hooks/services/universalFetch";
 import "react-quill/dist/quill.snow.css";
 import {
   Form,
@@ -61,38 +65,52 @@ const BlogForm = ({ type, existingData }) => {
       setImagePreview(existingData.image);
     }
   }, [existingData, reset]);
-
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     setImage(file);
     if (file) {
       setImagePreview(URL.createObjectURL(file));
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const imageUrl = await uploadFiles(formData);
+        setImage(imageUrl); // Set the image URL from the response
+      } catch (error) {
+        console.error("Error uploading the image", error);
+        toast.error(
+          `Image upload failed ${
+            error?.response?.data?.message ?? error?.message
+          }`
+        );
+      }
     } else {
+      setImage(null);
       setImagePreview(null);
     }
   };
-
   const handleEditorChange = useCallback((html) => {
     setEditorHtml(html);
   }, []);
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    const formData = new FormData();
-    formData.append("title", data.title);
-    if (image) {
-      formData.append("image", image);
-    }
-    formData.append("content", data.content);
-    formData.append("summary", editorHtml);
-    formData.append("tags", data.tags);
-
     try {
+      const payload = {
+        title: data.title,
+        image: image.file_path, // Image URL is already set by handleImageChange
+        content: data.content,
+        summary: editorHtml,
+        tags: data.tags,
+      };
+
       const response = isUpdate
-        ? await updateBlogById(params.blog_id, formData)
-        : await addBlog(formData);
+        ? await updateBlogById(params.blog_id, payload)
+        : await addBlog(payload);
+
       console.log("response", response);
-      if (response.status === 201) {
+
+      if (response?.status === 201 || response?.status === 200) {
         toast.success(
           response?.data?.message ??
             (isUpdate
@@ -106,26 +124,18 @@ const BlogForm = ({ type, existingData }) => {
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
-      }
-      if (response.status === 200) {
-        router.push("/dashboard/blogs");
-        toast.success(response?.data?.message ?? "Blog Updated Successfully");
-        form.reset();
-        setImage(null);
-        setImagePreview(null);
-        setEditorHtml("");
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
+        if (isUpdate) {
+          router.push("/dashboard/blogs");
         }
       }
     } catch (error) {
-      console.error("Error uploading the image", error);
-      toast.error(`Something went wrong on our end: ${error}`);
+      console.error("Error submitting the form", error);
+      toast.error(`Something went wrong on our end: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  console.log("image=========>", image);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">

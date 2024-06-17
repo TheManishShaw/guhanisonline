@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import React from "react";
+import UpdateBeatForm from "./UpdateBeatForm";
 
 const BeatsUpdatePage = () => {
   const existingData = {
@@ -43,7 +44,7 @@ const BeatsUpdatePage = () => {
           <CardDescription>Manage your beats details.</CardDescription>
         </CardHeader>
         <CardContent>
-          <AddBeatForm type="edit" existingData={existingData} />
+          <UpdateBeatForm type="edit" existingData={existingData} />
         </CardContent>
       </Card>
     </div>

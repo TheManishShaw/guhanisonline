@@ -7,46 +7,34 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { TrashIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axiosInstance";
-import { addBeats, updateBeatsById } from "@/lib/hooks/services/universalFetch";
+import { updateBeatsById } from "@/lib/hooks/services/universalFetch";
 import { useRouter } from "next/navigation";
 
-const AddBeatForm = ({ type, existingData }) => {
+const UpdateBeatForm = ({ existingData }) => {
   const router = useRouter();
-  const isUpdate = type === "edit";
-  console.log("existingData", existingData);
-  const defaultValues = isUpdate
-    ? {
-        title: existingData.title,
-        description: existingData.description,
-        cover_image: existingData.cover_image_path,
-        file: existingData.file,
-        price: existingData.price,
-        beats: existingData.beats.map((beat) => ({
-          audio: beat.file_path,
-          cover: beat.cover_image_path,
-          title: beat.title,
-          description: beat.description || beat.title || "",
-          price: beat.price,
-        })),
-      }
-    : {
-        title: "",
-        description: "",
-        cover_image: "",
-        file: "",
-        price: "",
-        beats: [
-          { audio: "", cover: "", title: "", description: "", price: "" },
-        ],
-      };
+
+  const defaultValues = {
+    title: existingData.title,
+    description: existingData.description,
+    cover_image: existingData.cover_image_path,
+    file: existingData.file,
+    price: existingData.price,
+    beats: existingData.beats.map((beat) => ({
+      audio: beat.file_path,
+      cover: beat.cover_image_path,
+      title: beat.title,
+      description: beat.description || beat.title || "",
+      price: beat.price,
+    })),
+  };
 
   const form = useForm({
     defaultValues,
@@ -55,23 +43,19 @@ const AddBeatForm = ({ type, existingData }) => {
   const [mainCoverImage, setMainCoverImage] = useState(null);
   const [zipFile, setZipFile] = useState(null);
   const [beats, setBeats] = useState(
-    isUpdate
-      ? existingData.beats.map((beat) => ({
-          audio: null,
-          cover: null,
-          ...beat,
-        }))
-      : [{ audio: null, cover: null }]
+    existingData.beats.map((beat) => ({
+      audio: null,
+      cover: null,
+      ...beat,
+    }))
   );
   const [uploadedFiles, setUploadedFiles] = useState({
-    cover_image: isUpdate ? existingData.cover_image_path : "",
-    file: isUpdate ? existingData.file : "",
-    beats: isUpdate
-      ? existingData.beats.map((beat) => ({
-          audio: beat.file_path,
-          cover: beat.cover_image_path,
-        }))
-      : [],
+    cover_image: existingData.cover_image_path,
+    file: existingData.file,
+    beats: existingData.beats.map((beat) => ({
+      audio: beat.file_path,
+      cover: beat.cover_image_path,
+    })),
   });
 
   useEffect(() => {
@@ -87,10 +71,8 @@ const AddBeatForm = ({ type, existingData }) => {
   }, [zipFile]);
 
   useEffect(() => {
-    if (isUpdate) {
-      form.reset(defaultValues);
-    }
-  }, [isUpdate, existingData]);
+    form.reset(defaultValues);
+  }, [existingData]);
 
   const handleMainCoverImageChange = (event) => {
     const file = event.target.files[0];
@@ -153,6 +135,14 @@ const AddBeatForm = ({ type, existingData }) => {
     newUploadedFiles.beats.splice(index, 1);
     setBeats(newBeats);
     setUploadedFiles(newUploadedFiles);
+  };
+
+  const handleRemoveFile = () => {
+    setZipFile(null);
+    setUploadedFiles((prev) => ({
+      ...prev,
+      file: null,
+    }));
   };
 
   const handleAddBeat = () => {
@@ -230,16 +220,12 @@ const AddBeatForm = ({ type, existingData }) => {
     };
 
     try {
-      const res = isUpdate
-        ? await updateBeatsById(existingData.collection_id, formData)
-        : await addBeats(formData);
+      const res = await updateBeatsById(existingData.collection_id, formData);
       console.log("res", res);
-      if (res.status === 201) {
+      if (res.status === 200) {
         form.reset();
         setBeats(null);
         setZipFile(null);
-      }
-      if (res.status === 200) {
         router.push("/dashboard/beats");
       }
     } catch (error) {
@@ -273,7 +259,7 @@ const AddBeatForm = ({ type, existingData }) => {
                   alt="Cover Preview"
                   className="mt-4 w-32 h-32 object-cover"
                 />
-              ) : isUpdate && uploadedFiles.cover_image ? (
+              ) : uploadedFiles.cover_image ? (
                 <img
                   src={uploadedFiles.cover_image}
                   alt="Cover Preview"
@@ -351,6 +337,43 @@ const AddBeatForm = ({ type, existingData }) => {
                   }}
                 />
               </FormControl>
+              {zipFile ? (
+                <div className="mt-4">
+                  <a
+                    href={URL.createObjectURL(zipFile)}
+                    download={zipFile.name}
+                    className="text-primary"
+                  >
+                    Download {zipFile.name}
+                  </a>
+                  <Button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    className="ml-4"
+                    variant="ghost"
+                  >
+                    <TrashIcon className="w-6 h-6" />
+                  </Button>
+                </div>
+              ) : uploadedFiles.file ? (
+                <div className="mt-4">
+                  <a
+                    href={uploadedFiles.file}
+                    download
+                    className="text-primary"
+                  >
+                    Download Existing File
+                  </a>
+                  <Button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    className="ml-4"
+                    variant="ghost"
+                  >
+                    <TrashIcon className="w-6 h-6" />
+                  </Button>
+                </div>
+              ) : null}
               <FormMessage />
             </FormItem>
           )}
@@ -398,6 +421,19 @@ const AddBeatForm = ({ type, existingData }) => {
                             }}
                           />
                         </FormControl>
+                        {beat.audio ? (
+                          <audio
+                            controls
+                            src={URL.createObjectURL(beat.audio)}
+                            className="mt-2 w-full"
+                          />
+                        ) : uploadedFiles.beats[index]?.audio ? (
+                          <audio
+                            controls
+                            src={uploadedFiles.beats[index].audio}
+                            className="mt-2 w-full"
+                          />
+                        ) : null}
                         <FormMessage />
                       </FormItem>
                     )}
@@ -421,6 +457,19 @@ const AddBeatForm = ({ type, existingData }) => {
                             }}
                           />
                         </FormControl>
+                        {beat.cover ? (
+                          <img
+                            src={URL.createObjectURL(beat.cover)}
+                            alt={`Cover Preview ${index + 1}`}
+                            className="mt-4 w-32 h-32 object-cover"
+                          />
+                        ) : uploadedFiles.beats[index]?.cover ? (
+                          <img
+                            src={uploadedFiles.beats[index].cover}
+                            alt={`Cover Preview ${index + 1}`}
+                            className="mt-4 w-32 h-32 object-cover"
+                          />
+                        ) : null}
                         <FormMessage />
                       </FormItem>
                     )}
@@ -441,10 +490,10 @@ const AddBeatForm = ({ type, existingData }) => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Update</Button>
       </form>
     </Form>
   );
 };
 
-export default AddBeatForm;
+export default UpdateBeatForm;

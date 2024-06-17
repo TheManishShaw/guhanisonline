@@ -55,7 +55,7 @@ const BlogsListTable = () => {
       cell: ({ row }) => (
         <div className="flex items-center gap-4">
           <Image
-            src={row.original?.image ?? "/assets/images/login/placeholder.svg"}
+            src={row?.original?.image ?? "/assets/images/login/placeholder.svg"}
             alt={row.original.name ?? "image"}
             className="rounded-md w-[50px] h-[50px]"
             width={50}

@@ -6,13 +6,17 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { Card } from "../ui/card";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, selectCart } from "@/lib/store/features/cart/Cart";
+
 import { useQuery } from "@tanstack/react-query";
 import { getOpenBeatsList } from "@/lib/hooks/services/universalFetch";
 import { useRouter } from "next/navigation";
+import {
+  addToCart,
+  clearCart,
+  removeFromCart,
+} from "@/lib/store/features/cart/Cart";
 
 const PublicBeatsPage = () => {
-  const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -25,10 +29,16 @@ const PublicBeatsPage = () => {
     queryKey: ["getOpenBeatsList"],
     queryFn: getOpenBeatsList,
   });
-  const cart = useSelector(selectCart);
+  const handleAddToCart = (item) => {
+    dispatch(addToCart(item));
+  };
 
-  const isItemInCart = (id) => {
-    return cart.items.some((item) => item.id === id);
+  const handleRemoveFromCart = (item) => {
+    dispatch(removeFromCart(item));
+  };
+
+  const handleClearCart = () => {
+    dispatch(clearCart());
   };
 
   return (
@@ -41,7 +51,7 @@ const PublicBeatsPage = () => {
           <div className="relative w-full h-36 bg-white rounded-lg shadow-lg overflow-hidden mb-8">
             <div className="absolute inset-0 rounded-lg overflow-hidden bg-gray-400">
               <Image
-                src={`/${item?.cover_image_path}`}
+                src={`${item?.cover_image_path}`}
                 layout="fill"
                 objectFit="cover"
                 alt="nothing"
@@ -54,7 +64,7 @@ const PublicBeatsPage = () => {
                   width={200}
                   height={200}
                   className="rounded-lg"
-                  src={`${item?.cover_image_path}&auto=format&fit=crop&w=200&h=200&q=80`}
+                  src={item?.cover_image_path}
                   alt="test"
                 />
               </div>
@@ -76,29 +86,19 @@ const PublicBeatsPage = () => {
                       {" "}
                       $ {item.price}
                     </p>
-                    {isItemInCart(item.id) ? (
-                      <Button
-                        onClick={() => router.push("/cart")}
-                        className=" bg-primary px-3 text-black py-0.5"
-                        variant="ghost"
-                      >
-                        <ShoppingCart className="h-4 w-4" />
-                        <span className="mx-2 text-lg font-bold">
-                          Go to Cart
-                        </span>
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => dispatch(addItem(item))}
-                        className=" bg-primary px-3 text-black py-0.5"
-                        variant="ghost"
-                      >
-                        <ShoppingCart className="h-4 w-4" />
-                        <span className="mx-2 text-lg font-bold">
-                          Add to cart
-                        </span>
-                      </Button>
-                    )}
+
+                    <Button
+                      onClick={() => handleAddToCart(item)}
+                      // onClick={() => handleAddToCart(collection)}
+                      // disabled={isInCart(collection.collection_id)}
+                      className=" bg-primary px-3 text-black py-0.5"
+                      variant="ghost"
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                      <span className="mx-2 text-lg font-bold">
+                        Add to cart
+                      </span>
+                    </Button>
                   </div>
                 </div>
 
