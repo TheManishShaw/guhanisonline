@@ -36,7 +36,7 @@ const PayPalButton = ({ amount, onSuccess, onError }) => {
             const res = await updateOrderById(order_id, formData);
             if (res.status === 200) {
             }
-            toast.success(res?.data?.message);
+            toast.success("ordered placed Successfully");
             localStorage.removeItem("orderDetails");
             dispatch(clearCart());
             router.push("/dashboard/orders");
