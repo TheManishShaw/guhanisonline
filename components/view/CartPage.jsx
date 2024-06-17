@@ -38,7 +38,11 @@ const CartPage = () => {
       if (response.status === 201) {
         toast.success("Order created successfully");
         console.log("Order created successfully!");
-        localStorage.setItem("orderDetails", JSON.stringify(response));
+        if (typeof window !== "undefined") {
+          // Code that accesses localStorage
+
+          localStorage.setItem("orderDetails", JSON.stringify(response));
+        }
         // localStorage.removeItem("cart");
         // router.push("/dashboard/orders");
         // Example redirect:

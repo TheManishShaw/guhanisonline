@@ -2,6 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Load cart from localStorage
 const loadCartFromLocalStorage = () => {
+  if (typeof window === "undefined") {
+    // If window is undefined, we're on the server, return an empty cart
+    return [];
+  }
+
   try {
     const serializedCart = localStorage.getItem("cart");
     return serializedCart ? JSON.parse(serializedCart) : [];
@@ -13,6 +18,11 @@ const loadCartFromLocalStorage = () => {
 
 // Save cart to localStorage
 const saveCartToLocalStorage = (cart) => {
+  if (typeof window === "undefined") {
+    // If window is undefined, we're on the server, do nothing
+    return;
+  }
+
   try {
     const serializedCart = JSON.stringify(cart);
     localStorage.setItem("cart", serializedCart);
