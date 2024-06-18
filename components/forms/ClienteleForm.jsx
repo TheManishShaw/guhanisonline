@@ -1,8 +1,11 @@
 "use client";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { addClientele } from "@/lib/hooks/services/universalFetch";
+import {
+  addClientele,
+  updateClientele,
+} from "@/lib/hooks/services/universalFetch"; // Assuming updateClientele is available
 import "react-quill/dist/quill.snow.css";
 import {
   Form,
@@ -18,20 +21,27 @@ import ImageResize from "quill-image-resize-module-react";
 import { toast } from "sonner";
 import Image from "next/image";
 
-const ClienteleForm = () => {
+const ClienteleForm = ({ initialData, clienteleId }) => {
   const form = useForm({
-    // resolver: zodResolver(beatsFormSchema),
     defaultValues: {
-      name: "",
-      design: "",
-      testimonial: "",
+      name: initialData?.name || "",
+      design: initialData?.design || "",
+      testimonial: initialData?.testimonial || "",
     },
   });
 
-  const fileInputRef = useRef(null); // Add useRef for file input
+  const fileInputRef = useRef(null);
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // State for submission status
+  const [imagePreview, setImagePreview] = useState(
+    initialData?.photoUrl || null
+  ); // Use existing photo URL if available
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (initialData?.photoUrl) {
+      setImagePreview(initialData.photoUrl);
+    }
+  }, [initialData]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -44,29 +54,39 @@ const ClienteleForm = () => {
   };
 
   const onSubmit = async (data) => {
-    setIsSubmitting(true); // Set submitting state to true
-    console.log("data", data);
+    setIsSubmitting(true);
     const formData = new FormData();
     formData.append("name", data.name);
-    formData.append("photo", image);
+    if (image) {
+      formData.append("photo", image);
+    }
     formData.append("design", data.design);
     formData.append("testimonial", data.testimonial);
+
     try {
-      const response = await addClientele(formData);
-      if (response.status === 201) {
-        toast.success("Clientele Created Successfully");
+      let response;
+      if (clienteleId) {
+        response = await updateClientele(clienteleId, formData);
+      } else {
+        response = await addClientele(formData);
+      }
+
+      if (response.status === 201 || response.status === 200) {
+        toast.success(
+          `Clientele ${clienteleId ? "Updated" : "Created"} Successfully`
+        );
         form.reset();
-        setImage(null); // Clear image state
-        setImagePreview(null); // Clear image preview
+        setImage(null);
+        setImagePreview(null);
         if (fileInputRef.current) {
-          fileInputRef.current.value = ""; // Clear file input value
+          fileInputRef.current.value = "";
         }
       }
     } catch (error) {
       console.error("Error uploading the image", error);
-      setIsSubmitting(false); // Set submitting state to false
+      setIsSubmitting(false);
     } finally {
-      setIsSubmitting(false); // Set submitting state to false
+      setIsSubmitting(false);
     }
   };
 
@@ -78,7 +98,7 @@ const ClienteleForm = () => {
           name="photo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary"> Client Image</FormLabel>
+              <FormLabel className="text-primary">Client Image</FormLabel>
               <FormControl>
                 <Input
                   type="file"
@@ -88,7 +108,7 @@ const ClienteleForm = () => {
                     field.onChange(e);
                     handleImageChange(e);
                   }}
-                  ref={fileInputRef} // Attach ref to the input
+                  ref={fileInputRef}
                 />
               </FormControl>
               {imagePreview && (
@@ -151,7 +171,7 @@ const ClienteleForm = () => {
           )}
         />
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? "Submitting..." : clienteleId ? "Update" : "Submit"}
         </Button>
       </form>
     </Form>

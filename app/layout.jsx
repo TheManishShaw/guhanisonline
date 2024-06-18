@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
           <PayPalScriptProvider
             options={{
               "client-id":
-                "AYI2ckD-VUorFA7pi-meCy2Yq1pfuJSOpvtbAYz5GUTh6c2eGNCGAvTooxlSANAMovCrkPYF2w4xkrkN",
+                "AbbW1BEdGZLRhdg30NOnHUAYP6CF3yOkyCAsPi0WA5sGU2dI_jvZ52dH4LLmBlGZvV-RtutLsQ-oMecv",
             }}
           >
             <StoreProvider>
@@ -44,10 +44,6 @@ export default function RootLayout({ children }) {
           </PayPalScriptProvider>
         </SessionsProvider>
       </body>
-      {/* <Script
-        type="text/javascript"
-        src="https://www.paypal.com/sdk/js?client-id=AYI2ckD-VUorFA7pi-meCy2Yq1pfuJSOpvtbAYz5GUTh6c2eGNCGAvTooxlSANAMovCrkPYF2w4xkrkN"
-      ></Script> */}
     </html>
   );
 }

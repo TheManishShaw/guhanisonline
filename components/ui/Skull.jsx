@@ -9,7 +9,12 @@ function Skull() {
   useEffect(() => {
     // Scene setup
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, 1, 1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      60,
+      window.innerWidth / window.innerHeight,
+      1,
+      1000
+    );
     camera.position.set(0, 0, 5);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     // Set clear color to transparent
@@ -24,8 +29,8 @@ function Skull() {
     // Mount renderer to canvas
     const canvas = canvasRef.current;
     canvas.appendChild(renderer.domElement);
-    // Set canvas size to 100%
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    // Set initial canvas size
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
     // Model loading
     const base = new THREE.Object3D();
@@ -65,14 +70,17 @@ function Skull() {
     if (typeof window !== "undefined") {
       window.addEventListener("mousemove", onPointerMove, false);
       window.addEventListener("touchmove", onPointerMove, false);
+      window.addEventListener("resize", onWindowResize, false);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
     // Render loop
     const animate = () => {
-      if (resize(renderer)) {
-        camera.aspect = canvas.clientWidth / canvas.clientHeight;
-        camera.updateProjectionMatrix();
-      }
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
     };
@@ -83,21 +91,11 @@ function Skull() {
       if (typeof window !== "undefined") {
         window.removeEventListener("mousemove", onPointerMove);
         window.removeEventListener("touchmove", onPointerMove);
+        window.removeEventListener("resize", onWindowResize);
       }
       renderer.dispose();
     };
   }, []);
-
-  const resize = (renderer) => {
-    const canvas = renderer.domElement;
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    const needResize = canvas.width !== width || canvas.height !== height;
-    if (needResize) {
-      renderer.setSize(width, height, false);
-    }
-    return needResize;
-  };
 
   return (
     <div
@@ -105,6 +103,7 @@ function Skull() {
       style={{
         width: "100%",
         height: "100vh",
+        overflow: "hidden",
         backgroundImage: "url('/assets/skull_bg.gif')",
         backgroundSize: "cover",
         backgroundPosition: "center",
