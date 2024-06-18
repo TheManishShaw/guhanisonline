@@ -6,7 +6,6 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { Card } from "../ui/card";
 import { useDispatch, useSelector } from "react-redux";
-
 import { useQuery } from "@tanstack/react-query";
 import { getOpenBeatsList } from "@/lib/hooks/services/universalFetch";
 import { useRouter } from "next/navigation";
@@ -19,6 +18,7 @@ import {
 const PublicBeatsPage = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const cartItems = useSelector((state) => state.cart.items);
 
   const {
     isPending,
@@ -29,6 +29,7 @@ const PublicBeatsPage = () => {
     queryKey: ["getOpenBeatsList"],
     queryFn: getOpenBeatsList,
   });
+
   const handleAddToCart = (item) => {
     dispatch(addToCart(item));
   };
@@ -41,12 +42,20 @@ const PublicBeatsPage = () => {
     dispatch(clearCart());
   };
 
+  const isInCart = (itemId) => {
+    return cartItems.some((item) => item.collection_id === itemId);
+  };
+
+  const handleGoToCart = () => {
+    router.push("/cart");
+  };
+  console.log("cartItems", cartItems);
   return (
     <div className="w-full max-w-5xl mx-auto">
       {collection?.map((item, index) => (
         <Card
           key={index}
-          className=" mx-auto my-8 flex max-w-container flex-col items-center gap-3 p-4 rounded-xl shadow-lg "
+          className="mx-auto my-8 flex max-w-container flex-col items-center gap-3 p-4 rounded-xl shadow-lg"
         >
           <div className="relative w-full h-36 bg-white rounded-lg shadow-lg overflow-hidden mb-8">
             <div className="absolute inset-0 rounded-lg overflow-hidden bg-gray-400">
@@ -69,40 +78,48 @@ const PublicBeatsPage = () => {
                 />
               </div>
               <div className="text-white w-full">
-                <div className=" md:flex block items-center justify-between w-full">
-                  <div className="">
-                    <h3 className="lg:text-3xl lg:font-normal font-light text-xl ">
+                <div className="md:flex block items-center justify-between w-full">
+                  <div>
+                    <h3 className="lg:text-3xl lg:font-normal font-light text-xl">
                       {item?.title}
                     </h3>
                     <div className="text-sm opacity-60 hidden md:block">
                       {item.description}
                     </div>
-                    <span className=" text-sm text-gray-500 hidden md:block">
+                    <span className="text-sm text-gray-500 hidden md:block">
                       {item?.beats?.length} Tracks
                     </span>
                   </div>
                   <div className="-translate-x-0 sm:-translate-x-6">
                     <p className="mb-3 font-extrabold text-2xl">
-                      {" "}
                       $ {item.price}
                     </p>
-
-                    <Button
-                      onClick={() => handleAddToCart(item)}
-                      // onClick={() => handleAddToCart(collection)}
-                      // disabled={isInCart(collection.collection_id)}
-                      className=" bg-primary px-3 text-black py-0.5"
-                      variant="ghost"
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                      <span className="mx-2 text-lg font-bold">
-                        Add to cart
-                      </span>
-                    </Button>
+                    {isInCart(item.collection_id) ? (
+                      <Button
+                        onClick={handleGoToCart}
+                        className="bg-primary px-3 text-black py-0.5"
+                        variant="ghost"
+                      >
+                        <ShoppingCart className="h-4 w-4" />
+                        <span className="mx-2 text-lg font-bold">
+                          Go to Cart
+                        </span>
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => handleAddToCart(item)}
+                        className="bg-primary px-3 text-black py-0.5"
+                        variant="ghost"
+                      >
+                        <ShoppingCart className="h-4 w-4" />
+                        <span className="mx-2 text-lg font-bold">
+                          Add to Cart
+                        </span>
+                      </Button>
+                    )}
                   </div>
                 </div>
-
-                <div className=" text-gray-400 hidden md:block">
+                <div className="text-gray-400 hidden md:block">
                   <div className="flex items-center space-x-2 text-xs">
                     <svg
                       className="w-4 h-4"
