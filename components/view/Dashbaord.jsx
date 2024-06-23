@@ -26,10 +26,17 @@ import {
   Users,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { getDashboardData } from "@/lib/hooks/services/universalFetch";
+import { useQuery } from "@tanstack/react-query";
 
 const DashboardContent = () => {
   const { data: session } = useSession();
-  console.log("session===>", session);
+
+  const { isPending, isError, data, isLoading, error, refetch } = useQuery({
+    queryKey: ["getDashboardData"],
+    queryFn: getDashboardData,
+  });
+  console.log("data===>", data);
   console.log("session===>", session?.user?.role === "admin");
   if (session?.user?.role === "user")
     return (
@@ -55,51 +62,49 @@ const DashboardContent = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
+            <div className="text-2xl font-bold">${data?.total_sales}</div>
             <p className="text-xs text-muted-foreground">
-              +20.1% from last month
+              {/* +20.1% from last month */}
             </p>
           </CardContent>
         </Card>
 
         <Card className="w-full">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-2xl font-medium">
-              Subscriptions
-            </CardTitle>
+            <CardTitle className="text-2xl font-medium">Total Orders</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+2350</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold">+{data?.total_orders}</div>
+            {/* <p className="text-xs text-muted-foreground">
               +180.1% from last month
-            </p>
+            </p> */}
           </CardContent>
         </Card>
 
         <Card className="w-full">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-2xl font-medium">Sales</CardTitle>
+            <CardTitle className="text-2xl font-medium">Total beats</CardTitle>
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+12,234</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold">+{data?.total_beats}</div>
+            {/* <p className="text-xs text-muted-foreground">
               +19% from last month
-            </p>
+            </p> */}
           </CardContent>
         </Card>
 
         <Card className="w-full">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-2xl font-medium">Active Now</CardTitle>
+            <CardTitle className="text-2xl font-medium">Total Users</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+573</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold">+{data?.total_users}</div>
+            {/* <p className="text-xs text-muted-foreground">
               +201 since last hour
-            </p>
+            </p> */}
           </CardContent>
         </Card>
       </div>

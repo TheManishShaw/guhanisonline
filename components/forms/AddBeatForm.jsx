@@ -15,64 +15,38 @@ import { Textarea } from "../ui/textarea";
 import { TrashIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axiosInstance";
-import { addBeats, updateBeatsById } from "@/lib/hooks/services/universalFetch";
+import { addBeats } from "@/lib/hooks/services/universalFetch";
 import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { beatsFormSchema } from "@/lib/validation/validation";
 
-const AddBeatForm = ({ type, existingData }) => {
+const AddBeatForm = () => {
   const router = useRouter();
-  const isUpdate = type === "edit";
-  console.log("existingData", existingData);
-  const defaultValues = isUpdate
-    ? {
-        title: existingData.title,
-        description: existingData.description,
-        cover_image: existingData.cover_image_path,
-        file: existingData.file,
-        price: existingData.price,
-        beats: existingData.beats.map((beat) => ({
-          audio: beat.file_path,
-          cover: beat.cover_image_path,
-          title: beat.title,
-          description: beat.description || beat.title || "",
-          price: beat.price,
-        })),
-      }
-    : {
-        title: "",
-        description: "",
-        cover_image: "",
-        file: "",
-        price: "",
-        beats: [
-          { audio: "", cover: "", title: "", description: "", price: "" },
-        ],
-      };
+  const defaultValues = {
+    title: "",
+    description: "",
+    cover_image: "",
+    file: "",
+    price: "",
+    beats: [{ audio: "", cover: "", title: "", description: "", price: "" }],
+  };
 
   const form = useForm({
+    resolver: zodResolver(beatsFormSchema),
     defaultValues,
   });
 
   const [mainCoverImage, setMainCoverImage] = useState(null);
   const [zipFile, setZipFile] = useState(null);
-  const [beats, setBeats] = useState(
-    isUpdate
-      ? existingData.beats.map((beat) => ({
-          audio: null,
-          cover: null,
-          ...beat,
-        }))
-      : [{ audio: null, cover: null }]
-  );
+  const [beats, setBeats] = useState([{ audio: null, cover: null }]);
   const [uploadedFiles, setUploadedFiles] = useState({
-    cover_image: isUpdate ? existingData.cover_image_path : "",
-    file: isUpdate ? existingData.file : "",
-    beats: isUpdate
-      ? existingData.beats.map((beat) => ({
-          audio: beat.file_path,
-          cover: beat.cover_image_path,
-        }))
-      : [],
+    cover_image: "",
+    file: "",
+    beats: [],
   });
+  const [uploadProgress, setUploadProgress] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (mainCoverImage) {
@@ -85,12 +59,6 @@ const AddBeatForm = ({ type, existingData }) => {
       uploadFile(zipFile, "file");
     }
   }, [zipFile]);
-
-  useEffect(() => {
-    if (isUpdate) {
-      form.reset(defaultValues);
-    }
-  }, [isUpdate, existingData]);
 
   const handleMainCoverImageChange = (event) => {
     const file = event.target.files[0];
@@ -167,7 +135,18 @@ const AddBeatForm = ({ type, existingData }) => {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const response = await axiosInstance.post("/fileupload?file", formData);
+      setUploading(true);
+      const response = await axiosInstance.post("/fileupload?file", formData, {
+        onUploadProgress: (progressEvent) => {
+          const progress = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress((prev) => ({
+            ...prev,
+            [type]: progress,
+          }));
+        },
+      });
       toast.success(`File uploaded successfully: ${file.name}`);
       const fileUrl = response.data.file_path;
 
@@ -191,11 +170,13 @@ const AddBeatForm = ({ type, existingData }) => {
     } catch (error) {
       toast.error(`Failed to upload file: ${file.name}`);
       console.error(`${type} upload error:`, error);
-      // throw error;
+    } finally {
+      setUploading(false);
     }
   };
 
   const onSubmit = async (data) => {
+    setSubmitting(true);
     const formData = {
       title: data.title,
       description: data.description,
@@ -230,20 +211,26 @@ const AddBeatForm = ({ type, existingData }) => {
     };
 
     try {
-      const res = isUpdate
-        ? await updateBeatsById(existingData.collection_id, formData)
-        : await addBeats(formData);
-      console.log("res", res);
-      if (res.status === 201) {
-        form.reset();
-        setBeats(null);
+      const res = await addBeats(formData);
+      if (res.status === 201 || res.status === 200) {
+        form.reset(defaultValues);
+        setMainCoverImage(null);
         setZipFile(null);
-      }
-      if (res.status === 200) {
+        setBeats([{ audio: null, cover: null }]);
+        setUploadedFiles({
+          cover_image: "",
+          file: "",
+          beats: [],
+        });
+        setUploadProgress({});
+        toast.success("Form submitted successfully!");
         router.push("/dashboard/beats");
       }
     } catch (error) {
+      toast.error("Failed to submit the form.");
       console.log(error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -273,12 +260,6 @@ const AddBeatForm = ({ type, existingData }) => {
                   alt="Cover Preview"
                   className="mt-4 w-32 h-32 object-cover"
                 />
-              ) : isUpdate && uploadedFiles.cover_image ? (
-                <img
-                  src={uploadedFiles.cover_image}
-                  alt="Cover Preview"
-                  className="mt-4 w-32 h-32 object-cover"
-                />
               ) : null}
               <FormMessage />
             </FormItem>
@@ -300,7 +281,6 @@ const AddBeatForm = ({ type, existingData }) => {
           />
           <FormField
             control={form.control}
-            className="w-full"
             name="price"
             render={({ field }) => (
               <FormItem>
@@ -313,18 +293,15 @@ const AddBeatForm = ({ type, existingData }) => {
             )}
           />
         </div>
-
         <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">
-                Description (optional)
-              </FormLabel>
+              <FormLabel className="text-primary">Description</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Description"
+                  placeholder="description"
                   className="resize-none"
                   {...field}
                 />
@@ -336,15 +313,14 @@ const AddBeatForm = ({ type, existingData }) => {
         <FormField
           control={form.control}
           name="file"
-          className="w-full"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-primary">Files For Download</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Files For Download"
                   type="file"
-                  accept=".zip,.rar,.7zip"
+                  placeholder="Files for download"
+                  accept=".zip"
                   onChange={(e) => {
                     field.onChange(e);
                     handleZipFileChange(e);
@@ -355,93 +331,63 @@ const AddBeatForm = ({ type, existingData }) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="beats"
-          className="w-full"
-          render={({ field }) => (
-            <FormItem>
-              <div className="w-full flex items-center justify-between">
+        <div>
+          <h2 className="text-primary">Preview Audio Files</h2>
+          {beats.map((beat, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-2 items-center gap-2 w-full my-4"
+            >
+              <FormItem>
                 <FormLabel className="text-primary">
-                  Preview Audio Files
+                  Audio File {index + 1}
                 </FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="audio/*"
+                    onChange={(e) => handleBeatChange(e, index, "audio")}
+                  />
+                </FormControl>
+                {beat.audio && <p className="mt-2">{beat.audio.name}</p>}
+              </FormItem>
+              <FormItem>
+                <FormLabel className="text-primary">
+                  Cover Image {index + 1}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleBeatChange(e, index, "cover")}
+                  />
+                </FormControl>
+                {beat.cover && <p className="mt-2">{beat.cover.name}</p>}
+              </FormItem>
+              {index > 0 && (
                 <Button
                   type="button"
-                  onClick={handleAddBeat}
-                  className="bg-white text-black"
-                  variant="ghost"
+                  variant="destructive"
+                  onClick={() => handleRemoveBeat(index)}
+                  className="col-span-2 mt-2"
                 >
-                  <PlusIcon className="w-6 h-6 mr-2" />
-                  Add Another Beat
+                  <TrashIcon className="mr-2 h-4 w-4" /> Remove
                 </Button>
-              </div>
-              {beats?.map((beat, index) => (
-                <div
-                  key={index}
-                  className="beat-item px-4 mb-2 pt-4 pb-6 border gap-4 rounded-lg flex items-center justify-between"
-                >
-                  <FormField
-                    control={form.control}
-                    name={`beats[${index}].audio`}
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel className="text-primary">
-                          Audio File {index + 1}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="file"
-                            accept="audio/*"
-                            onChange={(e) => {
-                              field.onChange(e);
-                              handleBeatChange(e, index, "audio");
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`beats[${index}].cover`}
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel className="text-primary">
-                          Cover Image {index + 1}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            className="w-full mb-4"
-                            onChange={(e) => {
-                              field.onChange(e);
-                              handleBeatChange(e, index, "cover");
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <span
-                    onClick={() => handleRemoveBeat(index)}
-                    size="icon"
-                    type="button"
-                    className="text-black mt-8  p-2.5 rounded-lg bg-white hover:bg-red-500 hover:text-white"
-                    variant="ghost"
-                  >
-                    <TrashIcon className="w-6 h-6 " />
-                  </span>
-                </div>
-              ))}
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
+              )}
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleAddBeat}
+            className="mt-4"
+          >
+            <PlusIcon className="mr-2 h-4 w-4" /> Add Another Beat
+          </Button>
+        </div>
+        <Button type="submit" disabled={uploading || submitting}>
+          {submitting ? "Submitting..." : "Submit"}
+        </Button>
       </form>
     </Form>
   );

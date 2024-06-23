@@ -11,7 +11,10 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import React from "react";
-
+export const metadata = {
+  title: "Profile | Guhanis Official",
+  description: "Artist | Music Producer",
+};
 const page = () => {
   return (
     <>

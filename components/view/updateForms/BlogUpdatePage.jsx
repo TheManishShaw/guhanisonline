@@ -14,7 +14,7 @@ import React from "react";
 
 const BlogUpdatePage = () => {
   const params = useParams();
-  console.log("params", params);
+
   const {
     isPending,
     isError,
@@ -26,7 +26,7 @@ const BlogUpdatePage = () => {
     queryFn: () => getBlogById(params),
     enabled: params !== null,
   });
-  console.log("data", blogByIdData);
+
   return (
     <Card>
       <CardHeader>

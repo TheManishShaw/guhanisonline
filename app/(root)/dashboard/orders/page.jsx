@@ -8,7 +8,10 @@ import {
 } from "@/components/ui/card";
 import OrderListTable from "@/components/view/OrderListTable";
 import React from "react";
-
+export const metadata = {
+  title: "Orders List | Guhanis Official",
+  description: "Artist | Music Producer",
+};
 const page = () => {
   return (
     <Card>

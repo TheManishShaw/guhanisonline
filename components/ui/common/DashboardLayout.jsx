@@ -175,9 +175,9 @@ const DashboardLayout = ({ children }) => {
                 <DropdownMenuItem className="text-xl py-1 font-bold">
                   <Link href="/dashboard/profile">Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-xl py-1 font-bold">
+                {/* <DropdownMenuItem className="text-xl py-1 font-bold">
                   {session.user.name}
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-xl py-1 font-bold cursor-pointer"

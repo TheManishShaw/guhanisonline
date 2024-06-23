@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import React from "react";
 export const metadata = {
-  title: "Add beats | Guhanis Official",
+  title: "Add beat | Guhanis Official",
   description: "Artist | Music Producer",
 };
 const page = () => {

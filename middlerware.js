@@ -12,7 +12,7 @@ export async function middleware(req) {
     // Define roles and protected routes
     const protectedRoutes = {
       admin: ["/admin", "/dashboard"],
-      user: ["/profile", "/settings"],
+      user: ["/dashboard/profile", "/dashboard/orders"],
     };
 
     // Check if user is logged in and has the correct role
@@ -27,6 +27,8 @@ export async function middleware(req) {
         if (isAuthorized) {
           return NextResponse.next();
         }
+
+        return NextResponse.redirect(new URL("/unauthorized", req.url));
       }
 
       return NextResponse.redirect(new URL("/unauthorized", req.url));

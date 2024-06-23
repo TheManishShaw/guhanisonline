@@ -15,9 +15,10 @@ import {
   FormMessage,
 } from "../ui/form";
 import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Spinner from "../ui/Spinner";
+import { toast } from "sonner";
 
 const FormSchema = z.object({
   email: z.string().email({ message: "Enter a valid email." }),
@@ -25,6 +26,7 @@ const FormSchema = z.object({
 });
 
 const LoginPage = () => {
+  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const form = useForm({
@@ -34,35 +36,39 @@ const LoginPage = () => {
       password: "",
     },
   });
+
   const onSubmit = async (formData) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const result = await signIn("credentials", {
-        redirect: true,
+        redirect: false,
         email: formData.email,
         password: formData.password,
       });
 
-      if (result.status === 200) {
+      if (result.error) {
+        console.error("Login failed: ", result.error);
+        toast.error("Login failed: " + result.error);
+      } else if (result.ok && result.status === 200) {
+        toast.success("Sign-in Successfully");
         router.push("/dashboard");
-        // setIsLoading(false);
       } else {
-        console.log("Failed to register");
-        // setIsLoading(false);
+        console.error("Unexpected result: ", result);
+        toast.error("Unexpected result during sign-in");
       }
-      console.log("result ---->", result);
     } catch (error) {
+      console.error("An error occurred during login: ", error);
+      toast.error("An error occurred during login: " + error.message);
+    } finally {
       setIsLoading(false);
-
-      console.log(error);
     }
   };
 
   return (
     <div className="w-full lg:grid lg:grid-cols-2 h-screen">
       <div className="flex items-center justify-center py-12">
-        <div className="mx-auto grid w-[550px] bg-background text-white border  gap-6 p-10 rounded-xl">
-          <div className="grid gap-2 text-center ">
+        <div className="mx-auto grid w-[550px] bg-background text-white border gap-6 p-10 rounded-xl">
+          <div className="grid gap-2 text-center">
             <h1 className="text-5xl font-bold">Login</h1>
             <p className="text-balance text-xl text-muted-foreground">
               Enter your email below to login to your account
@@ -122,7 +128,7 @@ const LoginPage = () => {
                   <div className="flex items-center"></div>
                 </div>
                 <Button disabled={isLoading} type="submit" className="w-full">
-                  {isLoading === "pending" ? <Spinner /> : "Login"}
+                  {isLoading ? <Spinner /> : "Login"}
                 </Button>
               </form>
             </Form>

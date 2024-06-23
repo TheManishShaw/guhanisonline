@@ -21,42 +21,67 @@ import { useRouter } from "next/navigation";
 const UpdateBeatForm = ({ existingData }) => {
   const router = useRouter();
 
-  const defaultValues = {
-    title: existingData.title,
-    description: existingData.description,
-    cover_image: existingData.cover_image_path,
-    file: existingData.file,
-    price: existingData.price,
-    beats: existingData.beats.map((beat) => ({
-      audio: beat.file_path,
-      cover: beat.cover_image_path,
-      title: beat.title,
-      description: beat.description || beat.title || "",
-      price: beat.price,
-    })),
+  const initialValues = {
+    title: "",
+    description: "",
+    cover_image: "",
+    file: "",
+    price: "",
+    beats: [],
   };
 
   const form = useForm({
-    defaultValues,
+    defaultValues: initialValues,
   });
 
   const [mainCoverImage, setMainCoverImage] = useState(null);
   const [zipFile, setZipFile] = useState(null);
-  const [beats, setBeats] = useState(
-    existingData.beats.map((beat) => ({
-      audio: null,
-      cover: null,
-      ...beat,
-    }))
-  );
+  const [beats, setBeats] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState({
-    cover_image: existingData.cover_image_path,
-    file: existingData.file,
-    beats: existingData.beats.map((beat) => ({
-      audio: beat.file_path,
-      cover: beat.cover_image_path,
-    })),
+    cover_image: "",
+    file: "",
+    beats: [],
   });
+
+  useEffect(() => {
+    if (existingData) {
+      const updatedValues = {
+        title: existingData?.title || "",
+        description: existingData?.description || "",
+        cover_image: existingData?.cover_image_path || "",
+        file: existingData?.file_path || "",
+        price: existingData?.price || "",
+        beats:
+          existingData?.beats?.map((beat) => ({
+            audio: beat?.file_path || "",
+            cover: beat?.cover_image_path || "",
+            title: beat?.title || "",
+            description: beat?.description || beat?.title || "",
+            price: beat?.price || "",
+          })) || [],
+      };
+
+      form.reset(updatedValues);
+
+      setBeats(
+        existingData?.beats?.map((beat) => ({
+          audio: null,
+          cover: null,
+          ...beat,
+        })) || []
+      );
+
+      setUploadedFiles({
+        cover_image: existingData?.cover_image_path || "",
+        file: existingData?.file_path || "",
+        beats:
+          existingData?.beats?.map((beat) => ({
+            audio: beat?.file_path || "",
+            cover: beat?.cover_image_path || "",
+          })) || [],
+      });
+    }
+  }, [existingData, form]);
 
   useEffect(() => {
     if (mainCoverImage) {
@@ -69,10 +94,6 @@ const UpdateBeatForm = ({ existingData }) => {
       uploadFile(zipFile, "file");
     }
   }, [zipFile]);
-
-  useEffect(() => {
-    form.reset(defaultValues);
-  }, [existingData]);
 
   const handleMainCoverImageChange = (event) => {
     const file = event.target.files[0];
@@ -181,7 +202,6 @@ const UpdateBeatForm = ({ existingData }) => {
     } catch (error) {
       toast.error(`Failed to upload file: ${file.name}`);
       console.error(`${type} upload error:`, error);
-      // throw error;
     }
   };
 
@@ -196,8 +216,8 @@ const UpdateBeatForm = ({ existingData }) => {
         data.beats.map(async (beat, index) => {
           const beatData = {
             title: beats[index]?.title || "",
-            description: beats[index]?.title || "",
-            price: data.price,
+            description: beats[index]?.description || "",
+            price: beats[index]?.price || "",
             file_path: uploadedFiles.beats[index]?.audio || "",
             cover_image: uploadedFiles.beats[index]?.cover || "",
             bpm: beats[index]?.bpm || "",
@@ -221,11 +241,15 @@ const UpdateBeatForm = ({ existingData }) => {
 
     try {
       const res = await updateBeatsById(existingData.collection_id, formData);
-      console.log("res", res);
       if (res.status === 200) {
         form.reset();
-        setBeats(null);
+        setBeats([]);
         setZipFile(null);
+        setUploadedFiles({
+          cover_image: "",
+          file: "",
+          beats: [],
+        });
         router.push("/dashboard/beats");
       }
     } catch (error) {
@@ -270,7 +294,7 @@ const UpdateBeatForm = ({ existingData }) => {
             </FormItem>
           )}
         />
-        <div className="grid grid-cols-2 items-center gap-4 w-full">
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="title"
@@ -286,34 +310,26 @@ const UpdateBeatForm = ({ existingData }) => {
           />
           <FormField
             control={form.control}
-            className="w-full"
             name="price"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-primary">Price</FormLabel>
                 <FormControl>
-                  <Input placeholder="Price" type="number" {...field} />
+                  <Input placeholder="price" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-
         <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">
-                Description (optional)
-              </FormLabel>
+              <FormLabel className="text-primary">Description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Description"
-                  className="resize-none"
-                  {...field}
-                />
+                <Textarea placeholder="description" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -322,15 +338,14 @@ const UpdateBeatForm = ({ existingData }) => {
         <FormField
           control={form.control}
           name="file"
-          className="w-full"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Files For Download</FormLabel>
+              <FormLabel className="text-primary">Zip File</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Files For Download"
                   type="file"
-                  accept=".zip,.rar,.7zip"
+                  placeholder="zip file"
+                  accept=".zip"
                   onChange={(e) => {
                     field.onChange(e);
                     handleZipFileChange(e);
@@ -338,39 +353,29 @@ const UpdateBeatForm = ({ existingData }) => {
                 />
               </FormControl>
               {zipFile ? (
-                <div className="mt-4">
-                  <a
-                    href={URL.createObjectURL(zipFile)}
-                    download={zipFile.name}
-                    className="text-primary"
-                  >
-                    Download {zipFile.name}
-                  </a>
+                <div className="mt-2 flex items-center">
+                  <p className="mr-2">{zipFile.name}</p>
                   <Button
                     type="button"
-                    onClick={handleRemoveFile}
-                    className="ml-4"
                     variant="ghost"
+                    size="icon"
+                    className="bg-white"
+                    onClick={handleRemoveFile}
                   >
-                    <TrashIcon className="w-6 h-6" />
+                    <TrashIcon className="w-4 h-4 text-red-600 hover:text-white" />
                   </Button>
                 </div>
               ) : uploadedFiles.file ? (
-                <div className="mt-4">
-                  <a
-                    href={uploadedFiles.file}
-                    download
-                    className="text-primary"
-                  >
-                    Download Existing File
-                  </a>
+                <div className="mt-2 flex justify-between items-center">
+                  <p className="mr-2">{uploadedFiles.file}</p>
                   <Button
                     type="button"
-                    onClick={handleRemoveFile}
-                    className="ml-4"
                     variant="ghost"
+                    size="icon"
+                    className="bg-white hover:bg-red-500 text-red-600  hover:text-white"
+                    onClick={handleRemoveFile}
                   >
-                    <TrashIcon className="w-6 h-6" />
+                    <TrashIcon className="w-4 h-4 " />
                   </Button>
                 </div>
               ) : null}
@@ -378,119 +383,136 @@ const UpdateBeatForm = ({ existingData }) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="beats"
-          className="w-full"
-          render={({ field }) => (
-            <FormItem>
-              <div className="w-full flex items-center justify-between">
-                <FormLabel className="text-primary">
-                  Preview Audio Files
-                </FormLabel>
-                <Button
-                  type="button"
-                  onClick={handleAddBeat}
-                  className="bg-white text-black"
-                  variant="ghost"
-                >
-                  <PlusIcon className="w-6 h-6 mr-2" />
-                  Add Another Beat
-                </Button>
-              </div>
-              {beats?.map((beat, index) => (
-                <div
-                  key={index}
-                  className="beat-item px-4 mb-2 pt-4 pb-6 border gap-4 rounded-lg flex items-center justify-between"
-                >
-                  <FormField
-                    control={form.control}
-                    name={`beats[${index}].audio`}
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel className="text-primary">
-                          Audio File {index + 1}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="file"
-                            accept="audio/*"
-                            onChange={(e) => {
-                              field.onChange(e);
-                              handleBeatChange(e, index, "audio");
-                            }}
-                          />
-                        </FormControl>
-                        {beat.audio ? (
-                          <audio
-                            controls
-                            src={URL.createObjectURL(beat.audio)}
-                            className="mt-2 w-full"
-                          />
-                        ) : uploadedFiles.beats[index]?.audio ? (
-                          <audio
-                            controls
-                            src={uploadedFiles.beats[index].audio}
-                            className="mt-2 w-full"
-                          />
-                        ) : null}
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`beats[${index}].cover`}
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel className="text-primary">
-                          Cover Image {index + 1}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            className="w-full mb-4"
-                            onChange={(e) => {
-                              field.onChange(e);
-                              handleBeatChange(e, index, "cover");
-                            }}
-                          />
-                        </FormControl>
-                        {beat.cover ? (
-                          <img
-                            src={URL.createObjectURL(beat.cover)}
-                            alt={`Cover Preview ${index + 1}`}
-                            className="mt-4 w-32 h-32 object-cover"
-                          />
-                        ) : uploadedFiles.beats[index]?.cover ? (
-                          <img
-                            src={uploadedFiles.beats[index].cover}
-                            alt={`Cover Preview ${index + 1}`}
-                            className="mt-4 w-32 h-32 object-cover"
-                          />
-                        ) : null}
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <span
-                    onClick={() => handleRemoveBeat(index)}
-                    size="icon"
+        <div className="mt-8">
+          <div className="flex items-center justify-between ">
+            <h2 className="text-2xl font-bold mb-4">Beats</h2>
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-4 text-black"
+              onClick={handleAddBeat}
+            >
+              <PlusIcon className="w-4 h-4 mr-2" />
+              Add Beat
+            </Button>
+          </div>
+          {beats?.map((beat, index) => (
+            <div key={index} className="mb-6 border-b pb-6">
+              <FormItem>
+                <FormLabel className="text-primary">Beat {index + 1}</FormLabel>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="grid w-full grid-cols-2 gap-4 mb-2">
+                    <div>
+                      <FormLabel className="text-primary">Audio File</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept="audio/*"
+                          onChange={(e) => handleBeatChange(e, index, "audio")}
+                        />
+                      </FormControl>
+                      {beat.audio ? (
+                        <audio
+                          controls
+                          src={URL.createObjectURL(beat.audio)}
+                          className="mt-4 w-full"
+                        >
+                          Your browser does not support the audio element.
+                        </audio>
+                      ) : uploadedFiles.beats[index]?.audio ? (
+                        <audio
+                          controls
+                          src={uploadedFiles.beats[index].audio}
+                          className="mt-4 w-full"
+                        >
+                          Your browser does not support the audio element.
+                        </audio>
+                      ) : null}
+                    </div>
+                    <div>
+                      <FormLabel className="text-primary">
+                        Cover Image
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleBeatChange(e, index, "cover")}
+                        />
+                      </FormControl>
+                      {beat.cover ? (
+                        <img
+                          src={URL.createObjectURL(beat.cover)}
+                          alt="Cover Preview"
+                          className="mt-4 w-32 h-32 object-cover"
+                        />
+                      ) : uploadedFiles.beats[index]?.cover ? (
+                        <img
+                          src={uploadedFiles.beats[index].cover}
+                          alt="Cover Preview"
+                          className="mt-4 w-32 h-32 object-cover"
+                        />
+                      ) : null}
+                    </div>
+                  </div>
+                  <Button
                     type="button"
-                    className="text-black mt-8  p-2.5 rounded-lg bg-white hover:bg-red-500 hover:text-white"
                     variant="ghost"
+                    size="icon"
+                    className="mt-4 bg-white hover:bg-red-500 hover:text-white"
+                    onClick={() => handleRemoveBeat(index)}
                   >
-                    <TrashIcon className="w-6 h-6 " />
-                  </span>
+                    <TrashIcon className="w-4 h-4 text-red-600 hover:text-white" />
+                  </Button>
                 </div>
-              ))}
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Update</Button>
+                <div className=" hidden grid-cols-2 items-center gap-4">
+                  <FormControl>
+                    <Input
+                      placeholder="title"
+                      value={beat.title || ""}
+                      onChange={(e) =>
+                        setBeats((prev) =>
+                          prev.map((b, i) =>
+                            i === index ? { ...b, title: e.target.value } : b
+                          )
+                        )
+                      }
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <Input
+                      placeholder="price"
+                      value={beat.price || ""}
+                      onChange={(e) =>
+                        setBeats((prev) =>
+                          prev.map((b, i) =>
+                            i === index ? { ...b, price: e.target.value } : b
+                          )
+                        )
+                      }
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <Textarea
+                      placeholder="description"
+                      value={beat.description || ""}
+                      onChange={(e) =>
+                        setBeats((prev) =>
+                          prev.map((b, i) =>
+                            i === index
+                              ? { ...b, description: e.target.value }
+                              : b
+                          )
+                        )
+                      }
+                    />
+                  </FormControl>
+                </div>
+              </FormItem>
+            </div>
+          ))}
+        </div>
+        <Button type="submit">Update Beat</Button>
       </form>
     </Form>
   );

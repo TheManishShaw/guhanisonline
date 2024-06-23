@@ -42,15 +42,10 @@ const SignupPage = () => {
       const response = await signUp(formData);
 
       if (response.status === 201) {
-        // Store the token in cookies
-        // setCookie(null, "token", response.data.token, {
-        //   maxAge: 30 * 24 * 60 * 60, // 30 days
-        //   path: "/",
-        // });
         toast.success("Signup Successfully ");
-        // Redirect to dashboard
         router.push("/sign-in");
       } else {
+        toast.error("Something went wrong!", error);
         console.log("Failed to register");
       }
     } catch (error) {
@@ -63,8 +58,6 @@ const SignupPage = () => {
 
       console.log(error);
     }
-
-    // mutate(formData);
   };
 
   return (

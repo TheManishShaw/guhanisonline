@@ -9,7 +9,10 @@ import BeatsPage from "@/components/view/PublicBeatsPage";
 import UsersPage from "@/components/view/UsersPage";
 
 import React from "react";
-
+export const metadata = {
+  title: "All Users | Guhanis Official",
+  description: "Artist | Music Producer",
+};
 const page = () => {
   return (
     <Card>
