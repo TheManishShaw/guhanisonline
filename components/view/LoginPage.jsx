@@ -16,7 +16,7 @@ import {
 } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import Spinner from "../ui/Spinner";
 import { toast } from "sonner";
 
@@ -29,6 +29,9 @@ const LoginPage = () => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  // console.log("router", router.back());
+  const path = usePathname();
+  console.log("path", path);
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -44,6 +47,7 @@ const LoginPage = () => {
         redirect: false,
         email: formData.email,
         password: formData.password,
+        callbackUrl: "http://localhost:3000/profile",
       });
 
       if (result.error) {
@@ -51,7 +55,14 @@ const LoginPage = () => {
         toast.error("Login failed: " + result.error);
       } else if (result.ok && result.status === 200) {
         toast.success("Sign-in Successfully");
-        router.push("/dashboard");
+        router.back();
+        // console.log("=========>", result);
+        // console.log("session=========>", session.user.role === "admin");
+        // if (session?.user?.role === "admin") {
+        //   router.push("/dashboard");
+        // } else {
+        //   router.push("/");
+        // }
       } else {
         console.error("Unexpected result: ", result);
         toast.error("Unexpected result during sign-in");

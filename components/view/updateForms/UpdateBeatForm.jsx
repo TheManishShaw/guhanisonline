@@ -241,7 +241,9 @@ const UpdateBeatForm = ({ existingData }) => {
 
     try {
       const res = await updateBeatsById(existingData.collection_id, formData);
+      console.log("respnoe", res);
       if (res.status === 200) {
+        toast.success("Beats updated successfully");
         form.reset();
         setBeats([]);
         setZipFile(null);

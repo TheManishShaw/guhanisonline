@@ -332,58 +332,59 @@ const AddBeatForm = () => {
           )}
         />
         <div>
-          <h2 className="text-primary">Preview Audio Files</h2>
-          {beats.map((beat, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-2 items-center gap-2 w-full my-4"
+          <div className="flex items-center justify-between gap-2 ">
+            <h2 className="text-primary">Preview Audio Files</h2>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleAddBeat}
+              className="mt-4 text-black"
             >
-              <FormItem>
-                <FormLabel className="text-primary">
-                  Audio File {index + 1}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="audio/*"
-                    onChange={(e) => handleBeatChange(e, index, "audio")}
-                  />
-                </FormControl>
-                {beat.audio && <p className="mt-2">{beat.audio.name}</p>}
-              </FormItem>
-              <FormItem>
-                <FormLabel className="text-primary">
-                  Cover Image {index + 1}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleBeatChange(e, index, "cover")}
-                  />
-                </FormControl>
-                {beat.cover && <p className="mt-2">{beat.cover.name}</p>}
-              </FormItem>
+              <PlusIcon className="mr-2 h-4 w-4" /> Add Another Beat
+            </Button>
+          </div>
+          {beats.map((beat, index) => (
+            <div key={index} className="flex gap-2 items-center ">
+              <div className="grid grid-cols-2 items-center gap-2 w-full my-4">
+                <FormItem>
+                  <FormLabel className="text-primary">
+                    Audio File {index + 1}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="audio/*"
+                      onChange={(e) => handleBeatChange(e, index, "audio")}
+                    />
+                  </FormControl>
+                  {beat.audio && <p className="mt-2">{beat.audio.name}</p>}
+                </FormItem>
+                <FormItem>
+                  <FormLabel className="text-primary">
+                    Cover Image {index + 1}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleBeatChange(e, index, "cover")}
+                    />
+                  </FormControl>
+                  {beat.cover && <p className="mt-2">{beat.cover.name}</p>}
+                </FormItem>
+              </div>
               {index > 0 && (
                 <Button
                   type="button"
                   variant="destructive"
                   onClick={() => handleRemoveBeat(index)}
-                  className="col-span-2 mt-2"
+                  className="col-span-2 mt-8"
                 >
                   <TrashIcon className="mr-2 h-4 w-4" /> Remove
                 </Button>
               )}
             </div>
           ))}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleAddBeat}
-            className="mt-4"
-          >
-            <PlusIcon className="mr-2 h-4 w-4" /> Add Another Beat
-          </Button>
         </div>
         <Button type="submit" disabled={uploading || submitting}>
           {submitting ? "Submitting..." : "Submit"}

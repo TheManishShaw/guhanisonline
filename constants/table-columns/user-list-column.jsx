@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2Icon } from "lucide-react";
 import {
   deleteBlogById,
+  deleteClienteleById,
   deleteCollectionById,
 } from "@/lib/hooks/services/universalFetch";
 import { toast } from "sonner";
@@ -27,6 +28,16 @@ import { Input } from "@/components/ui/input";
 const handleDeleteBeats = async (collection_id) => {
   try {
     const res = await deleteCollectionById(collection_id);
+    if (res.status === 200) {
+      toast.success("Item Delete Successfully");
+    }
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+const handleDeleteClientele = async (id) => {
+  try {
+    const res = await deleteClienteleById(id);
     if (res.status === 200) {
       toast.success("Item Delete Successfully");
     }
@@ -213,13 +224,13 @@ export const clienteleListColumns = [
     enableHiding: false,
   },
   {
-    accessorKey: "blog_id",
+    accessorKey: "id",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Action" />
     ),
     cell: ({ row }) => (
       <div className="">
-        <Button onClick={() => handleDelete(row.original.blog_id)}>
+        <Button onClick={() => handleDeleteClientele(row.original.id)}>
           <Trash2Icon />
         </Button>
       </div>
