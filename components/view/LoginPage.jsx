@@ -24,14 +24,11 @@ const FormSchema = z.object({
   email: z.string().email({ message: "Enter a valid email." }),
   password: z.string().min(5, { message: "Enter a password" }),
 });
-
 const LoginPage = () => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  // console.log("router", router.back());
-  const path = usePathname();
-  console.log("path", path);
+
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -55,14 +52,8 @@ const LoginPage = () => {
         toast.error("Login failed: " + result.error);
       } else if (result.ok && result.status === 200) {
         toast.success("Sign-in Successfully");
-        router.back();
-        // console.log("=========>", result);
-        // console.log("session=========>", session.user.role === "admin");
-        // if (session?.user?.role === "admin") {
-        //   router.push("/dashboard");
-        // } else {
-        //   router.push("/");
-        // }
+        const location = localStorage?.getItem("isSignupPage");
+        location ? router.push("/dashboard") : router.back();
       } else {
         console.error("Unexpected result: ", result);
         toast.error("Unexpected result during sign-in");
