@@ -55,7 +55,7 @@ const CheckoutPage = () => {
   }
   return (
     <section className="container mx-auto my-12 flex items-center justify-center">
-      <div className="flex mx-20 justify-center container gap-8">
+      <div className="md:flex block md:mx-20 space-y-4 md:space-y-0 justify-center  container gap-8">
         <section className="w-full">
           <div className="border w-full max-w-5xl rounded-lg overflow-hidden">
             <div className="bg-black px-4 py-3 dark:bg-gray-800">
@@ -95,7 +95,7 @@ const CheckoutPage = () => {
             </section>
           </div>
         </section>
-        <div className="w-[400px] rounded-lg p-6 bg-gray-900">
+        <div className="md:w-[400px] w-full self-center rounded-lg p-6 bg-gray-900">
           <h2 className="text-2xl font-medium mb-4">Order Summary</h2>
           <section className="grid grid-cols-2 text-2xl gap-2">
             <span className="text-gray-500 dark:text-gray-400">Subtotal:</span>

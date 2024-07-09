@@ -7,8 +7,8 @@ import React from "react";
 
 const HeadingSection = ({ image, title, description }) => {
   return (
-    <section className="w-full overflow-hidden py-10 md:py-10 px-4 lg:py-12">
-      <div className="container grid gap-6 lg:grid-cols-[1fr_550px] lg:gap-12 xl:grid-cols-[1fr_650px]">
+    <section className="w-full overflow-hidden py-10 md:py-10 lg:py-12">
+      <div className=" grid gap-6 lg:grid-cols-[1fr_550px] lg:gap-12 xl:grid-cols-[1fr_650px]">
         <AnimationWrapper
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0, transition: { duration: 1 } }}
@@ -28,7 +28,7 @@ const HeadingSection = ({ image, title, description }) => {
         <FadeInRightAnimation>
           <Image
             alt="Hero Image"
-            className="mx-auto w-[550px]  overflow-hidden rounded-xl h-[450px] object-fit"
+            className="mx-auto md:w-[500px] w-full overflow-hidden rounded-xl md:h-[450px] h-auto object-fit"
             height="550"
             src={image}
             width="550"
