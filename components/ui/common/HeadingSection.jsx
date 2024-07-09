@@ -28,10 +28,10 @@ const HeadingSection = ({ image, title, description }) => {
         <FadeInRightAnimation>
           <Image
             alt="Hero Image"
-            className="mx-auto  overflow-hidden rounded-xl max-h-52 md:max-h-96 object-cover"
+            className="mx-auto w-[550px]  overflow-hidden rounded-xl h-[450px] object-fit"
             height="550"
             src={image}
-            width="650"
+            width="550"
           />
         </FadeInRightAnimation>
       </div>
