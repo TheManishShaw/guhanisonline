@@ -32,6 +32,10 @@ export default function RootLayout({ children }) {
             options={{
               "client-id":
                 "AbbW1BEdGZLRhdg30NOnHUAYP6CF3yOkyCAsPi0WA5sGU2dI_jvZ52dH4LLmBlGZvV-RtutLsQ-oMecv",
+              currency: "USD",
+              "enable-funding": "venmo",
+              "disable-funding": "",
+              country: "US",
             }}
           >
             <StoreProvider>

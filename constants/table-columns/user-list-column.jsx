@@ -22,8 +22,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 
 const handleDeleteBeats = async (collection_id) => {
   try {
@@ -230,9 +228,34 @@ export const clienteleListColumns = [
     ),
     cell: ({ row }) => (
       <div className="">
-        <Button onClick={() => handleDeleteClientele(row.original.id)}>
-          <Trash2Icon />
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <Trash2Icon />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] bg-black border-gray-500">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">Delete Clientele</DialogTitle>
+            </DialogHeader>
+            <h1 className="text-2xl font-bold">
+              Are you sure you want to this Clientele?
+            </h1>
+            <DialogFooter>
+              <Button
+                type="submit"
+                onClick={() => handleDeleteClientele(row.original.id)}
+              >
+                Confirm
+              </Button>
+              <DialogClose>
+                <Button variant="outline bg-gray-300 border-white">
+                  Close
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     ),
     enableSorting: false,
