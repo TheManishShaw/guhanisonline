@@ -1,4 +1,3 @@
-// components/PayPalButton.js
 "use client";
 import { updateOrderById } from "@/lib/hooks/services/universalFetch";
 import { clearCart } from "@/lib/store/features/cart/Cart";
@@ -10,6 +9,7 @@ import { toast } from "sonner";
 const PayPalButton = ({ amount, onSuccess, onError }) => {
   const router = useRouter();
   const dispatch = useDispatch();
+
   return (
     <PayPalButtons
       style={{ layout: "vertical" }}
@@ -28,6 +28,9 @@ const PayPalButton = ({ amount, onSuccess, onError }) => {
         return actions.order.capture().then(async (details) => {
           try {
             const order_id = localStorage.getItem("orderDetails");
+            if (!order_id) {
+              throw new Error("Order ID is missing in localStorage");
+            }
             const formData = {
               transaction_id: details.id,
               payment_method: "credit_card",
@@ -35,18 +38,23 @@ const PayPalButton = ({ amount, onSuccess, onError }) => {
             };
             const res = await updateOrderById(order_id, formData);
             if (res.status === 200) {
+              toast.success("Order placed successfully");
+              localStorage.removeItem("orderDetails");
+              dispatch(clearCart());
+              router.push("/dashboard/orders");
+            } else {
+              toast.error("Failed to update order");
             }
-            toast.success("ordered placed Successfully");
-            localStorage.removeItem("orderDetails");
-            dispatch(clearCart());
-            router.push("/dashboard/orders");
           } catch (error) {
-            console.log("error", error);
+            console.log("Error during PayPal transaction:", error);
+            toast.error("An error occurred during the transaction");
           }
           onSuccess(details);
         });
       }}
       onError={(err) => {
+        console.error("PayPal Checkout onError", err);
+        toast.error("An error occurred with the payment");
         onError(err);
       }}
     />
