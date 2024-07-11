@@ -31,7 +31,8 @@ export default function RootLayout({ children }) {
           <PayPalScriptProvider
             options={{
               "client-id":
-                "AbbW1BEdGZLRhdg30NOnHUAYP6CF3yOkyCAsPi0WA5sGU2dI_jvZ52dH4LLmBlGZvV-RtutLsQ-oMecv",
+                "AZ9AqzmQVaHFPLZawgsSK7d9bZOeyIEe8ZLMdCre1U-S78bWFCM2VoMi4D8Dg57eg2H4tzdn8HdxWBuK",
+              "enable-funding": "venmo",
             }}
           >
             <StoreProvider>
