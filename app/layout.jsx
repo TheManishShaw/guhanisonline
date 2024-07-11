@@ -20,7 +20,17 @@ const myFont = localFont({
 
 export default function RootLayout({ children }) {
   const queryClient = new QueryClient();
-
+  const initialOptions = {
+    "client-id":
+      "AbbW1BEdGZLRhdg30NOnHUAYP6CF3yOkyCAsPi0WA5sGU2dI_jvZ52dH4LLmBlGZvV-RtutLsQ-oMecv",
+    "enable-funding": "venmo",
+    "disable-funding": "",
+    country: "US",
+    currency: "USD",
+    "data-page-type": "product-details",
+    components: "buttons",
+    "data-sdk-integration-source": "developer-studio",
+  };
   return (
     <html lang="en">
       <body
@@ -28,16 +38,7 @@ export default function RootLayout({ children }) {
         className={`${myFont.className} bg-background`}
       >
         <SessionsProvider>
-          <PayPalScriptProvider
-            options={{
-              "client-id":
-                "AbbW1BEdGZLRhdg30NOnHUAYP6CF3yOkyCAsPi0WA5sGU2dI_jvZ52dH4LLmBlGZvV-RtutLsQ-oMecv",
-              currency: "USD",
-              "enable-funding": "venmo",
-              "disable-funding": "",
-              country: "US",
-            }}
-          >
+          <PayPalScriptProvider deferLoading={true} options={initialOptions}>
             <StoreProvider>
               <QueryClientProvider client={queryClient}>
                 {children}
