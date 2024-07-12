@@ -19,12 +19,14 @@ import { signIn, useSession } from "next-auth/react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import Spinner from "../ui/Spinner";
 import { toast } from "sonner";
+import { EyeIcon } from "lucide-react";
 
 const FormSchema = z.object({
   email: z.string().email({ message: "Enter a valid email." }),
   password: z.string().min(5, { message: "Enter a password" }),
 });
 const LoginPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -100,6 +102,7 @@ const LoginPage = () => {
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="password"
@@ -115,12 +118,24 @@ const LoginPage = () => {
                         </Link>
                       </div>
                       <FormControl>
-                        <Input
-                          placeholder="Password"
-                          type="password"
-                          className="text-primary"
-                          {...field}
-                        />
+                        <div className="relative">
+                          <Input
+                            placeholder="Password"
+                            type={showPassword ? "text" : "password"}
+                            className="text-primary pr-10"
+                            {...field}
+                          />
+
+                          <Button
+                            variant="ghost"
+                            type="button"
+                            size="icon"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute top-1/2 right-2 -translate-y-1/2 hover:bg-transparent hover:text-white"
+                          >
+                            {showPassword ? "Hide" : "Show"}
+                          </Button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
