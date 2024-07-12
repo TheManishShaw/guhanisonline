@@ -5,9 +5,9 @@ export async function middleware(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const { pathname } = req.nextUrl;
 
-  if (!token) {
-    return NextResponse.redirect(new URL("/sign-in", req.url));
-  }
+  // if (!token) {
+  //   return NextResponse.redirect(new URL("/sign-in", req.url));
+  // }
 
   const userRole = token.user?.role || "user";
   console.log("token===>", token);

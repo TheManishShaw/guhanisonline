@@ -34,9 +34,9 @@ import { dashboardList } from "@/constants/menuitems/dashbaordMenu";
 
 const DashboardLayout = ({ children }) => {
   const { data: session, status } = useSession();
-  console.log("status", status);
+
   const router = useRouter();
-  console.log("DashbaordLayout", session);
+
   const userRole = session?.user?.role || "user"; // default to "user" if role is undefined
   const path = usePathname();
   // Filter routes based on the user's role
