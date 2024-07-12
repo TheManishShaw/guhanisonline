@@ -63,6 +63,7 @@ const BlogForm = ({ type, existingData }) => {
       setImage(existingData.image);
       setEditorHtml(existingData.summary);
       setImagePreview(existingData.image);
+      form.setValue("image", image);
     }
   }, [existingData, reset]);
   const handleImageChange = async (e) => {
@@ -135,7 +136,7 @@ const BlogForm = ({ type, existingData }) => {
       setIsSubmitting(false);
     }
   };
-  console.log("image=========>", image);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">

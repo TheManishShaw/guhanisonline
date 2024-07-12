@@ -62,7 +62,7 @@ const UpdateBeatForm = ({ existingData }) => {
       };
 
       form.reset(updatedValues);
-
+      // form.setValue(updatedValues);
       setBeats(
         existingData?.beats?.map((beat) => ({
           audio: null,

@@ -25,7 +25,7 @@ const ClienteleUpdatePage = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["getBlogById", params],
+    queryKey: ["getClienteleById", params],
     queryFn: () => getClienteleById(params.clientele_Id),
     enabled: params !== null,
   });
