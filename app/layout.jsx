@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
         className={`${myFont.className} bg-background`}
       >
         <SessionsProvider>
-          <PayPalScriptProvider deferLoading={true} options={initialOptions}>
+          <PayPalScriptProvider options={initialOptions}>
             <StoreProvider>
               <QueryClientProvider client={queryClient}>
                 {children}
