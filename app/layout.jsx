@@ -20,16 +20,10 @@ const myFont = localFont({
 
 export default function RootLayout({ children }) {
   const queryClient = new QueryClient();
+
   const initialOptions = {
     "client-id":
-      "AbbW1BEdGZLRhdg30NOnHUAYP6CF3yOkyCAsPi0WA5sGU2dI_jvZ52dH4LLmBlGZvV-RtutLsQ-oMecv",
-    "enable-funding": "venmo",
-    "disable-funding": "",
-    country: "US",
-    currency: "USD",
-    "data-page-type": "product-details",
-    components: "buttons",
-    "data-sdk-integration-source": "developer-studio",
+      "AfpfeeIqthOzON2tUOM5HnLT9YcId48uFNExkYkmlX2HROVU--w1Ou52dxhbOwlPXhZ0n5hJ9tmADRvr",
   };
   return (
     <html lang="en">
