@@ -48,14 +48,12 @@ const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [resendOtpTime, setResendOtpTime] = useState(120);
   const [isResendBtnLoading, setIsResendBtnLoading] = useState(false);
-  const [showResetButton, setShowResetButton] = useState(false);
-  const [email, setEmail] = useState(localStorage.getItem("email"));
   const [show, hide] = useState(false);
   const router = useRouter();
-  useEffect(() => {
-    setEmail(localStorage.getItem("email"));
-  }, []);
 
+  if (typeof window !== "undefined") {
+    const email = localStorage.getItem("email");
+  }
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
