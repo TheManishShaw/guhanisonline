@@ -225,7 +225,11 @@ const AccountSettingForm = () => {
             )}
           />
         </div>
-        <Button className="w-full" type="submit" disabled={isPending}>
+        <Button
+          className="self-end items-end"
+          type="submit"
+          disabled={isPending}
+        >
           {isPending ? "Submitting..." : "Submit"}
         </Button>
       </form>

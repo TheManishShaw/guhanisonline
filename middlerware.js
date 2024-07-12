@@ -4,12 +4,15 @@ import { NextResponse } from "next/server";
 export async function middleware(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const { pathname } = req.nextUrl;
-  console.log("token===>", token);
+
   if (!token) {
     return NextResponse.redirect(new URL("/sign-in", req.url));
   }
+
+  const userRole = token.user?.role || "user";
+  console.log("token===>", token);
   console.log("userRole =====>", userRole);
-  const userRole = token.user?.role;
+
   const userRoutes = ["/dashboard", "/dashboard/profile", "/dashboard/orders"];
   const adminRoutes = [
     "/dashboard",

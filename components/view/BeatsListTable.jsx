@@ -174,7 +174,6 @@ const BeatsListTable = () => {
     },
   ];
 
-  console.log("first", data);
   return (
     <div className="w-full mx-auto">
       <DataTable

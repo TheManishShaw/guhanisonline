@@ -29,11 +29,14 @@ import {
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import withAuth from "@/lib/withAuth";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { dashboardList } from "@/constants/menuitems/dashbaordMenu";
 
 const DashboardLayout = ({ children }) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  console.log("status", status);
+  const router = useRouter();
+  console.log("DashbaordLayout", session);
   const userRole = session?.user?.role || "user"; // default to "user" if role is undefined
   const path = usePathname();
   // Filter routes based on the user's role
@@ -41,6 +44,17 @@ const DashboardLayout = ({ children }) => {
     item.roles.includes(userRole)
   );
 
+  useEffect(() => {
+    const allowedPaths = filteredDashboardList.map((item) => item.path);
+
+    const isAllowed = allowedPaths.some((allowedPath) =>
+      path.startsWith(allowedPath)
+    );
+    if (!isAllowed) {
+      router.replace("/unauthorized"); // Redirect to error page
+    }
+  }, [router, filteredDashboardList, path]);
+  console.log("filteredDashboardList", filteredDashboardList);
   return (
     <div className="flex overflow-auto min-h-screen w-full flex-col text-white">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">

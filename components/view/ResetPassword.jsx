@@ -49,7 +49,7 @@ const ResetPassword = () => {
   const [resendOtpTime, setResendOtpTime] = useState(120);
   const [isResendBtnLoading, setIsResendBtnLoading] = useState(false);
   const [showResetButton, setShowResetButton] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(localStorage.getItem("email"));
   const [show, hide] = useState(false);
   const router = useRouter();
   useEffect(() => {
