@@ -14,7 +14,7 @@ export const dashboardList = [
     path: "/dashboard",
     name: "Home",
     icon: <Home />,
-    roles: ["admin"],
+    roles: ["admin", "user"],
   },
   {
     path: "/dashboard/beats",
