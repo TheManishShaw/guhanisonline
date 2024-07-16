@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
 
   const initialOptions = {
     "client-id":
-      "AfpfeeIqthOzON2tUOM5HnLT9YcId48uFNExkYkmlX2HROVU--w1Ou52dxhbOwlPXhZ0n5hJ9tmADRvr",
+      "AUwUuAb8MDIzKa371fKxI7BcYS8q8bEcv3wTiaacxHvbh0s8sgtF3LJUIUIQOn_fPzU7beg84UGNuTJ0",
   };
   return (
     <html lang="en">
