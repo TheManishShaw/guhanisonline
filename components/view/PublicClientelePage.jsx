@@ -93,7 +93,7 @@ const ClienteleItem = ({ item, index }) => {
         <div>
           <blockquote className="relative">
             <svg
-              className="absolute top-0 start-0 transform -translate-x-8 -translate-y-4 size-24 text-gray-500"
+              className="absolute top-0 start-0 transform -translate-x-4 -translate-y-4 size-[4rem] text-gray-500"
               width="16"
               height="16"
               viewBox="0 0 16 16"

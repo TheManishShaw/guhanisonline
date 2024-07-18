@@ -4,7 +4,7 @@ import React from "react";
 const loading = () => {
   return (
     <>
-      <div className="flex items-center py-20 mx-auto h-auto px-4 mb-20 bg-muted hover:shadow-white/25 hover:shadow-md  rounded-lg">
+      <div className="flex items-center container py-20 mx-auto h-auto px-4 mb-20 bg-muted hover:shadow-white/25 hover:shadow-md  rounded-lg">
         <div className="w-full">
           <div className="flex items-center justify-center gap-6 mb-10 px-6">
             <div className="flex-grow">

@@ -131,11 +131,12 @@ const Navbar = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-xl py-1 font-bold">
-                  <Link href="/dashboard/profile">Profile</Link>
+                  <Link href="/dashboard/orders">Orders</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="text-xl py-1 font-bold">
-                  {session.user.name}
+                  <Link href="/dashboard/profile">Profile</Link>
                 </DropdownMenuItem>
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-xl py-1 font-bold cursor-pointer"

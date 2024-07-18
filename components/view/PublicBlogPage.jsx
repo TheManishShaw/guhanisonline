@@ -19,7 +19,7 @@ const PublicBlogPage = () => {
   useEffect(() => {
     localStorage.setItem("blog", JSON.stringify(blogsList?.data));
   }, [blogsList?.data]);
-  if (isLoading) return <>Loading...</>;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 mx-auto w-full">
       {blogsList?.data.map((blog, index) => (

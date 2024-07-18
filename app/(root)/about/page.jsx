@@ -10,7 +10,7 @@ export const metadata = {
 };
 const page = () => {
   return (
-    <>
+    <section className="container mx-auto px-6">
       <HeadingSection
         title="About-us"
         description="Elevate your rhythm: Unleash your beats with our premium soundscapes, tailored for every artist's groove"
@@ -234,7 +234,7 @@ const page = () => {
           </section>
         </div>
       </div>
-    </>
+    </section>
   );
 };
 

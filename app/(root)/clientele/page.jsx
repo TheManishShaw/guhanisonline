@@ -9,7 +9,7 @@ export const metadata = {
 
 const page = () => {
   return (
-    <div>
+    <div className="container mx-auto px-6">
       <HeadingSection
         title="Clientele"
         description="Let's sync up: Reach out and let's create the perfect harmony together. Your message matters."
