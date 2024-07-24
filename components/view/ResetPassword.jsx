@@ -48,14 +48,10 @@ const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [resendOtpTime, setResendOtpTime] = useState(120);
   const [isResendBtnLoading, setIsResendBtnLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(localStorage.getItem("email"));
   const [show, hide] = useState(false);
   const router = useRouter();
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setEmail(localStorage.getItem("email"));
-    }
-  }, []);
+
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -102,7 +98,12 @@ const ResetPassword = () => {
       }
       console.log("res", res);
     } catch (error) {
-      toast.error(error);
+      console.log("error", error);
+      toast.error(
+        error?.response?.data?.error ||
+          error?.message ||
+          "Something Went Wrong!"
+      );
       setIsLoading(false);
     }
   };
@@ -134,6 +135,7 @@ const ResetPassword = () => {
                         <Input
                           type="email"
                           value={email}
+                          className="text-white"
                           disabled
                           placeholder="example@domain.com"
                           {...field}
