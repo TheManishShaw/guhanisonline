@@ -38,6 +38,7 @@ const ForgotPassword = () => {
       if (res.status === 200) {
         toast.success(res?.data?.message || "OTP sent to your email");
         localStorage.setItem("email", data?.email);
+        localStorage.setItem("isResetPasswordPage", true);
         router.push("/reset-password");
       }
     } catch (error) {

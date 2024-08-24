@@ -19,6 +19,9 @@ module.exports = {
     },
 
     extend: {
+      placeholderColor: {
+        primary: "#fff",
+      },
       colors: {
         border: "hsl(240 3.7% 15.9%)",
         input: "hsl(240 4.9% 83.9%)",

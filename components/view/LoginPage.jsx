@@ -54,7 +54,9 @@ const LoginPage = () => {
         toast.error("Login failed: " + result.error);
       } else if (result.ok && result.status === 200) {
         toast.success("Sign-in Successfully");
-        const location = localStorage?.getItem("isSignupPage");
+        const location = localStorage?.getItem(
+          "isSignupPage" || "isResetPasswordPage"
+        );
         location ? router.push("/dashboard") : router.back();
       } else {
         console.error("Unexpected result: ", result);

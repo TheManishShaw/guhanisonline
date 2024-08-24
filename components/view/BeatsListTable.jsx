@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DataTable } from "../ui/datatable/data-table";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -22,6 +22,7 @@ import {
 } from "../ui/dialog";
 import { toast } from "sonner";
 import moment from "moment";
+import { useSession } from "next-auth/react";
 
 const BeatsListTable = () => {
   const [loading, setLoading] = useState(false);

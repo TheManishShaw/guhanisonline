@@ -28,7 +28,6 @@ const BeatsUpdatePage = () => {
     enabled: params !== null,
   });
 
-  console.log("beatsByIdData", beatsByIdData);
   return (
     <div>
       <Card>

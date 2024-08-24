@@ -17,10 +17,11 @@ import { toast } from "sonner";
 import axiosInstance from "@/lib/axiosInstance";
 import { updateBeatsById } from "@/lib/hooks/services/universalFetch";
 import { useRouter } from "next/navigation";
+import Spinner from "@/components/ui/Spinner";
 
 const UpdateBeatForm = ({ existingData }) => {
   const router = useRouter();
-
+  const [isLoading, setIsLoading] = useState(false);
   const initialValues = {
     title: "",
     description: "",
@@ -206,6 +207,7 @@ const UpdateBeatForm = ({ existingData }) => {
   };
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     const formData = {
       title: data.title,
       description: data.description,
@@ -241,7 +243,7 @@ const UpdateBeatForm = ({ existingData }) => {
 
     try {
       const res = await updateBeatsById(existingData.collection_id, formData);
-      console.log("respnoe", res);
+
       if (res.status === 200) {
         toast.success("Beats updated successfully");
         form.reset();
@@ -255,6 +257,7 @@ const UpdateBeatForm = ({ existingData }) => {
         router.push("/dashboard/beats");
       }
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -514,7 +517,9 @@ const UpdateBeatForm = ({ existingData }) => {
             </div>
           ))}
         </div>
-        <Button type="submit">Update Beat</Button>
+        <Button disabled={isLoading} type="submit">
+          {isLoading ? <Spinner /> : "Update Beat"}
+        </Button>
       </form>
     </Form>
   );

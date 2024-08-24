@@ -36,30 +36,30 @@ const DashboardLayout = ({ children }) => {
   const { data: session, status } = useSession();
 
   const router = useRouter();
-  console.log("session", session);
+
   const userRole = session?.user?.role || "user"; // default to "user" if role is undefined
   const path = usePathname();
   // Filter routes based on the user's role
   const filteredDashboardList = dashboardList.filter((item) =>
     item.roles.includes(userRole)
   );
-  useEffect(() => {
-    if (userRole === "admin") return; // Admin can access any route
+  // useEffect(() => {
+  //   if (userRole === "admin") return; // Admin can access any route
 
-    const allowedPaths = [
-      "/dashboard",
-      "/dashboard/profile",
-      "/dashboard/orders",
-    ];
-    const isAllowed = allowedPaths.some((allowedPath) =>
-      path.startsWith(allowedPath)
-    );
+  //   const allowedPaths = [
+  //     "/dashboard",
+  //     "/dashboard/profile",
+  //     "/dashboard/orders",
+  //   ];
+  //   const isAllowed = allowedPaths.some((allowedPath) =>
+  //     path.startsWith(allowedPath)
+  //   );
 
-    if (!isAllowed) {
-      router.replace("/unauthorized"); // Redirect to error page
-    }
-  }, [router, path, userRole]);
-  console.log("filteredDashboardList", filteredDashboardList);
+  //   if (!isAllowed) {
+  //     router.replace("/unauthorized"); // Redirect to error page
+  //   }
+  // }, [router, path, userRole]);
+
   return (
     <div className="flex overflow-auto min-h-screen w-full flex-col text-white">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">

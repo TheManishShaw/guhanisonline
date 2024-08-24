@@ -45,6 +45,17 @@ const Navbar = () => {
             alt="logo"
           />
         </Link>
+        {session?.user ? (
+          <Link
+            href="/dashboard"
+            className="bg-white px-4 py-1.5 text-xl rounded-lg text-black hover:bg-gray-200"
+          >
+            Dashboard
+          </Link>
+        ) : (
+          ""
+        )}
+
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <form className="ml-auto flex-1 sm:flex-initial">
             <div className="relative">

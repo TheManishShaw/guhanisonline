@@ -141,6 +141,7 @@ const PublicBlogDetailPage = () => {
                 <div className="text-base font-medium leading-relaxed text-body-color">
                   {/* <PortableText value={blogDetail?.summary} /> */}
                   <div
+                    className="text-2xl"
                     dangerouslySetInnerHTML={{ __html: blogDetail?.summary }}
                   />
                   {/* {htmlparser2.parseDocument(blogDetail?.summary)} */}

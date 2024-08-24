@@ -20,9 +20,12 @@ import { useForm } from "react-hook-form";
 import ImageResize from "quill-image-resize-module-react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { clientFormSchema } from "@/lib/validation/validation";
 
 const ClienteleForm = ({ initialData, clienteleId }) => {
   const form = useForm({
+    resolver: zodResolver(clientFormSchema),
     defaultValues: {
       name: initialData?.name || "",
       design: initialData?.design || "",
@@ -83,13 +86,17 @@ const ClienteleForm = ({ initialData, clienteleId }) => {
         }
       }
     } catch (error) {
+      toast.error(
+        error?.response?.data?.errors?.design ||
+          error?.response?.data?.errors?.photo ||
+          error?.response?.data?.message
+      );
       console.error("Error uploading the image", error);
       setIsSubmitting(false);
     } finally {
       setIsSubmitting(false);
     }
   };
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
