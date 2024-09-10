@@ -18,7 +18,7 @@ const page = () => {
       />
       <div className="flex flex-col min-h-[100dvh]">
         <div className="flex-1">
-          <AnimationWrapper
+          {/* <AnimationWrapper
             initial={{ opacity: 0, x: -100 }}
             animate={{ opacity: 1, x: 0, transition: { duration: 2 } }}
             transition={{ duration: 1 }}
@@ -59,7 +59,7 @@ const page = () => {
                 </div>
               </div>
             </section>
-          </AnimationWrapper>
+          </AnimationWrapper> */}
           <section className="w-full py-12 md:py-24 lg:py-32">
             <div className="container px-4 md:px-6">
               <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
@@ -103,7 +103,7 @@ const page = () => {
                     </div>
                   </div>
                 </AnimationWrapper>
-                <AnimationWrapper
+                {/* <AnimationWrapper
                   initial={{ opacity: 0, x: 100 }}
                   animate={{ opacity: 1, x: 0, transition: { duration: 1 } }}
                   transition={{ duration: 1 }}
@@ -115,11 +115,11 @@ const page = () => {
                     src="/assets/images/login/placeholder.svg"
                     width="550"
                   />
-                </AnimationWrapper>
+                </AnimationWrapper> */}
               </div>
             </div>
           </section>
-          <section className="w-full py-12 md:py-24 lg:py-32 bg-background dark:bg-gray-800">
+          {/* <section className="w-full py-12 md:py-24 lg:py-32 bg-background dark:bg-gray-800">
             <div className="container px-4 md:px-6">
               <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
                 <Image
@@ -163,8 +163,8 @@ const page = () => {
                 </div>
               </div>
             </div>
-          </section>
-          <section className="w-full py-12 md:py-24 lg:py-32">
+          </section> */}
+          {/* <section className="w-full py-12 md:py-24 lg:py-32">
             <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6 lg:gap-10">
               <div className="space-y-3">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -231,7 +231,7 @@ const page = () => {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
         </div>
       </div>
     </section>
