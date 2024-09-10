@@ -80,11 +80,22 @@ const page = () => {
                         Crafting Beats for Over a Decade
                       </h2>
                       <p className="max-w-[600px] text-gray-500 subtext dark:text-gray-400">
-                        With over 10 years of experience in the music industry,
-                        our producer has honed their craft to create beats that
-                        are both innovative and commercially viable. From
-                        hip-hop to pop, we have the skills and expertise to
-                        elevate your sound.
+                        Guhan is a 26 year old producer and composer. After he
+                        started producing in the Hip Hop world in 2017, he later
+                        found himself combining multiple genres. His sound
+                        shifted beyond Hip Hop, as he started working with a
+                        client base of artists from varying genres. From R&B to
+                        Pop, his versatility and experimentation keeps him on
+                        the cutting edge of music. Inspired by the likes of
+                        Trent Reznor, Thom Yorke, Kanye West, his thirst for
+                        pushing the boundaries is unquenchable. Each artist he
+                        works with brings their unique perspective to the table.
+                        His goal is to develop their sound, and to differentiate
+                        their music from the noise. Along with working with his
+                        client base, he found himself creating Sample Packs for
+                        other producers/artists. Each Sample Pack is made with
+                        the utmost care and experimentation, in order to push
+                        the boundaries of what modern music will be.
                       </p>
                     </div>
                     <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -103,7 +114,7 @@ const page = () => {
                     </div>
                   </div>
                 </AnimationWrapper>
-                {/* <AnimationWrapper
+                <AnimationWrapper
                   initial={{ opacity: 0, x: 100 }}
                   animate={{ opacity: 1, x: 0, transition: { duration: 1 } }}
                   transition={{ duration: 1 }}
@@ -112,10 +123,10 @@ const page = () => {
                     alt="Producer"
                     className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
                     height="310"
-                    src="/assets/images/login/placeholder.svg"
+                    src="/assets/images/login/placeholder.jpg"
                     width="550"
                   />
-                </AnimationWrapper> */}
+                </AnimationWrapper>
               </div>
             </div>
           </section>
