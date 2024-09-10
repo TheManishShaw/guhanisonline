@@ -122,7 +122,7 @@ const page = () => {
                   <Image
                     alt="Producer"
                     className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-                    height="310"
+                    height="510"
                     src="/assets/images/login/placeholder.jpg"
                     width="550"
                   />
