@@ -13,7 +13,7 @@ const page = () => {
       <HeadingSection
         title="Beats"
         description="Dive into the groove: Explore our collection of beats curated to inspire and elevate your music journey"
-        image="/assets/images/gifs/beatspage.gif"
+        image="/assets/svg/sample.svg"
       />
       <PublicBeatsPage />
     </section>

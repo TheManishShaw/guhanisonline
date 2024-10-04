@@ -13,7 +13,7 @@ const page = () => {
       <HeadingSection
         title="Clientele"
         description="Let's sync up: Reach out and let's create the perfect harmony together. Your message matters."
-        image="/assets/images/login/placeholder.svg"
+        image="/assets/svg/clientele.svg"
       />
 
       <PublicClientelePage />

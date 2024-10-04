@@ -2,6 +2,7 @@
 import React, { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { TypeAnimation } from "react-type-animation"; // Import your typing animation library
 
 function Skull() {
   const canvasRef = useRef();
@@ -42,6 +43,7 @@ function Skull() {
       base.add(gltf.scene);
     });
     loader.receiveShadow = true;
+
     // Event listener
     const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -2);
     plane.receiveShadow = true;
@@ -99,8 +101,8 @@ function Skull() {
 
   return (
     <div
-      ref={canvasRef}
       style={{
+        position: "relative", // Make the parent relative for the absolute text
         width: "100%",
         height: "100vh",
         overflow: "hidden",
@@ -108,7 +110,40 @@ function Skull() {
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
-    />
+    >
+      <div ref={canvasRef} style={{ width: "100%", height: "100%" }} />
+      <div
+        style={{
+          position: "absolute",
+          top: "40px", // Place the text at the top
+          left: "50%", // Center horizontally
+          transform: "translateX(-50%)", // Adjust for center alignment
+          color: "white",
+          zIndex: 10,
+        }}
+      >
+        <TypeAnimation
+          sequence={[
+            "Elevate Your Sound",
+            1000,
+            "Tailor Your Portfolio With Weekly Sessions",
+            1000,
+            "Sample Curated Loops Into Your Instrumentals",
+            1000,
+            "Partner With A Professional Producer",
+            1000,
+          ]}
+          wrapper="span"
+          speed={50}
+          style={{
+            fontSize: "4em",
+            display: "inline-block",
+            textAlign: "center",
+          }}
+          repeat={Infinity}
+        />
+      </div>
+    </div>
   );
 }
 

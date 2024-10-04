@@ -112,7 +112,7 @@ const ClienteleItem = ({ item, index }) => {
                 Featured client
               </p>
 
-              <p className="text-3xl font-medium italic text-primary md:text-3xl md:leading-normal xl:text-5xl xl:leading-normal">
+              <p className="text-3xl font-medium italic text-primary md:text-3xl md:leading-normal xl:text-4xl xl:leading-normal">
                 {item.testimonial}
               </p>
             </div>

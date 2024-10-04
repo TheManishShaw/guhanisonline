@@ -14,7 +14,7 @@ const page = () => {
       <HeadingSection
         title="About-us"
         description="Elevate your rhythm: Unleash your beats with our premium soundscapes, tailored for every artist's groove"
-        image="/assets/images/login/placeholder.svg"
+        image="/assets/svg/about_us.svg"
       />
       <div className="flex flex-col min-h-[100dvh]">
         <div className="flex-1">
@@ -73,7 +73,7 @@ const page = () => {
                 >
                   <div className="flex flex-col justify-center space-y-4">
                     <div className="space-y-2">
-                      <div className="inline-block rounded-lg bg-background px-3 py-1 text-xl dark:bg-gray-800">
+                      <div className="inline-block rounded-lg bg-background  py-1 text-xl dark:bg-gray-800">
                         Producers Experience
                       </div>
                       <h2 className="text-3xl font-bold sm:text-5xl">
@@ -121,8 +121,8 @@ const page = () => {
                 >
                   <Image
                     alt="Producer"
-                    className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-                    height="510"
+                    className="mx-auto overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
+                    height="800"
                     src="/assets/images/login/placeholder.jpg"
                     width="550"
                   />
