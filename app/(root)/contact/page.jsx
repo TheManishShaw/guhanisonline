@@ -10,11 +10,11 @@ export const metadata = {
 const page = () => {
   return (
     <section className="container mx-auto px-6">
-      <HeadingSection
+      {/* <HeadingSection
         title="Contact-us"
         description="Let's sync up: Reach out and let's create the perfect harmony together. Your message matters."
         image="/assets/svg/contact_us.svg"
-      />
+      /> */}
 
       <ContactPage />
     </section>

@@ -11,11 +11,11 @@ export const metadata = {
 const page = () => {
   return (
     <section className="container mx-auto px-6">
-      <HeadingSection
+      {/* <HeadingSection
         title="About-us"
         description="Elevate your rhythm: Unleash your beats with our premium soundscapes, tailored for every artist's groove"
         image="/assets/svg/about_us.svg"
-      />
+      /> */}
       <div className="flex flex-col min-h-[100dvh]">
         <div className="flex-1">
           {/* <AnimationWrapper
