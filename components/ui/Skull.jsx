@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { TypeAnimation } from "react-type-animation"; // Import your typing animation library
-
+import { SkullIcon, Users, Sliders } from "lucide-react"
 function Skull() {
   const canvasRef = useRef();
 
@@ -143,8 +143,39 @@ function Skull() {
           repeat={Infinity}
         />
       </div>
+      <div
+        className=""
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div className="flex items-center justify-center gap-8 bg-[#1C1B1B] p-[20px] px-28 rounded-md bg-opacity-65">
+          <StatsItem icon={<SkullIcon />} text="1000+ Beats Produced" />
+          <div className="text-white text-2xl font-light">|</div>
+          <StatsItem icon={<Users />} text="150+ Clients" />
+          <div className="text-white text-2xl font-light">|</div>
+          <StatsItem icon={<Sliders />} text="Work in progress" />
+        </div>
+      </div>
     </div>
   );
 }
 
 export default Skull;
+
+
+function StatsItem({ icon, text }) {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="text-[#5eead4]">{React.cloneElement(icon, { size: 32 })}</div>
+      <span className="text-white text-2xl  whitespace-nowrap">{text}</span>
+    </div>
+  )
+}
