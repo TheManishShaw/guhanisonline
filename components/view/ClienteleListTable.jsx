@@ -38,6 +38,7 @@ const ClienteleListTable = () => {
       if (res.status === 200) {
         toast.success("Item Delete Successfully");
         refetch();
+        setLoading(false);
       }
     } catch (error) {
       setLoading(false);
