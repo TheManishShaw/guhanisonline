@@ -65,7 +65,17 @@ const AddBeatForm = () => {
     formData.append("file", file);
     try {
       setUploading(true);
-      const response = await axiosInstance.post("/fileupload?file", formData);
+      const response = await axiosInstance.post("/fileupload?file", formData, {
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress((prev) => ({
+            ...prev,
+            [type]: percentCompleted,
+          }));
+        },
+      });
       toast.success(`File uploaded successfully: ${file.name}`);
       return response.data.file_path;
     } catch (error) {
@@ -74,6 +84,10 @@ const AddBeatForm = () => {
       return null;
     } finally {
       setUploading(false);
+      setUploadProgress((prev) => ({
+        ...prev,
+        [type]: 0,
+      }));
     }
   };
 
@@ -84,7 +98,6 @@ const AddBeatForm = () => {
     if (fileUrl) {
       setMainCoverImagePreview(file);
       setMainCoverImage(fileUrl);
-      // setUploadedFiles((prev) => ({ ...prev, cover_image: fileUrl }));
     }
   };
 
@@ -94,7 +107,6 @@ const AddBeatForm = () => {
     console.log("zip file response===>", fileUrl);
     if (fileUrl) {
       setZipFile(fileUrl);
-      // setUploadedFiles((prev) => ({ ...prev, file: fileUrl }));
     }
   };
 
@@ -108,7 +120,6 @@ const AddBeatForm = () => {
 
       console.log("file", file);
 
-      // Upload the file and get the URL
       const fileUrl = await handleFileUpload(file, `beats[${index}].${type}`);
       if (!fileUrl) {
         console.error("File upload failed");
@@ -117,7 +128,6 @@ const AddBeatForm = () => {
 
       console.log(`${type} file upload ======>`, fileUrl);
 
-      // Update the state using a callback
       setBeats((prevBeats) => {
         const updatedBeats = [...prevBeats];
 
@@ -218,6 +228,17 @@ const AddBeatForm = () => {
                   className="mt-4 w-32 h-32 object-cover"
                 />
               )}
+              {uploadProgress["cover_image"] > 0 && (
+                <div className="mt-2">
+                  <progress
+                    value={uploadProgress["cover_image"]}
+                    max="100"
+                  ></progress>
+                  <span className="ml-2">
+                    {uploadProgress["cover_image"]}%
+                  </span>
+                </div>
+              )}
               <FormMessage />
             </FormItem>
           )}
@@ -284,6 +305,15 @@ const AddBeatForm = () => {
                   }}
                 />
               </FormControl>
+              {uploadProgress["file"] > 0 && (
+                <div className="mt-2">
+                  <progress
+                    value={uploadProgress["file"]}
+                    max="100"
+                  ></progress>
+                  <span className="ml-2">{uploadProgress["file"]}%</span>
+                </div>
+              )}
               <FormMessage />
             </FormItem>
           )}
@@ -324,6 +354,17 @@ const AddBeatForm = () => {
                   {beats[index]?.audio && (
                     <audio controls src={beats[index].audio} className="mt-4" />
                   )}
+                  {uploadProgress[`beats[${index}].audio`] > 0 && (
+                    <div className="mt-2">
+                      <progress
+                        value={uploadProgress[`beats[${index}].audio`]}
+                        max="100"
+                      ></progress>
+                      <span className="ml-2">
+                        {uploadProgress[`beats[${index}].audio`]}%
+                      </span>
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -354,36 +395,21 @@ const AddBeatForm = () => {
                       className="mt-4 w-16 h-16 object-cover"
                     />
                   )}
+                  {uploadProgress[`beats[${index}].cover`] > 0 && (
+                    <div className="mt-2">
+                      <progress
+                        value={uploadProgress[`beats[${index}].cover`]}
+                        max="100"
+                      ></progress>
+                      <span className="ml-2">
+                        {uploadProgress[`beats[${index}].cover`]}%
+                      </span>
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name={`beats[${index}].title`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-primary">Beat Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Beat Title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
-            {/* <FormField
-              control={form.control}
-              name={`beats[${index}].price`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-primary">Price</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Price" type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
             <Button
               type="button"
               variant="ghost"
@@ -400,7 +426,7 @@ const AddBeatForm = () => {
           className="text-white"
           disabled={uploading || submitting}
         >
-          Submit
+          {uploading ? "Uploading Files..." : submitting ? "Processing..." : "Submit"}
         </Button>
       </form>
     </Form>

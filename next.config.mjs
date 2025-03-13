@@ -16,6 +16,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "websitefilesdata.s3.ap-south-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
         hostname: "guhanapi.ivdata.in",
         port: "",
         pathname: "/storage/**",
