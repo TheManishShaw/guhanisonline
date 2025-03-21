@@ -19,7 +19,15 @@ import { addBeats } from "@/lib/hooks/services/universalFetch";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { beatsFormSchema } from "@/lib/validation/validation";
-import Image from "next/image";
+import AWS from "aws-sdk";
+
+AWS.config.update({
+  accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+  region: process.env.NEXT_PUBLIC_AWS_REGION,
+});
+
+const s3 = new AWS.S3();
 
 const AddBeatForm = () => {
   const router = useRouter();
@@ -101,12 +109,38 @@ const AddBeatForm = () => {
     }
   };
 
+  // const handleZipFileChange = async (event) => {
+  //   const file = event.target.files[0];
+  //   const fileUrl = await handleFileUpload(file, "file");
+  //   console.log("zip file response===>", fileUrl);
+  //   if (fileUrl) {
+  //     setZipFile(fileUrl);
+  //   }
+  // };
   const handleZipFileChange = async (event) => {
     const file = event.target.files[0];
-    const fileUrl = await handleFileUpload(file, "file");
-    console.log("zip file response===>", fileUrl);
-    if (fileUrl) {
-      setZipFile(fileUrl);
+    if (!file) {
+      toast.error("No file selected");
+      return;
+    }
+
+    const params = {
+      Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
+      Key: `uploads/${file.name}`,
+      Body: file,
+      ContentType: file.type,
+    };
+
+    try {
+      setUploading(true);
+      const data = await s3.upload(params).promise();
+      toast.success(`File uploaded successfully: ${file.name}`);
+      setZipFile(data.Location); // Save the S3 URL
+    } catch (error) {
+      toast.error(`Failed to upload file: ${file.name}`);
+      console.error("S3 upload error:", error);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -167,18 +201,53 @@ const AddBeatForm = () => {
     name: "beats",
   });
   console.log("beats", beats);
+  //  const onSubmit = async (data) => {
+  //   setSubmitting(true);
+  //   const formData = {
+  //     ...data,
+  //     file: zipFile,
+  //     cover_image: mainCoverImage,
+  //     beats: beats.map((beat, index) => ({
+  //       ...beat,
+  //       price: data.price,
+  //     })),
+  //   };
+  //   console.log("formData", formData);
+  //   try {
+  //     const res = await addBeats(formData);
+  //     if (res.status === 201 || res.status === 200) {
+  //       form.reset(defaultValues);
+  //       setMainCoverImage(null);
+  //       setZipFile(null);
+  //       setBeats([...defaultValues.beats]);
+  //       setUploadedFiles({ cover_image: "", file: "", beats: [] });
+  //       setUploadProgress({});
+  //       toast.success("Form submitted successfully!");
+  //       router.push("/dashboard/beats");
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to submit the form.", error);
+  //     toast.error(
+  //       error?.response?.data.message || "Failed to submit the form."
+  //     );
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
   const onSubmit = async (data) => {
     setSubmitting(true);
     const formData = {
       ...data,
-      file: zipFile,
+      file: zipFile, // This should be the S3 URL
       cover_image: mainCoverImage,
       beats: beats.map((beat, index) => ({
         ...beat,
         price: data.price,
       })),
     };
+
     console.log("formData", formData);
+
     try {
       const res = await addBeats(formData);
       if (res.status === 201 || res.status === 200) {
@@ -200,7 +269,6 @@ const AddBeatForm = () => {
       setSubmitting(false);
     }
   };
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
