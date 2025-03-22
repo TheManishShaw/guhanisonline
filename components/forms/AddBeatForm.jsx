@@ -19,15 +19,25 @@ import { addBeats } from "@/lib/hooks/services/universalFetch";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { beatsFormSchema } from "@/lib/validation/validation";
-import AWS from "aws-sdk";
+import {
+  S3Client,
+  PutObjectCommand,
+  CreateMultipartUploadCommand,
+  UploadPartCommand,
+  CompleteMultipartUploadCommand,
+  AbortMultipartUploadCommand,
+  S3ServiceException,
+} from "@aws-sdk/client-s3";
 
-AWS.config.update({
-  accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+const s3Client = new S3Client({
   region: process.env.NEXT_PUBLIC_AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+  },
+  forcePathStyle: true,
+  endpoint: `https://s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com`,
 });
-
-const s3 = new AWS.S3();
 
 const AddBeatForm = () => {
   const router = useRouter();
@@ -109,14 +119,6 @@ const AddBeatForm = () => {
     }
   };
 
-  // const handleZipFileChange = async (event) => {
-  //   const file = event.target.files[0];
-  //   const fileUrl = await handleFileUpload(file, "file");
-  //   console.log("zip file response===>", fileUrl);
-  //   if (fileUrl) {
-  //     setZipFile(fileUrl);
-  //   }
-  // };
   const handleZipFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) {
@@ -124,23 +126,110 @@ const AddBeatForm = () => {
       return;
     }
 
-    const params = {
-      Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
-      Key: `uploads/${file.name}`,
-      Body: file,
-      ContentType: file.type,
-    };
+    const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunks
+    const fileSize = file.size;
 
     try {
       setUploading(true);
-      const data = await s3.upload(params).promise();
+
+      // Initialize multipart upload
+      const multipartUpload = await s3Client.send(
+        new CreateMultipartUploadCommand({
+          Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
+          Key: `uploads/${file.name}`,
+          ContentType: file.type,
+          ACL: "public-read", // Make the uploaded file publicly readable
+          Metadata: {
+            "Content-Type": file.type,
+          },
+        })
+      );
+
+      const uploadId = multipartUpload.UploadId;
+      const parts = [];
+      let partNumber = 1;
+
+      // Upload parts
+      for (let start = 0; start < fileSize; start += CHUNK_SIZE) {
+        const end = Math.min(start + CHUNK_SIZE, fileSize);
+        const chunk = file.slice(start, end);
+
+        const uploadPartResponse = await s3Client.send(
+          new UploadPartCommand({
+            Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
+            Key: `uploads/${file.name}`,
+            UploadId: uploadId,
+            PartNumber: partNumber,
+            Body: chunk,
+            ContentType: file.type,
+          })
+        );
+
+        parts.push({
+          PartNumber: partNumber,
+          ETag: uploadPartResponse.ETag,
+        });
+
+        // Update progress
+        const progress = Math.round(((start + chunk.size) * 100) / fileSize);
+        setUploadProgress((prev) => ({
+          ...prev,
+          file: progress,
+        }));
+
+        partNumber++;
+      }
+
+      // Complete multipart upload
+      await s3Client.send(
+        new CompleteMultipartUploadCommand({
+          Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
+          Key: `uploads/${file.name}`,
+          UploadId: uploadId,
+          MultipartUpload: { Parts: parts },
+        })
+      );
+
+      // Get the final URL using the bucket's virtual-hosted-style URL
+      const fileUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/uploads/${file.name}`;
+
       toast.success(`File uploaded successfully: ${file.name}`);
-      setZipFile(data.Location); // Save the S3 URL
+      setZipFile(fileUrl);
     } catch (error) {
-      toast.error(`Failed to upload file: ${file.name}`);
       console.error("S3 upload error:", error);
+
+      if (error instanceof S3ServiceException) {
+        if (error.name === "EntityTooLarge") {
+          toast.error(
+            "File is too large. Maximum file size is 5GB. Please use the S3 console for larger files."
+          );
+        } else {
+          toast.error(`S3 Error: ${error.name}: ${error.message}`);
+        }
+      } else {
+        toast.error(`Failed to upload file: ${file.name}`);
+      }
+
+      // Attempt to abort multipart upload if it exists
+      if (error.UploadId) {
+        try {
+          await s3Client.send(
+            new AbortMultipartUploadCommand({
+              Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
+              Key: `uploads/${file.name}`,
+              UploadId: error.UploadId,
+            })
+          );
+        } catch (abortError) {
+          console.error("Error aborting multipart upload:", abortError);
+        }
+      }
     } finally {
       setUploading(false);
+      setUploadProgress((prev) => ({
+        ...prev,
+        file: 0,
+      }));
     }
   };
 
@@ -201,39 +290,6 @@ const AddBeatForm = () => {
     name: "beats",
   });
   console.log("beats", beats);
-  //  const onSubmit = async (data) => {
-  //   setSubmitting(true);
-  //   const formData = {
-  //     ...data,
-  //     file: zipFile,
-  //     cover_image: mainCoverImage,
-  //     beats: beats.map((beat, index) => ({
-  //       ...beat,
-  //       price: data.price,
-  //     })),
-  //   };
-  //   console.log("formData", formData);
-  //   try {
-  //     const res = await addBeats(formData);
-  //     if (res.status === 201 || res.status === 200) {
-  //       form.reset(defaultValues);
-  //       setMainCoverImage(null);
-  //       setZipFile(null);
-  //       setBeats([...defaultValues.beats]);
-  //       setUploadedFiles({ cover_image: "", file: "", beats: [] });
-  //       setUploadProgress({});
-  //       toast.success("Form submitted successfully!");
-  //       router.push("/dashboard/beats");
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to submit the form.", error);
-  //     toast.error(
-  //       error?.response?.data.message || "Failed to submit the form."
-  //     );
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
   const onSubmit = async (data) => {
     setSubmitting(true);
     const formData = {
@@ -302,9 +358,7 @@ const AddBeatForm = () => {
                     value={uploadProgress["cover_image"]}
                     max="100"
                   ></progress>
-                  <span className="ml-2">
-                    {uploadProgress["cover_image"]}%
-                  </span>
+                  <span className="ml-2">{uploadProgress["cover_image"]}%</span>
                 </div>
               )}
               <FormMessage />
@@ -375,10 +429,7 @@ const AddBeatForm = () => {
               </FormControl>
               {uploadProgress["file"] > 0 && (
                 <div className="mt-2">
-                  <progress
-                    value={uploadProgress["file"]}
-                    max="100"
-                  ></progress>
+                  <progress value={uploadProgress["file"]} max="100"></progress>
                   <span className="ml-2">{uploadProgress["file"]}%</span>
                 </div>
               )}
@@ -494,7 +545,11 @@ const AddBeatForm = () => {
           className="text-white"
           disabled={uploading || submitting}
         >
-          {uploading ? "Uploading Files..." : submitting ? "Processing..." : "Submit"}
+          {uploading
+            ? "Uploading Files..."
+            : submitting
+            ? "Processing..."
+            : "Submit"}
         </Button>
       </form>
     </Form>
