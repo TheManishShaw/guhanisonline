@@ -128,23 +128,29 @@ const AddBeatForm = () => {
 
     const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunks
     const fileSize = file.size;
+    const timestamp = Date.now();
+    const key = `public/uploads/${timestamp}-${file.name}`;
 
     try {
       setUploading(true);
+      console.log("Starting S3 upload...");
+      console.log("Bucket:", process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME);
+      console.log("Region:", process.env.NEXT_PUBLIC_AWS_REGION);
 
       // Initialize multipart upload
       const multipartUpload = await s3Client.send(
         new CreateMultipartUploadCommand({
           Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
-          Key: `uploads/${file.name}`,
+          Key: key,
           ContentType: file.type,
-          ACL: "public-read", // Make the uploaded file publicly readable
           Metadata: {
             "Content-Type": file.type,
+            "original-name": file.name,
           },
         })
       );
 
+      console.log("Multipart upload initialized:", multipartUpload.UploadId);
       const uploadId = multipartUpload.UploadId;
       const parts = [];
       let partNumber = 1;
@@ -154,13 +160,17 @@ const AddBeatForm = () => {
         const end = Math.min(start + CHUNK_SIZE, fileSize);
         const chunk = file.slice(start, end);
 
+        console.log(`Uploading part ${partNumber}...`);
+
+        // Convert chunk to Buffer
+        const buffer = await chunk.arrayBuffer();
         const uploadPartResponse = await s3Client.send(
           new UploadPartCommand({
             Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
-            Key: `uploads/${file.name}`,
+            Key: key,
             UploadId: uploadId,
             PartNumber: partNumber,
-            Body: chunk,
+            Body: Buffer.from(buffer),
             ContentType: file.type,
           })
         );
@@ -180,34 +190,46 @@ const AddBeatForm = () => {
         partNumber++;
       }
 
+      console.log("Completing multipart upload...");
       // Complete multipart upload
       await s3Client.send(
         new CompleteMultipartUploadCommand({
           Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
-          Key: `uploads/${file.name}`,
+          Key: key,
           UploadId: uploadId,
           MultipartUpload: { Parts: parts },
         })
       );
 
-      // Get the final URL using the bucket's virtual-hosted-style URL
-      const fileUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/uploads/${file.name}`;
+      // Get the final URL with proper CORS configuration
+      const fileUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${key}`;
+      console.log("Upload completed. File URL:", fileUrl);
 
-      toast.success(`File uploaded successfully: ${file.name}`);
+      // Set the file URL in state
       setZipFile(fileUrl);
+      toast.success(`File uploaded successfully: ${file.name}`);
     } catch (error) {
-      console.error("S3 upload error:", error);
+      console.error("Detailed S3 upload error:", {
+        name: error.name,
+        message: error.message,
+        code: error.code,
+        stack: error.stack,
+      });
 
       if (error instanceof S3ServiceException) {
         if (error.name === "EntityTooLarge") {
+          toast.error("File is too large. Maximum file size is 5GB.");
+        } else if (error.name === "AccessDenied") {
           toast.error(
-            "File is too large. Maximum file size is 5GB. Please use the S3 console for larger files."
+            "Access denied. Please check your AWS credentials and bucket permissions."
           );
+        } else if (error.name === "NoSuchBucket") {
+          toast.error("S3 bucket not found. Please check your bucket name.");
         } else {
           toast.error(`S3 Error: ${error.name}: ${error.message}`);
         }
       } else {
-        toast.error(`Failed to upload file: ${file.name}`);
+        toast.error(`Failed to upload file: ${error.message}`);
       }
 
       // Attempt to abort multipart upload if it exists
@@ -216,7 +238,7 @@ const AddBeatForm = () => {
           await s3Client.send(
             new AbortMultipartUploadCommand({
               Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
-              Key: `uploads/${file.name}`,
+              Key: key,
               UploadId: error.UploadId,
             })
           );
