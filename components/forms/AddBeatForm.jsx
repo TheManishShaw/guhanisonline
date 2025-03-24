@@ -32,8 +32,8 @@ import {
 const s3Client = new S3Client({
   region: process.env.NEXT_PUBLIC_AWS_REGION,
   credentials: {
-    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID || "",
+    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY || "",
   },
   forcePathStyle: true,
   endpoint: `https://s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com`,
@@ -123,6 +123,17 @@ const AddBeatForm = () => {
     const file = event.target.files[0];
     if (!file) {
       toast.error("No file selected");
+      return;
+    }
+
+    // Check if AWS credentials are configured
+    if (
+      !process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID ||
+      !process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
+    ) {
+      toast.error(
+        "AWS credentials are not configured. Please check your environment variables."
+      );
       return;
     }
 
