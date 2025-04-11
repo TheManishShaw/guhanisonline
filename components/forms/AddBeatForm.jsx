@@ -360,13 +360,18 @@ const AddBeatForm = () => {
   };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full space-y-6 text-sm"
+      >
         <FormField
           control={form.control}
           name="cover_image"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Cover Image</FormLabel>
+              <FormLabel className="text-primary text-sm font-medium">
+                Cover Image
+              </FormLabel>
               <FormControl>
                 <Input
                   type="file"
@@ -404,9 +409,11 @@ const AddBeatForm = () => {
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-primary">Title</FormLabel>
+                <FormLabel className="text-primary text-sm font-medium">
+                  Title
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Title" {...field} />
+                  <Input placeholder="Title" {...field} className="text-sm" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -417,9 +424,16 @@ const AddBeatForm = () => {
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-primary">Price</FormLabel>
+                <FormLabel className="text-primary text-sm font-medium">
+                  Price
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Price" type="number" {...field} />
+                  <Input
+                    placeholder="Price"
+                    type="number"
+                    {...field}
+                    className="text-sm"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -431,11 +445,13 @@ const AddBeatForm = () => {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Description</FormLabel>
+              <FormLabel className="text-primary text-sm font-medium">
+                Description
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Description"
-                  className="resize-none"
+                  className="resize-none text-sm"
                   {...field}
                 />
               </FormControl>
@@ -448,7 +464,9 @@ const AddBeatForm = () => {
           name="file"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Files For Download</FormLabel>
+              <FormLabel className="text-primary text-sm font-medium">
+                Files For Download
+              </FormLabel>
               <FormControl>
                 <Input
                   type="file"
@@ -472,7 +490,9 @@ const AddBeatForm = () => {
         />
 
         <div className="flex items-center justify-between gap-2 ">
-          <h2 className="text-primary text-2xl">Preview Audio Files</h2>
+          <h2 className="text-primary text-lg font-semibold">
+            Preview Audio Files
+          </h2>
           <Button
             type="button"
             variant="outline"
@@ -491,7 +511,9 @@ const AddBeatForm = () => {
               name={`beats[${index}].audio`}
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel className="text-primary">Audio File</FormLabel>
+                  <FormLabel className="text-primary text-sm font-medium">
+                    Audio File
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="file"
@@ -526,7 +548,7 @@ const AddBeatForm = () => {
               name={`beats[${index}].cover`}
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel className="text-primary">
+                  <FormLabel className="text-primary text-sm font-medium">
                     Beat Cover Image
                   </FormLabel>
                   <FormControl>

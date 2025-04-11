@@ -93,7 +93,7 @@ const BeatsListTable = () => {
       ),
       cell: ({ row }) => (
         <>
-          <span className="text-2xl max-w-xl line-clamp-1">
+          <span className="text-sm max-w-xl line-clamp-1">
             {" "}
             {row.original.description}
           </span>
@@ -109,7 +109,7 @@ const BeatsListTable = () => {
       ),
       cell: ({ row }) => (
         <>
-          <span className="text-2xl max-w-xl line-clamp-1">
+          <span className="text-sm max-w-xl line-clamp-1">
             {" "}
             {row.original.price}
           </span>
@@ -125,7 +125,7 @@ const BeatsListTable = () => {
         <DataTableColumnHeader column={column} title="Create At" />
       ),
       cell: ({ row }) => (
-        <div className="max-w-[200px] text-xl w-[130px]">
+        <div className="max-w-[200px] text-sm w-[130px]">
           {moment(row.original.created_at).format("MMMM Do YYYY  ")}
         </div>
       ),
@@ -147,9 +147,9 @@ const BeatsListTable = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px] bg-black border-gray-500">
               <DialogHeader>
-                <DialogTitle className="text-2xl">Delete Beat</DialogTitle>
+                <DialogTitle className="text-lg">Delete Beat</DialogTitle>
               </DialogHeader>
-              <h1 className="text-2xl font-bold">
+              <h1 className="text-lg font-bold">
                 Are you sure you want to delete this Beat ?
               </h1>
               <DialogFooter>

@@ -74,7 +74,10 @@ const AccountSettingForm = () => {
   if (isLoading) return "loading ...";
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full space-y-6 text-base"
+      >
         <div className="grid grid-cols-2 items-center gap-4 w-full">
           <FormField
             control={form.control}

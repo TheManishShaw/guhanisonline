@@ -66,7 +66,7 @@ export function DataTable({ columns, data, isLoading }) {
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
-                      className="text-2xl"
+                      className="text-md"
                       key={header.id}
                       colSpan={header.colSpan}
                     >
@@ -87,7 +87,7 @@ export function DataTable({ columns, data, isLoading }) {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-2xl"
+                  className="h-24 text-center text-md"
                 >
                   Loading...
                 </TableCell>

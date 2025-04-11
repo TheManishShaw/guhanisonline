@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { DataTable } from "../ui/datatable/data-table";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Poppins } from "next/font/google";
 
 import {
   deleteClienteleById,
@@ -22,7 +24,11 @@ import {
 import { Button } from "../ui/button";
 import { Trash2Icon } from "lucide-react";
 import moment from "moment";
-import { toast } from "sonner";
+
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
 
 const ClienteleListTable = () => {
   const { isPending, isError, data, isLoading, error, refetch } = useQuery({
@@ -52,7 +58,7 @@ const ClienteleListTable = () => {
         <DataTableColumnHeader column={column} title="ID#" />
       ),
       cell: ({ row }) => (
-        <div className="flex items-center gap-4 text-2xl  ">
+        <div className="flex items-center gap-4 text-xl  ">
           #{row.original.id}
         </div>
       ),
@@ -86,7 +92,7 @@ const ClienteleListTable = () => {
       ),
       cell: ({ row }) => (
         <div className="max-w-md">
-          <h1 className=" text-2xl"> {row.original.name}</h1>
+          <h1 className=" text-md"> {row.original.name}</h1>
         </div>
       ),
       enableSorting: false,
@@ -99,7 +105,7 @@ const ClienteleListTable = () => {
       ),
       cell: ({ row }) => (
         <>
-          <span className="text-2xl"> {row.original.design}</span>
+          <span className="text-md"> {row.original.design}</span>
         </>
       ),
       enableSorting: false,
@@ -113,7 +119,7 @@ const ClienteleListTable = () => {
       ),
       cell: ({ row }) => (
         <>
-          <span className="text-2xl max-w-xl line-clamp-1">
+          <span className="text-md max-w-xl line-clamp-1">
             {" "}
             {row.original.testimonial}
           </span>
@@ -129,7 +135,7 @@ const ClienteleListTable = () => {
         <DataTableColumnHeader column={column} title="Create At" />
       ),
       cell: ({ row }) => (
-        <div className="max-w-[200px] text-xl w-[130px]">
+        <div className="max-w-[200px] text-md w-[130px]">
           {moment(row.original.created_at).format("MMMM Do YYYY  ")}
         </div>
       ),
@@ -143,7 +149,7 @@ const ClienteleListTable = () => {
       ),
       cell: ({ row }) => (
         <div className="">
-          <Dialog>
+          <Dialog className={`${poppins.className}`}>
             <DialogTrigger asChild>
               <Button>
                 <Trash2Icon />
@@ -151,7 +157,7 @@ const ClienteleListTable = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px] bg-black border-gray-500">
               <DialogHeader>
-                <DialogTitle className="text-2xl">Delete Clientele</DialogTitle>
+                <DialogTitle className="text-md">Delete Clientele</DialogTitle>
               </DialogHeader>
               <h1 className="text-2xl font-bold">
                 Are you sure you want to this Clientele?
@@ -179,7 +185,7 @@ const ClienteleListTable = () => {
     },
   ];
   return (
-    <div className="w-full mx-auto">
+    <div className={`w-full mx-auto ${poppins.className}`}>
       <DataTable
         data={data ?? []}
         isLoading={isLoading}

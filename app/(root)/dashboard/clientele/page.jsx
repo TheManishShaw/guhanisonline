@@ -25,7 +25,7 @@ const page = () => {
           </div>
           <div className=" ">
             <Link
-              className="bg-primary text-2xl text-black px-5 py-3 rounded-lg"
+              className="bg-primary text-md text-black px-5 py-3 rounded-lg"
               href="/dashboard/clientele/add"
             >
               Add Client

@@ -18,17 +18,17 @@ const page = () => {
   return (
     <>
       <Card>
-        <CardHeader className="">
+        <CardHeader className="space-y-2">
           <div className="flex items-center justify-between">
-            <div className="">
-              <CardTitle>Beats</CardTitle>
-              <CardDescription>
+            <div className="space-y-1">
+              <CardTitle className="text-2xl font-semibold">Beats</CardTitle>
+              <CardDescription className="text-base">
                 Manage your beats and view their sales performance.
               </CardDescription>
             </div>
-            <div className=" ">
+            <div>
               <Link
-                className="bg-primary text-black px-5 py-3 text-xl rounded-lg"
+                className="bg-primary text-black px-5 py-2.5 text-base font-medium rounded-lg hover:bg-primary/90 transition-colors"
                 href="/dashboard/beats/add"
               >
                 Add Beats

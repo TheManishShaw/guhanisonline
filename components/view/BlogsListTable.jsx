@@ -76,7 +76,7 @@ const BlogsListTable = () => {
         <div className="max-w-md">
           <Link
             href={`/dashboard/blogs/update/${row.original.blog_id}`}
-            className="text-xl hover:underline max-w-md w-64 font-bold line-clamp-1"
+            className="text-md hover:underline max-w-md w-64 font-bold line-clamp-1"
           >
             {row.original.title}
           </Link>
@@ -99,7 +99,7 @@ const BlogsListTable = () => {
               .split(",")
               .slice(0, 4)
               .map((item, index) => (
-                <Badge key={index} className="my-1 text-xl mx-4 mr-1">
+                <Badge key={index} className="my-1 text-md mx-4 mr-1">
                   {item}
                 </Badge>
               ))}
@@ -116,7 +116,7 @@ const BlogsListTable = () => {
       ),
       cell: ({ row }) => (
         <>
-          <span className="text-2xl">
+          <span className="text-md">
             {" "}
             {row.original.author.first_name} {row.original.author.last_name}
           </span>
@@ -132,7 +132,7 @@ const BlogsListTable = () => {
         <DataTableColumnHeader column={column} title="Create At" />
       ),
       cell: ({ row }) => (
-        <div className="max-w-[200px] text-xl w-[135px]">
+        <div className="max-w-[200px] text-md w-[135px]">
           {moment(row.original.created_at).format("MMMM Do YYYY  ")}
         </div>
       ),
@@ -154,7 +154,7 @@ const BlogsListTable = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px] bg-black border-gray-500">
               <DialogHeader>
-                <DialogTitle className="text-2xl">Delete Blog</DialogTitle>
+                <DialogTitle className="text-xl">Delete Blog</DialogTitle>
               </DialogHeader>
               <h1 className="text-2xl font-bold">
                 Are you sure you want to delete this blog ?
