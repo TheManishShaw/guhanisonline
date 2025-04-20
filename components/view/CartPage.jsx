@@ -116,9 +116,7 @@ const CartPage = () => {
         </div>
         <div className="flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-800">
           <div className="text-lg font-medium">Total</div>
-          <div className="text-2xl font-bold">
-            ${cartTotalAmount.toFixed(2)}
-          </div>
+          <div className="text-2xl font-bold">${cartTotalAmount}</div>
         </div>
         {session?.user ? (
           <Button

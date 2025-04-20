@@ -1,7 +1,7 @@
 export const menuList = [
   { name: "Sample Packs", path: "/beats", target: "" },
   {
-    name: "Work with me",
+    name: "Let's Collaborate",
     path: "https://vthed6ggbvs.typeform.com/to/qhDfR6sF",
     target: "_blank",
   },
