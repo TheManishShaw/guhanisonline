@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { TypeAnimation } from "react-type-animation"; // Import your typing animation library
-import { SkullIcon, Users, Sliders } from "lucide-react";
+import { Music, Users, TrendingUp, Play, UserCheck, Zap } from "lucide-react";
 function Skull() {
   const canvasRef = useRef();
 
@@ -156,12 +156,27 @@ function Skull() {
           alignItems: "center",
         }}
       >
-        <div className="md:flex block items-center justify-center gap-8 bg-[#1C1B1B] p-[20px] px-28 rounded-md bg-opacity-65">
-          <StatsItem icon={<SkullIcon />} text="1000+ Beats Produced" />
-          <div className="text-white text-2xl font-light">|</div>
-          <StatsItem icon={<Users />} text="150+ Clients" />
-          <div className="text-white text-2xl font-light">|</div>
-          <StatsItem icon={<Sliders />} text="Work in progress" />
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 bg-[#1C1B1B] p-4 md:p-6 px-8 md:px-28 rounded-lg bg-opacity-65 backdrop-blur-sm border border-[#5eead4]/20 hover:border-[#5eead4]/40 transition-all duration-500 ease-in-out hover:shadow-[0_0_30px_rgba(94,234,212,0.3)] hover:shadow-2xl animate-pulse-slow">
+          <StatsItem 
+            icon={<Music />} 
+            text="1000+ Songs Produced" 
+            onClick={() => window.location.href = '/beats'}
+            description="Explore our songs collection"
+          />
+          <div className="text-white text-2xl font-light opacity-50 hidden md:block">|</div>
+          <StatsItem 
+            icon={<UserCheck />} 
+            text="150+ Happy Clients" 
+            onClick={() => window.location.href = '/clientele'}
+            description="See our satisfied clients"
+          />
+          <div className="text-white text-2xl font-light opacity-50 hidden md:block">|</div>
+          <StatsItem 
+            icon={<Zap />} 
+            text="Always Creating" 
+            onClick={() => window.location.href = '/blogs'}
+            description="Get in touch for new projects"
+          />
         </div>
       </div>
     </div>
@@ -170,13 +185,87 @@ function Skull() {
 
 export default Skull;
 
-function StatsItem({ icon, text }) {
+function StatsItem({ icon, text, onClick, description }) {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [showTooltip, setShowTooltip] = React.useState(false);
+
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="text-[#5eead4]">
-        {React.cloneElement(icon, { size: 32 })}
+    <div 
+      className="relative flex flex-col items-center gap-2 cursor-pointer group transition-all duration-300 ease-in-out"
+      onClick={onClick}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        setShowTooltip(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setShowTooltip(false);
+      }}
+    >
+      <div 
+        className={`text-[#5eead4] transition-all duration-300 ease-in-out transform ${
+          isHovered ? 'scale-110 rotate-12' : 'scale-100 rotate-0'
+        }`}
+      >
+        {React.cloneElement(icon, { 
+          className: "w-7 h-7 md:w-8 md:h-8",
+          size: undefined 
+        })}
       </div>
-      <span className="text-white text-2xl  whitespace-nowrap">{text}</span>
+      <span 
+        className={`text-white text-lg md:text-xl whitespace-nowrap transition-all duration-300 ease-in-out ${
+          isHovered ? 'text-[#5eead4] scale-105' : 'scale-100'
+        }`}
+      >
+        {text}
+      </span>
+      
+      {/* Animated background glow effect */}
+      <div 
+        className={`absolute inset-0 rounded-lg transition-all duration-300 ease-in-out ${
+          isHovered ? 'bg-[#5eead4]/20 scale-110' : 'bg-transparent scale-100'
+        }`}
+        style={{ zIndex: -1 }}
+      />
+      
+      {/* Tooltip */}
+      {showTooltip && (
+        <div 
+          className="absolute bottom-full mb-2 px-3 py-2 bg-black/80 backdrop-blur-sm text-white text-sm rounded-lg whitespace-nowrap transition-all duration-200 ease-in-out transform"
+          style={{
+            animation: 'fadeInUp 0.2s ease-out',
+          }}
+        >
+          {description}
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black/80"></div>
+        </div>
+      )}
+      
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes pulse-slow {
+          0%, 100% {
+            box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.4);
+          }
+          50% {
+            box-shadow: 0 0 0 10px rgba(94, 234, 212, 0);
+          }
+        }
+        
+        .animate-pulse-slow {
+          animation: pulse-slow 3s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }

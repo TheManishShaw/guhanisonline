@@ -3,20 +3,22 @@ import PublicBeatsPage from "@/components/view/PublicBeatsPage";
 import React from "react";
 
 export const metadata = {
-  title: "Beats | Guhanis Official",
-  description: "Artist | Music Producer",
+  title: "Songs | Guhanis Official",
+  description: "Premium songs and tracks for music producers and artists",
 };
 
 const page = () => {
   return (
-    <section className="container mx-auto px-6">
-      <HeadingSection
-        title="Beats"
-        description="Dive into the groove: Explore our collection of beats curated to inspire and elevate your music journey"
-        image="/assets/svg/sample.svg"
-      />
-      <PublicBeatsPage />
-    </section>
+    <div className="min-h-screen bg-gray-950">
+      <section className="container mx-auto px-6 py-16">
+        <HeadingSection
+          title="Songs"
+          description="Premium songs crafted for the next generation of artists. Discover your sound with our exclusive collection."
+          image="/assets/svg/sample.svg"
+        />
+        <PublicBeatsPage />
+      </section>
+    </div>
   );
 };
 

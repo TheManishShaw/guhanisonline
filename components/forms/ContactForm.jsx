@@ -18,6 +18,7 @@ import { useMutation } from "@tanstack/react-query";
 import { contactForm } from "@/lib/hooks/services/universalFetch";
 import { contactFormSchema } from "@/lib/validation/validation";
 import { toast } from "sonner";
+import { Send } from "lucide-react";
 
 const ContactForm = () => {
   const form = useForm({
@@ -46,18 +47,21 @@ const ContactForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2  items-center gap-4 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <FormField
             control={form.control}
             name="first_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-primary">First Name</FormLabel>
+                <FormLabel className="text-white font-medium">First Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="John" {...field} />
+                  <Input 
+                    placeholder="John" 
+                    className="bg-black/40 border-gray-600 text-white placeholder-gray-400 focus:border-[#5eead4] focus:ring-[#5eead4]/20" 
+                    {...field} 
+                  />
                 </FormControl>
-
-                <FormMessage />
+                <FormMessage className="text-red-400" />
               </FormItem>
             )}
           />
@@ -66,12 +70,15 @@ const ContactForm = () => {
             name="last_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-primary">Last Name</FormLabel>
+                <FormLabel className="text-white font-medium">Last Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Doe" {...field} />
+                  <Input 
+                    placeholder="Doe" 
+                    className="bg-black/40 border-gray-600 text-white placeholder-gray-400 focus:border-[#5eead4] focus:ring-[#5eead4]/20" 
+                    {...field} 
+                  />
                 </FormControl>
-
-                <FormMessage />
+                <FormMessage className="text-red-400" />
               </FormItem>
             )}
           />
@@ -80,12 +87,16 @@ const ContactForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-primary">Email</FormLabel>
+                <FormLabel className="text-white font-medium">Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="john@example.com" {...field} />
+                  <Input 
+                    placeholder="john@example.com" 
+                    type="email"
+                    className="bg-black/40 border-gray-600 text-white placeholder-gray-400 focus:border-[#5eead4] focus:ring-[#5eead4]/20" 
+                    {...field} 
+                  />
                 </FormControl>
-
-                <FormMessage />
+                <FormMessage className="text-red-400" />
               </FormItem>
             )}
           />
@@ -94,12 +105,15 @@ const ContactForm = () => {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-primary">Phone</FormLabel>
+                <FormLabel className="text-white font-medium">Phone</FormLabel>
                 <FormControl>
-                  <Input placeholder="+91 96468-34345" {...field} />
+                  <Input 
+                    placeholder="+1 (555) 123-4567" 
+                    className="bg-black/40 border-gray-600 text-white placeholder-gray-400 focus:border-[#5eead4] focus:ring-[#5eead4]/20" 
+                    {...field} 
+                  />
                 </FormControl>
-
-                <FormMessage />
+                <FormMessage className="text-red-400" />
               </FormItem>
             )}
           />
@@ -109,21 +123,34 @@ const ContactForm = () => {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Message</FormLabel>
+              <FormLabel className="text-white font-medium">Message</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Write you message"
-                  className="resize-none"
+                  placeholder="Tell us about your project, ideas, or any questions you have..."
+                  className="resize-none bg-black/40 border-gray-600 text-white placeholder-gray-400 focus:border-[#5eead4] focus:ring-[#5eead4]/20 min-h-[120px]"
                   {...field}
                 />
               </FormControl>
-
-              <FormMessage />
+              <FormMessage className="text-red-400" />
             </FormItem>
           )}
         />
-        <Button disabled={isLoading} className="w-full" type="submit">
-          {isLoading ? "Submitting" : "Submit"}
+        <Button 
+          disabled={isLoading} 
+          className="w-full bg-gradient-to-r from-[#5eead4] to-cyan-400 hover:from-[#5eead4]/90 hover:to-cyan-400/90 text-black font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed" 
+          type="submit"
+        >
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+              Sending...
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Send className="w-4 h-4" />
+              Send Message
+            </div>
+          )}
         </Button>
       </form>
     </Form>

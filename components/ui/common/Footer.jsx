@@ -10,7 +10,7 @@ const Footer = () => {
   const path = usePathname();
   const footerList = [
     {
-      name: "Beats",
+      name: "Songs",
       link: "/beats",
     },
     {
@@ -71,7 +71,7 @@ const Footer = () => {
           <div className="py-7 border-t border-gray-700">
             <div className="flex items-center justify-center">
               <span className="text-gray-400 text-[1.5rem] ">
-                ©<a href="https://guhanisonline.com/">guhanisonline</a>2024, All
+                ©<a href="https://guhanisonline.com/">guhanisonline</a>2025, All
                 rights reserved.
               </span>
             </div>

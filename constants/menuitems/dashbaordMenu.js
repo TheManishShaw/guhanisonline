@@ -2,6 +2,7 @@ import {
   BookUser,
   Home,
   ListMusic,
+  MessageSquare,
   Rss,
   ShoppingCart,
   User2,
@@ -38,6 +39,12 @@ export const dashboardList = [
     path: "/dashboard/clientele",
     name: "Clientele",
     icon: <BookUser />,
+    roles: ["admin"],
+  },
+  {
+    path: "/dashboard/testimonials",
+    name: "Testimonials",
+    icon: <MessageSquare />,
     roles: ["admin"],
   },
   {

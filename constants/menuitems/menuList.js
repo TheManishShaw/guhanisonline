@@ -8,6 +8,7 @@ export const menuList = [
 
   { name: "Blogs", path: "/blogs", target: "" },
   { name: "Clientele", path: "/clientele", target: "" },
+  { name: "Testimonials", path: "/testimonials", target: "" },
   { name: "About-me", path: "/about", target: "" },
   { name: "Contact", path: "/contact", target: "" },
 ];

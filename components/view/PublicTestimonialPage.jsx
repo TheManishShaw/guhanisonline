@@ -1,0 +1,212 @@
+"use client";
+import { Star, Quote, Play, ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useState, useRef } from "react";
+
+const TestimonialCard = ({ testimonial, index }) => {
+  const imageUrl = testimonial.photo || "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80";
+  const videoUrl = testimonial.video;
+
+  return (
+    <div className="flex-shrink-0 w-96 bg-gray-900 border border-gray-700 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+      {/* Media Section - Much Bigger */}
+      <div className="relative h-[37rem] bg-gray-800 rounded-t-3xl">
+        {videoUrl ? (
+          <div className="relative w-full h-full">
+            <video
+              className="w-full h-full object-cover rounded-t-3xl"
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster={imageUrl}
+            >
+              <source src={videoUrl} type="video/mp4" />
+              <source src={videoUrl} type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+            {/* Subtle overlay for better text visibility */}
+            <div className="absolute inset-0 bg-black/10"></div>
+          </div>
+        ) : (
+          <img
+            src={imageUrl}
+            alt={testimonial.name}
+            className="w-full h-full object-cover rounded-t-3xl"
+          />
+        )}
+      </div>
+
+      {/* Content Section */}
+      <div className="p-6 bg-gray-900 rounded-b-3xl">
+        <div className="flex items-center gap-3">
+          <img
+            src={imageUrl}
+            alt={testimonial.name}
+            className="w-12 h-12 rounded-full object-cover border-2 border-gray-700"
+          />
+          <div>
+            <h4 className="font-semibold text-white text-sm">
+              {testimonial.name}
+            </h4>
+            <p className="text-gray-400 text-xs">
+              {testimonial.design || testimonial.position || "Client"}
+            </p>
+            {testimonial.company && (
+              <p className="text-primary text-xs">
+                {testimonial.company}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const TestimonialGrid = ({ testimonials }) => {
+  const scrollContainerRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScrollButtons = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -384, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 384, behavior: 'smooth' });
+    }
+  };
+
+  React.useEffect(() => {
+    checkScrollButtons();
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkScrollButtons);
+      return () => container.removeEventListener('scroll', checkScrollButtons);
+    }
+  }, []);
+
+  return (
+    <div className="relative">
+      {/* Navigation Buttons - Positioned outside */}
+      <div className="absolute -left-16 top-1/2 -translate-y-1/2 z-10">
+        <button
+          onClick={scrollLeft}
+          disabled={!canScrollLeft}
+          className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg ${
+            canScrollLeft 
+              ? 'bg-white text-gray-900 hover:bg-gray-100 hover:scale-110' 
+              : 'bg-gray-800 text-gray-600 cursor-not-allowed opacity-50'
+          }`}
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+      </div>
+      
+      <div className="absolute -right-16 top-1/2 -translate-y-1/2 z-10">
+        <button
+          onClick={scrollRight}
+          disabled={!canScrollRight}
+          className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg ${
+            canScrollRight 
+              ? 'bg-white text-gray-900 hover:bg-gray-100 hover:scale-110' 
+              : 'bg-gray-800 text-gray-600 cursor-not-allowed opacity-50'
+          }`}
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Scrollable Container */}
+      <div
+        ref={scrollContainerRef}
+        className="flex gap-6 overflow-x-hidden scrollbar-hide py-8"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {testimonials.map((testimonial, index) => (
+          <TestimonialCard key={index} testimonial={testimonial} index={index} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+const PublicTestimonialPage = () => {
+  // Static testimonial data
+  const testimonialList = [
+    {
+      id: 1,
+      name: "Giselle",
+      testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
+      rating: 5,
+      design: "Pop Artist",
+      company: "Giselle Music",
+      photo: "/assets/images/avatar/avatar.png",
+      video: "/assets/videos/Giselle testimonials_caption.mp4",
+    }, {
+        id: 1,
+        name: "Giselle",
+        testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
+        rating: 5,
+        design: "Pop Artist",
+        company: "Giselle Music",
+        photo: "/assets/images/avatar/avatar.png",
+        video: "/assets/videos/Giselle testimonials_caption.mp4",
+      }, {
+        id: 1,
+        name: "Giselle",
+        testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
+        rating: 5,
+        design: "Pop Artist",
+        company: "Giselle Music",
+        photo: "/assets/images/avatar/avatar.png",
+        video: "/assets/videos/Giselle testimonials_caption.mp4",
+      }, {
+        id: 1,
+        name: "Giselle",
+        testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
+        rating: 5,
+        design: "Pop Artist",
+        company: "Giselle Music",
+        photo: "/assets/images/avatar/avatar.png",
+        video: "/assets/videos/Giselle testimonials_caption.mp4",
+      },
+  
+  ];
+
+  const featuredTestimonial = testimonialList[0];
+  const otherTestimonials = testimonialList.slice(1);
+
+  return (
+    <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-16">
+      {/* Section Header */}
+      <div className="text-center mb-16 px-6">
+        <p className="text-primary font-medium text-sm mb-4">
+          Curious how people are using Guhanis
+        </p>
+        <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+          Hear what our customers are saying
+        </h2>
+      </div>
+
+      {/* Testimonials Grid */}
+      <div className="px-6">
+        <TestimonialGrid testimonials={testimonialList} />
+      </div>
+    </div>
+  );
+};
+
+export default PublicTestimonialPage;
