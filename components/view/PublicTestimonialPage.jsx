@@ -1,7 +1,6 @@
 "use client";
 import { Star, Quote, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useState, useRef } from "react";
-import { useTestimonials } from "@/lib/hooks/useTestimonials";
 
 const TestimonialCard = ({ testimonial, index }) => {
   const imageUrl = testimonial.photo || "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80";
@@ -171,49 +170,57 @@ const TestimonialGrid = ({ testimonials }) => {
 
 
 const PublicTestimonialPage = () => {
-  // Fetch testimonials from API
-  const { data: testimonialsData, isLoading, error } = useTestimonials();
-  
-  // Filter only active testimonials for public display
-  const testimonialList = testimonialsData?.data?.filter(testimonial => testimonial.is_active === 1) || [];
-  
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-16">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-white">Loading testimonials...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state
-  if (error) {
-    return (
-      <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-16">
-        <div className="text-center">
-          <p className="text-red-400 mb-4">Failed to load testimonials</p>
-          <p className="text-gray-400">Please try again later</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show empty state
-  if (!testimonialList || testimonialList.length === 0) {
-    return (
-      <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-16">
-        <div className="text-center">
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-            Hear what our customers are saying
-          </h2>
-          <p className="text-gray-400">No testimonials available at the moment</p>
-        </div>
-      </div>
-    );
-  }
+  // Hardcoded testimonial data
+  const testimonialList = [
+    {
+      id: 1,
+      name: "Giselle",
+      testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
+      rating: 5,
+      designation: "Pop Artist",
+      company: "Giselle Music",
+      photo: "/assets/images/avatar/avatar.png",
+      video: "/assets/videos/Giselle testimonials_caption.mp4",
+      content_type: "video",
+      content: "/assets/videos/Giselle testimonials_caption.mp4"
+    },
+    {
+      id: 2,
+      name: "Giselle",
+      testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
+      rating: 5,
+      designation: "Pop Artist",
+      company: "Giselle Music",
+      photo: "/assets/images/avatar/avatar.png",
+      video: "/assets/videos/Giselle testimonials_caption.mp4",
+      content_type: "video",
+      content: "/assets/videos/Giselle testimonials_caption.mp4"
+    },
+    {
+      id: 3,
+      name: "Giselle",
+      testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
+      rating: 5,
+      designation: "Pop Artist",
+      company: "Giselle Music",
+      photo: "/assets/images/avatar/avatar.png",
+      video: "/assets/videos/Giselle testimonials_caption.mp4",
+      content_type: "video",
+      content: "/assets/videos/Giselle testimonials_caption.mp4"
+    },
+    {
+      id: 4,
+      name: "Giselle",
+      testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
+      rating: 5,
+      designation: "Pop Artist",
+      company: "Giselle Music",
+      photo: "/assets/images/avatar/avatar.png",
+      video: "/assets/videos/Giselle testimonials_caption.mp4",
+      content_type: "video",
+      content: "/assets/videos/Giselle testimonials_caption.mp4"
+    }
+  ];
 
   return (
     <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-16">
