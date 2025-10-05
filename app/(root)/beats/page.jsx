@@ -3,8 +3,8 @@ import PublicBeatsPage from "@/components/view/PublicBeatsPage";
 import React from "react";
 
 export const metadata = {
-  title: "Songs | Guhanis Official",
-  description: "Premium songs and tracks for music producers and artists",
+  title: "Sample Packs | Guhanis Official",
+  description: "Premium sample packs for music producers and artists",
 };
 
 const page = () => {
