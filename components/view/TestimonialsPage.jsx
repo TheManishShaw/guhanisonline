@@ -8,29 +8,27 @@ import { useState } from "react";
 import TestimonialForm from "@/components/forms/TestimonialForm";
 import { DataTable } from "@/components/ui/datatable/data-table";
 import { testimonialColumns } from "@/constants/table-columns/testimonial-table-column";
+import { 
+  useTestimonials, 
+  useDeleteTestimonial, 
+  useToggleTestimonialStatus 
+} from "@/lib/hooks/useTestimonials";
 
 const TestimonialsPage = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
 
-  // Static testimonial data
-  const testimonials = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
-      rating: 5,
-      design: "Independent Artist",
-      company: "SJ Music",
-      photo: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80",
-      video: "/assets/videos/Giselle testimonials_caption.mp4",
-      isActive: true,
-      createdAt: "2024-01-15",
-    },
-  
- 
-  ];
+  // TanStack Query hooks
+  const { 
+    data: testimonials = [], 
+    isLoading, 
+    isError, 
+    error 
+  } = useTestimonials();
+
+  const deleteTestimonialMutation = useDeleteTestimonial();
+  const toggleStatusMutation = useToggleTestimonialStatus();
 
   const handleEdit = (testimonial) => {
     setSelectedTestimonial(testimonial);
@@ -38,13 +36,24 @@ const TestimonialsPage = () => {
   };
 
   const handleDelete = (id) => {
-    // Implement delete functionality
-    console.log("Delete testimonial:", id);
+    deleteTestimonialMutation.mutate(id);
   };
 
   const handleToggleStatus = (id) => {
-    // Implement toggle status functionality
-    console.log("Toggle status for testimonial:", id);
+    const testimonial = testimonials.find(t => t.id === id);
+    if (testimonial) {
+      toggleStatusMutation.mutate({ 
+        id, 
+        isActive: !testimonial.isActive 
+      });
+    }
+  };
+
+  const handleFormSuccess = () => {
+    // TanStack Query will automatically refetch data after mutations
+    setIsAddDialogOpen(false);
+    setIsEditDialogOpen(false);
+    setSelectedTestimonial(null);
   };
 
   const columns = testimonialColumns(handleEdit, handleDelete, handleToggleStatus);
@@ -124,12 +133,12 @@ const TestimonialsPage = () => {
               Add Testimonial
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-black border-gray-500">
             <DialogHeader>
               <DialogTitle>Add New Testimonial</DialogTitle>
             </DialogHeader>
             <TestimonialForm 
-              onSuccess={() => setIsAddDialogOpen(false)}
+              onSuccess={handleFormSuccess}
               onCancel={() => setIsAddDialogOpen(false)}
             />
           </DialogContent>
@@ -144,22 +153,20 @@ const TestimonialsPage = () => {
             data={testimonials}
             searchKey="name"
             searchPlaceholder="Search testimonials..."
+            isLoading={isLoading}
           />
         </CardContent>
       </Card>
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-black border-gray-500">
           <DialogHeader>
             <DialogTitle>Edit Testimonial</DialogTitle>
           </DialogHeader>
           <TestimonialForm 
             testimonial={selectedTestimonial}
-            onSuccess={() => {
-              setIsEditDialogOpen(false);
-              setSelectedTestimonial(null);
-            }}
+            onSuccess={handleFormSuccess}
             onCancel={() => {
               setIsEditDialogOpen(false);
               setSelectedTestimonial(null);

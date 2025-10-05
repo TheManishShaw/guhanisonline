@@ -28,8 +28,8 @@ export const testimonialColumns = (onEdit, onDelete, onToggleStatus) => [
       return (
         <div>
           <div className="font-medium">{testimonial.name}</div>
-          {testimonial.design && (
-            <div className="text-sm text-gray-500">{testimonial.design}</div>
+          {(testimonial.designation || testimonial.design) && (
+            <div className="text-sm text-gray-500 dark:text-gray-400">{testimonial.designation || testimonial.design}</div>
           )}
           {testimonial.company && (
             <div className="text-sm text-primary">{testimonial.company}</div>
@@ -43,19 +43,21 @@ export const testimonialColumns = (onEdit, onDelete, onToggleStatus) => [
     header: "Content",
     cell: ({ row }) => {
       const testimonial = row.original;
-      const truncatedText = testimonial.testimonial.length > 100 
-        ? testimonial.testimonial.substring(0, 100) + "..." 
-        : testimonial.testimonial;
+      const content = testimonial.content || testimonial.testimonial;
+      const isVideo = testimonial.content_type === "video" || testimonial.video;
+      const truncatedText = content && content.length > 100 
+        ? content.substring(0, 100) + "..." 
+        : content;
       
       return (
         <div className="max-w-xs">
-          {testimonial.video ? (
+          {isVideo ? (
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-              <span className="text-sm text-red-600 font-medium">Video</span>
+              <span className="text-sm text-red-600 dark:text-red-400 font-medium">Video</span>
             </div>
           ) : (
-            <p className="text-sm text-gray-600 italic">"{truncatedText}"</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 italic">"{truncatedText}"</p>
           )}
         </div>
       );
@@ -72,11 +74,11 @@ export const testimonialColumns = (onEdit, onDelete, onToggleStatus) => [
             <Star
               key={i}
               className={`w-4 h-4 ${
-                i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300 dark:text-gray-600'
               }`}
             />
           ))}
-          <span className="text-sm text-gray-500 ml-1">({rating})</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">({rating})</span>
         </div>
       );
     },
@@ -99,7 +101,7 @@ export const testimonialColumns = (onEdit, onDelete, onToggleStatus) => [
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
       return (
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-gray-500 dark:text-gray-400">
           {date.toLocaleDateString()}
         </div>
       );
@@ -139,7 +141,7 @@ export const testimonialColumns = (onEdit, onDelete, onToggleStatus) => [
             size="sm"
             onClick={() => onDelete(testimonial.id)}
             title="Delete testimonial"
-            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950"
           >
             <Trash2 className="h-4 w-4" />
           </Button>

@@ -1,10 +1,13 @@
 "use client";
 import { Star, Quote, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useState, useRef } from "react";
+import { useTestimonials } from "@/lib/hooks/useTestimonials";
 
 const TestimonialCard = ({ testimonial, index }) => {
   const imageUrl = testimonial.photo || "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80";
-  const videoUrl = testimonial.video;
+  // Handle both 'video' and 'content' fields for video testimonials
+  const videoUrl = testimonial.content_type === 'video' ? testimonial.content : testimonial.video;
+  const testimonialText = testimonial.content_type === 'video' ? testimonial.testimonial : testimonial.content;
 
   return (
     <div className="flex-shrink-0 w-96 bg-gray-900 border border-gray-700 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
@@ -38,6 +41,30 @@ const TestimonialCard = ({ testimonial, index }) => {
 
       {/* Content Section */}
       <div className="p-6 bg-gray-900 rounded-b-3xl">
+        {/* Testimonial Text */}
+        {testimonialText && (
+          <div className="mb-4">
+            <Quote className="w-6 h-6 text-primary mb-2" />
+            <p className="text-gray-300 text-sm leading-relaxed italic">
+              "{testimonialText}"
+            </p>
+          </div>
+        )}
+        
+        {/* Rating */}
+        {testimonial.rating && (
+          <div className="flex items-center gap-1 mb-4">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`w-4 h-4 ${
+                  i < testimonial.rating ? 'text-yellow-400 fill-current' : 'text-gray-600'
+                }`}
+              />
+            ))}
+          </div>
+        )}
+        
         <div className="flex items-center gap-3">
           <img
             src={imageUrl}
@@ -49,7 +76,7 @@ const TestimonialCard = ({ testimonial, index }) => {
               {testimonial.name}
             </h4>
             <p className="text-gray-400 text-xs">
-              {testimonial.design || testimonial.position || "Client"}
+              {testimonial.designation || testimonial.design || testimonial.position || "Client"}
             </p>
             {testimonial.company && (
               <p className="text-primary text-xs">
@@ -144,50 +171,49 @@ const TestimonialGrid = ({ testimonials }) => {
 
 
 const PublicTestimonialPage = () => {
-  // Static testimonial data
-  const testimonialList = [
-    {
-      id: 1,
-      name: "Giselle",
-      testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
-      rating: 5,
-      design: "Pop Artist",
-      company: "Giselle Music",
-      photo: "/assets/images/avatar/avatar.png",
-      video: "/assets/videos/Giselle testimonials_caption.mp4",
-    }, {
-        id: 1,
-        name: "Giselle",
-        testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
-        rating: 5,
-        design: "Pop Artist",
-        company: "Giselle Music",
-        photo: "/assets/images/avatar/avatar.png",
-        video: "/assets/videos/Giselle testimonials_caption.mp4",
-      }, {
-        id: 1,
-        name: "Giselle",
-        testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
-        rating: 5,
-        design: "Pop Artist",
-        company: "Giselle Music",
-        photo: "/assets/images/avatar/avatar.png",
-        video: "/assets/videos/Giselle testimonials_caption.mp4",
-      }, {
-        id: 1,
-        name: "Giselle",
-        testimonial: "Working with Guhanis was an absolute game-changer for my music career. The production quality is outstanding, and the attention to detail is incredible. Every beat feels professionally crafted and perfectly mixed.",
-        rating: 5,
-        design: "Pop Artist",
-        company: "Giselle Music",
-        photo: "/assets/images/avatar/avatar.png",
-        video: "/assets/videos/Giselle testimonials_caption.mp4",
-      },
+  // Fetch testimonials from API
+  const { data: testimonialsData, isLoading, error } = useTestimonials();
   
-  ];
+  // Filter only active testimonials for public display
+  const testimonialList = testimonialsData?.data?.filter(testimonial => testimonial.is_active === 1) || [];
+  
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-16">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-white">Loading testimonials...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const featuredTestimonial = testimonialList[0];
-  const otherTestimonials = testimonialList.slice(1);
+  // Show error state
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-16">
+        <div className="text-center">
+          <p className="text-red-400 mb-4">Failed to load testimonials</p>
+          <p className="text-gray-400">Please try again later</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show empty state
+  if (!testimonialList || testimonialList.length === 0) {
+    return (
+      <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-16">
+        <div className="text-center">
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+            Hear what our customers are saying
+          </h2>
+          <p className="text-gray-400">No testimonials available at the moment</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-16">
