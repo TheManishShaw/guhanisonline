@@ -9,9 +9,9 @@ const TestimonialCard = ({ testimonial, index }) => {
   const testimonialText = testimonial.content_type === 'video' ? testimonial.testimonial : testimonial.content;
 
   return (
-    <div className="flex-shrink-0 w-96 bg-gray-900 border border-gray-700 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+    <div className="flex-shrink-0 w-80 sm:w-96 bg-gray-900 border border-gray-700 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
       {/* Media Section - Much Bigger */}
-      <div className="relative h-[37rem] bg-gray-800 rounded-t-3xl">
+      <div className="relative h-64 sm:h-80 md:h-96 lg:h-[37rem] bg-gray-800 rounded-t-3xl">
         {videoUrl ? (
           <div className="relative w-full h-full">
             <video
@@ -39,12 +39,12 @@ const TestimonialCard = ({ testimonial, index }) => {
       </div>
 
       {/* Content Section */}
-      <div className="p-6 bg-gray-900 rounded-b-3xl">
+      <div className="p-4 sm:p-6 bg-gray-900 rounded-b-3xl">
         {/* Testimonial Text */}
         {testimonialText && (
-          <div className="mb-4">
-            <Quote className="w-6 h-6 text-primary mb-2" />
-            <p className="text-gray-300 text-sm leading-relaxed italic">
+          <div className="mb-3 sm:mb-4">
+            <Quote className="w-5 h-5 sm:w-6 sm:h-6 text-primary mb-2" />
+            <p className="text-gray-300 text-xs sm:text-sm leading-relaxed italic">
               "{testimonialText}"
             </p>
           </div>
@@ -52,11 +52,11 @@ const TestimonialCard = ({ testimonial, index }) => {
         
         {/* Rating */}
         {testimonial.rating && (
-          <div className="flex items-center gap-1 mb-4">
+          <div className="flex items-center gap-1 mb-3 sm:mb-4">
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`w-4 h-4 ${
+                className={`w-3 h-3 sm:w-4 sm:h-4 ${
                   i < testimonial.rating ? 'text-yellow-400 fill-current' : 'text-gray-600'
                 }`}
               />
@@ -64,14 +64,14 @@ const TestimonialCard = ({ testimonial, index }) => {
           </div>
         )}
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <img
             src={imageUrl}
             alt={testimonial.name}
-            className="w-12 h-12 rounded-full object-cover border-2 border-gray-700"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-gray-700"
           />
           <div>
-            <h4 className="font-semibold text-white text-sm">
+            <h4 className="font-semibold text-white text-xs sm:text-sm">
               {testimonial.name}
             </h4>
             <p className="text-gray-400 text-xs">
@@ -104,13 +104,15 @@ const TestimonialGrid = ({ testimonials }) => {
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -384, behavior: 'smooth' });
+      const scrollAmount = window.innerWidth < 640 ? -320 : -384; // w-80 vs w-96
+      scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 384, behavior: 'smooth' });
+      const scrollAmount = window.innerWidth < 640 ? 320 : 384; // w-80 vs w-96
+      scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
@@ -125,8 +127,8 @@ const TestimonialGrid = ({ testimonials }) => {
 
   return (
     <div className="relative">
-      {/* Navigation Buttons - Positioned outside */}
-      <div className="absolute -left-16 top-1/2 -translate-y-1/2 z-10">
+      {/* Navigation Buttons - Positioned outside, hidden on mobile */}
+      <div className="absolute -left-16 top-1/2 -translate-y-1/2 z-10 hidden md:block">
         <button
           onClick={scrollLeft}
           disabled={!canScrollLeft}
@@ -139,8 +141,8 @@ const TestimonialGrid = ({ testimonials }) => {
           <ChevronLeft className="w-6 h-6" />
         </button>
       </div>
-      
-      <div className="absolute -right-16 top-1/2 -translate-y-1/2 z-10">
+
+      <div className="absolute -right-16 top-1/2 -translate-y-1/2 z-10 hidden md:block">
         <button
           onClick={scrollRight}
           disabled={!canScrollRight}
@@ -157,12 +159,18 @@ const TestimonialGrid = ({ testimonials }) => {
       {/* Scrollable Container */}
       <div
         ref={scrollContainerRef}
-        className="flex gap-6 overflow-x-hidden scrollbar-hide py-8"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide py-8 justify-center md:justify-start px-4 sm:px-0"
+        style={{ 
+          scrollbarWidth: 'none', 
+          msOverflowStyle: 'none',
+          scrollBehavior: 'smooth'
+        }}
       >
         {testimonials.map((testimonial, index) => (
           <TestimonialCard key={index} testimonial={testimonial} index={index} />
         ))}
+        {/* Add padding for the last item on mobile */}
+        <div className="w-4 sm:w-0 flex-shrink-0"></div>
       </div>
     </div>
   );
@@ -223,19 +231,19 @@ const PublicTestimonialPage = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-16">
+    <div className="max-w-7xl mx-auto bg-gray-950 min-h-screen py-8 sm:py-16">
       {/* Section Header */}
-      <div className="text-center mb-16 px-6">
-        <p className="text-primary font-medium text-sm mb-4">
+      <div className="text-center mb-8 sm:mb-16 px-4 sm:px-6">
+        <p className="text-primary font-medium text-xs sm:text-sm mb-2 sm:mb-4">
           Curious how people are using Guhanis
         </p>
-        <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
           Hear what our customers are saying
         </h2>
       </div>
 
       {/* Testimonials Grid */}
-      <div className="px-6">
+      <div className="px-0 sm:px-6 overflow-hidden">
         <TestimonialGrid testimonials={testimonialList} />
       </div>
     </div>
